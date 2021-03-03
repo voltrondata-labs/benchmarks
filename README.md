@@ -1,4 +1,11 @@
-# Apache Arrow Benchmarks
+<p align="right">
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+</p>
+
+# Arrow Benchmarks
+
+<b>Language-independent Continuous Benchmarking (CB) for Apache Arrow</b>
+<br/>
 
 
 * [Setup](https://github.com/ursa-labs/benchmarks#setup)
@@ -71,7 +78,7 @@
 ### Formatting code (before committing)
     (qa) $ cd ~/workspace/benchmarks/
     (qa) $ git status
-        modified:   foo.py
+        modified: foo.py
     (qa) $ black foo.py
         reformatted foo.py
     (qa) $ git add foo.py
