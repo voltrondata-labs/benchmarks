@@ -405,18 +405,19 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
         context = {"benchmark_language": "C++"}
 
         # external results from somewhere
-        data, unit = [100, 200, 300], "i/s"
-        times, time_unit = [0.100, 0.300, 0.300], "s"
+        result = {
+            "data": [100, 200, 300],
+            "unit": "i/s",
+            "times": [0.100, 0.200, 0.300],
+            "time_unit": "s",
+        }
 
         yield self.record(
+            result,
             tags,
             context,
-            data,
-            unit,
-            times,
-            time_unit,
             kwargs,
-            output=data,
+            output=result["data"],
         )
 ```
 

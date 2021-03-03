@@ -29,12 +29,9 @@ class Benchmark(conbench.runner.Benchmark):
 
     def record(
         self,
+        result,
         extra_tags,
         extra_context,
-        data,
-        unit,
-        times,
-        time_unit,
         options,
         case=None,
         name=None,
@@ -45,7 +42,7 @@ class Benchmark(conbench.runner.Benchmark):
         tags, context = self._get_tags_and_context(case, extra_tags)
         context.update(**extra_context)
         benchmark, output = self.conbench.record(
-            name, tags, context, data, unit, times, time_unit, options, output
+            result, name, tags, context, options, output
         )
         self.conbench.publish(benchmark)
         return benchmark, output
@@ -112,7 +109,6 @@ class BenchmarkR:
             return os.path.join(f"results/{self.r_name}", file)
 
     def _record_result(self, result, tags, case, options, output):
-        data, unit = [row["real"] for row in result["result"]], "s"
         tags["language"] = "R"
         context = {
             "benchmark_language": "R",
@@ -122,15 +118,18 @@ class BenchmarkR:
         # The benchmark measurement and execution time happen to be
         # the same in this case: both are execution time in seconds.
         # (since data == times, just record an empty list for times)
-        times, time_unit = [], "s"
+        data = [row["real"] for row in result["result"]]
+        values = {
+            "data": data,
+            "unit": "s",
+            "times": [],
+            "time_unit": "s",
+        }
 
         return self.record(
+            values,
             tags,
             context,
-            data,
-            unit,
-            times,
-            time_unit,
             options,
             case=case,
             output=output,
