@@ -145,23 +145,23 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
                     yield self._record_result(suite, result, kwargs)
 
     def _record_result(self, suite, result, options):
-        data = result["values"]
-        times = result.get("times", [])
-        unit = self._format_unit(result["unit"])
-        time_unit = result.get("time_unit", "s")
         context = {"benchmark_language": "C++"}
         tags = _parse_benchmark_name(result["name"])
         name = tags.pop("name")
         tags["suite"] = suite["name"]
         tags["source"] = self.name
 
+        values = {
+            "data": result["values"],
+            "unit": self._format_unit(result["unit"]),
+            "times": result.get("times", []),
+            "time_unit": result.get("time_unit", "s"),
+        }
+
         return self.record(
+            values,
             tags,
             context,
-            data,
-            unit,
-            times,
-            time_unit,
             options,
             output=result,
             name=name,
