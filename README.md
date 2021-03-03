@@ -8,9 +8,9 @@
 <br/>
 
 
-* [Setup](https://github.com/ursa-labs/benchmarks#setup)
-* [Running benchmarks](https://github.com/ursa-labs/benchmarks#running-benchmarks)
-* [Authoring benchmarks](https://github.com/ursa-labs/benchmarks#authoring-benchmarks)
+* [Setup](https://github.com/ursacomputing/benchmarks#setup)
+* [Running benchmarks](https://github.com/ursacomputing/benchmarks#running-benchmarks)
+* [Authoring benchmarks](https://github.com/ursacomputing/benchmarks#authoring-benchmarks)
 
 
 ## Setup
@@ -30,8 +30,8 @@
 
 ### Clone repos
     (qa) $ cd ~/workspace/
-    (qa) $ git clone https://github.com/ursa-labs/benchmarks.git
-    (qa) $ git clone https://github.com/ursa-labs/conbench.git
+    (qa) $ git clone https://github.com/ursacomputing/benchmarks.git
+    (qa) $ git clone https://github.com/ursacomputing/conbench.git
     (qa) $ git clone https://github.com/apache/arrow.git
 
 
@@ -329,16 +329,16 @@
 
 These example benchmarks and their tests can be found here:
 
-* [_example_benchmarks.py](https://github.com/ursa-labs/benchmarks/blob/main/benchmarks/_example_benchmarks.py)
-* [test_example_benchmarks.py](https://github.com/ursa-labs/benchmarks/blob/main/benchmarks/tests/test_example_benchmarks.py)
+* [_example_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/_example_benchmarks.py)
+* [test_example_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/tests/test_example_benchmarks.py)
 
 
 ### Example simple benchmark
 
 Other benchmarks that have minimal scaffolding:
 
-* [csv_read_benchmark.py](https://github.com/ursa-labs/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
-* [dataset_filter_benchmark.py](https://github.com/ursa-labs/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
+* [csv_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
+* [dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
 
 
 ```python
@@ -377,7 +377,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
 
 Also see this actual external benchmark:
 
-* [cpp_micro_benchmarks.py](https://github.com/ursa-labs/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
+* [cpp_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
 
 
 ```python
@@ -425,7 +425,7 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
 
 Also see this actual benchmark with many cases, options, and a source:
 
-* [file_benchmark.py](https://github.com/ursa-labs/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
 
 
 ```python
