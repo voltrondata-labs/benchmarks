@@ -10,7 +10,8 @@ import pyarrow
 class Benchmark(conbench.runner.Benchmark):
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
-        self._arrow_info = self._arrow_info()
+        self.arrow_info = self._arrow_info()
+        self.run_info = self._run_info(self.arrow_info)
 
     def benchmark(self, f, extra_tags, options, case=None):
         cpu_count = options.get("cpu_count", None)
@@ -18,11 +19,7 @@ class Benchmark(conbench.runner.Benchmark):
             pyarrow.set_cpu_count(cpu_count)
         tags, context = self._get_tags_and_context(case, extra_tags)
         benchmark, output = self.conbench.benchmark(
-            f,
-            self.name,
-            tags,
-            context,
-            options,
+            f, self.name, tags, context, self.run_info, options
         )
         self.conbench.publish(benchmark)
         return benchmark, output
@@ -42,7 +39,7 @@ class Benchmark(conbench.runner.Benchmark):
         tags, context = self._get_tags_and_context(case, extra_tags)
         context.update(**extra_context)
         benchmark, output = self.conbench.record(
-            result, name, tags, context, options, output
+            result, name, tags, context, self.run_info, options, output
         )
         self.conbench.publish(benchmark)
         return benchmark, output
@@ -52,11 +49,17 @@ class Benchmark(conbench.runner.Benchmark):
         return {**source.tags, **info}
 
     def _get_tags_and_context(self, case, extra_tags):
-        context = {**self._arrow_info}
+        context = {**self.arrow_info}
         tags = {**extra_tags}
         if case:
             tags.update(dict(zip(self.fields, case)))
         return tags, context
+
+    def _run_info(self, arrow_info):
+        return {
+            "repo": "https://github.com/apache/arrow",
+            "commit": arrow_info["arrow_git_revision"],
+        }
 
     def _arrow_info(self):
         if pyarrow.__version__ > "0.17.1":
@@ -98,7 +101,6 @@ class BenchmarkR:
         command = ["R", "-e", command]
         result = subprocess.run(command, capture_output=True, check=True)
         output = result.stdout.decode("utf-8").strip()
-        print(output)
         result_path = self._get_results_path()
         with open(result_path) as json_file:
             data = json.load(json_file)
