@@ -57,7 +57,7 @@ class Benchmark(conbench.runner.Benchmark):
 
     def _run_info(self, arrow_info):
         return {
-            "repo": "https://github.com/apache/arrow",
+            "repository": "https://github.com/apache/arrow",
             "commit": arrow_info["arrow_git_revision"],
         }
 
