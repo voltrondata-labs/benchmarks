@@ -45,7 +45,7 @@
 ### Install arrowbench (to run R benchmarks)
     $ R
     > install.packages('remotes')
-    > remotes::install_github("ursa-labs/arrowbench")
+    > remotes::install_github("ursacomputing/arrowbench")
 
 
 ### Install archery (to run C++ micro benchmarks)
