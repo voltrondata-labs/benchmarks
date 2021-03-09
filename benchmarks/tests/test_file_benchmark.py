@@ -5,7 +5,7 @@ import pytest
 
 from .. import _sources
 from .. import file_benchmark
-from ..tests._asserts import assert_context, assert_cli
+from ..tests._asserts import assert_context, assert_cli, R_CLI
 
 
 FILE_READ_HELP = """
@@ -150,7 +150,6 @@ def test_read_fanniemae(case):
 
 
 NO_LZ4 = "arrowbench doesn't support compression=lz4 case"
-R_CLI = "The R Foundation for Statistical Computing"
 
 
 def skip_lz4(case):

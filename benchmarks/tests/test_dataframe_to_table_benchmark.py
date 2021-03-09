@@ -1,8 +1,10 @@
 import json
 
+import pytest
+
 from .. import _sources
 from .. import dataframe_to_table_benchmark
-from ..tests._asserts import assert_benchmark, assert_cli
+from ..tests._asserts import assert_benchmark, assert_cli, R_CLI
 
 
 HELP = """
@@ -25,6 +27,9 @@ Options:
 
 chi_traffic = _sources.Source("chi_traffic_sample")
 
+# TODO: ability to test R benchmarks with sample sources
+chi_traffic_big = _sources.Source("chi_traffic_2020_Q1")
+
 
 def test_dataframe_to_table_chi_traffic():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
@@ -32,6 +37,15 @@ def test_dataframe_to_table_chi_traffic():
     assert_benchmark(result, chi_traffic.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
+
+
+@pytest.mark.slow
+def test_dataframe_to_table_chi_traffic_r():
+    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
+    [(result, output)] = benchmark.run(chi_traffic_big, language="R")
+    assert_benchmark(result, chi_traffic_big.name, benchmark.name, language="R")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert R_CLI in str(output)
 
 
 def test_dataframe_to_table_cli():

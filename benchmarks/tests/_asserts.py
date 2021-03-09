@@ -7,16 +7,24 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 benchmarks_dir = os.path.join(this_dir, "..")
 
 
-def assert_benchmark(result, source, name):
+R_CLI = "The R Foundation for Statistical Computing"
+
+
+def assert_benchmark(result, source, name, language="Python"):
     munged = copy.deepcopy(result)
-    assert munged["tags"] == {
+    expected = {
         "name": name,
         "dataset": source,
         "cpu_count": None,
         "gc_collect": True,
         "gc_disable": True,
     }
-    assert_context(munged)
+    if language == "R":
+        del expected["gc_collect"]
+        del expected["gc_disable"]
+        expected["language"] = "R"
+    assert munged["tags"] == expected
+    assert_context(munged, language=language)
 
 
 def assert_context(munged, language="Python"):
