@@ -60,27 +60,27 @@ STORE = {
     },
     "type_strings": {
         "path": _source("type_strings.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/singl_types/type_strings.parquet",
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_strings.parquet",
     },
     "type_dict": {
         "path": _source("type_dict.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/singl_types/type_dict.parquet",
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_dict.parquet",
     },
     "type_integers": {
         "path": _source("type_integers.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/singl_types/type_integers.parquet",
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_integers.parquet",
     },
     "type_floats": {
         "path": _source("type_floats.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/singl_types/type_floats.parquet",
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_floats.parquet",
     },
     "type_nested": {
         "path": _source("type_nested.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/singl_types/type_nested.parquet",
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_nested.parquet",
     },
     "type_simple_features": {
         "path": _source("type_simple_features.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/singl_types/type_simple_features.parquet",
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_simple_features.parquet",
     },
     "nyctaxi_multi_parquet_s3": {
         "download": False,
