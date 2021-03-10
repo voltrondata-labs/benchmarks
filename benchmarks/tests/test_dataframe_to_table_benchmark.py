@@ -29,12 +29,12 @@ chi_traffic = _sources.Source("chi_traffic_sample")
 
 # TODO: ability to test R benchmarks with sample sources
 chi_traffic_big = _sources.Source("chi_traffic_2020_Q1")
-type_strings_big = _sources.Source("sample_strings")
-type_dict_big = _sources.Source("sample_dict")
-type_integers_big = _sources.Source("sample_integers")
-type_floats_big = _sources.Source("sample_floats")
-type_nested_big = _sources.Source("sample_nested")
-simple_features_big = _sources.Source("sample_simple_features")
+type_strings_big = _sources.Source("type_strings")
+type_dict_big = _sources.Source("type_dict")
+type_integers_big = _sources.Source("type_integers")
+type_floats_big = _sources.Source("type_floats")
+type_nested_big = _sources.Source("type_nested")
+simple_features_big = _sources.Source("type_simple_features")
 
 
 def test_dataframe_to_table_chi_traffic():
