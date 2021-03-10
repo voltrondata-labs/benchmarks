@@ -101,9 +101,13 @@ class BenchmarkR:
         command = ["R", "-e", command]
         result = subprocess.run(command, capture_output=True, check=True)
         output = result.stdout.decode("utf-8").strip()
-        result_path = self._get_results_path()
-        with open(result_path) as json_file:
-            data = json.load(json_file)
+        try:
+            result_path = self._get_results_path()
+            with open(result_path) as json_file:
+                data = json.load(json_file)
+        except FileNotFoundError:
+            print(output)
+            raise
         return data, output
 
     def _get_results_path(self):
