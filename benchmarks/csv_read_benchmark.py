@@ -35,6 +35,7 @@ class CsvReadBenchmark(_benchmark.Benchmark):
 
     name = "csv-read"
     arguments = ["source"]
+    sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     options = {"cpu_count": {"type": int}}
 
     def run(self, source, cpu_count=None, **kwargs):

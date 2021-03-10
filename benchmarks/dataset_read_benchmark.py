@@ -49,6 +49,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         ["false"],
     )
     arguments = ["source"]
+    sources = ["nyctaxi_multi_parquet_s3"]
     options = {"cpu_count": {"type": int}}
 
     def run(self, source, case=None, cpu_count=None, **kwargs):

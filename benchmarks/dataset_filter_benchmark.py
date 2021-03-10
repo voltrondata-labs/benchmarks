@@ -35,6 +35,7 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
 
     name = "dataset-filter"
     arguments = ["source"]
+    sources = ["nyctaxi_2010-01"]
     options = {"cpu_count": {"type": int}}
 
     def run(self, source, cpu_count=None, **kwargs):

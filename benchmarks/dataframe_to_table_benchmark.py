@@ -39,6 +39,15 @@ class DataframeToTableBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
 
     name, r_name = "dataframe-to-table", "df_to_table"
     arguments = ["source"]
+    sources = [
+        "chi_traffic_2020_Q1",
+        "sample_strings",
+        "sample_dict",
+        "sample_integers",
+        "sample_floats",
+        "sample_nested",
+        "sample_simple_features",
+    ]
     options = {
         "language": {"type": str, "choices": ["Python", "R"]},
         "cpu_count": {"type": int},
