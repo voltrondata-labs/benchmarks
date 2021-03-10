@@ -1,6 +1,6 @@
 import conbench.runner
 
-from benchmarks import _benchmark, _sources
+from benchmarks import _benchmark
 
 
 @conbench.runner.register_benchmark
@@ -121,14 +121,12 @@ class CasesBenchmark(_benchmark.Benchmark):
     options = {"count": {"default": 1, "type": int}}
 
     def run(self, source, case=None, count=1, **kwargs):
-        if not isinstance(source, _sources.Source):
-            source = _sources.Source(source)
-
         cases = self.get_cases(case, kwargs)
-        tags = self._get_tags(source, count)
-        for case in cases:
-            f = self._get_benchmark_function(source, count, case)
-            yield self.benchmark(f, tags, kwargs, case)
+        for source in self.get_sources(source):
+            tags = self._get_tags(source, count)
+            for case in cases:
+                f = self._get_benchmark_function(source, count, case)
+                yield self.benchmark(f, tags, kwargs, case)
 
     def _get_benchmark_function(self, source, count, case):
         return lambda: count * f"{source.name}, {case}"

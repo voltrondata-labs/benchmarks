@@ -25,9 +25,20 @@ Options:
 nyctaxi = _sources.Source("nyctaxi_sample")
 
 
-def test_dataset_filter_nyctaxi():
+def test_dataset_filter_one():
     benchmark = dataset_filter_benchmark.DatasetFilterBenchmark()
     [(result, output)] = benchmark.run(nyctaxi, iterations=1)
+    assert_benchmark(result, nyctaxi.name, benchmark.name)
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert "pyarrow.Table" in str(output)
+
+
+def test_dataset_filter_all():
+    benchmark = dataset_filter_benchmark.DatasetFilterBenchmark()
+    run = list(benchmark.run("TEST", iterations=1))
+    assert len(run) == 1
+
+    result, output = run[0]
     assert_benchmark(result, nyctaxi.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)

@@ -30,25 +30,23 @@ CHOICES = {
 
 class FileBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     def run(self, source, case=None, cpu_count=None, **kwargs):
-        if not isinstance(source, _sources.Source):
-            source = _sources.Source(source)
-
         cases = self.get_cases(case, kwargs)
-        tags = self.get_tags(source, cpu_count)
         language = kwargs.get("language", "Python").lower()
         msg = "Warning: arrowbench doesn't support the compression=lz4 case."
 
-        for case in cases:
-            _, compression, _ = case
-            if compression == "lz4" and language == "r":
-                click.echo(click.style(msg, fg="red"))
-                continue
-            if language == "python":
-                f = self._get_benchmark_function(source, case)
-                yield self.benchmark(f, tags, kwargs, case)
-            elif language == "r":
-                command = self._get_r_command(source, case, kwargs)
-                yield self.r_benchmark(command, tags, kwargs, case)
+        for source in self.get_sources(source):
+            tags = self.get_tags(source, cpu_count)
+            for case in cases:
+                _, compression, _ = case
+                if compression == "lz4" and language == "r":
+                    click.echo(click.style(msg, fg="red"))
+                    continue
+                if language == "python":
+                    f = self._get_benchmark_function(source, case)
+                    yield self.benchmark(f, tags, kwargs, case)
+                elif language == "r":
+                    command = self._get_r_command(source, case, kwargs)
+                    yield self.r_benchmark(command, tags, kwargs, case)
 
     def _get_r_command(self, source, case, options):
         file_type, compression, _type = case
@@ -112,6 +110,7 @@ class FileReadBenchmark(FileBenchmark):
     valid_cases = [("file_type", "compression", "output_type")] + CASES
     arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
+    sources_test = ["fanniemae_sample", "nyctaxi_sample"]
     options = {
         "language": {"type": str, "choices": ["Python", "R"]},
         "cpu_count": {"type": int},
@@ -179,6 +178,7 @@ class FileWriteBenchmark(FileBenchmark):
     valid_cases = [("file_type", "compression", "input_type")] + CASES
     arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
+    sources_test = ["fanniemae_sample", "nyctaxi_sample"]
     options = {
         "language": {"type": str, "choices": ["Python", "R"]},
         "cpu_count": {"type": int},

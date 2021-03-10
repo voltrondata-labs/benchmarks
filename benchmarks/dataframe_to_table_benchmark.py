@@ -3,7 +3,7 @@ import conbench.runner
 import pyarrow
 import pyarrow.parquet as parquet
 
-from benchmarks import _benchmark, _sources
+from benchmarks import _benchmark
 
 
 @conbench.runner.register_benchmark
@@ -48,25 +48,31 @@ class DataframeToTableBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
         "sample_nested",
         "sample_simple_features",
     ]
+    sources_test = [
+        "chi_traffic_sample",
+        "sample_strings",
+        "sample_dict",
+        "sample_integers",
+        "sample_floats",
+        "sample_nested",
+        "sample_simple_features",
+    ]
     options = {
         "language": {"type": str, "choices": ["Python", "R"]},
         "cpu_count": {"type": int},
     }
 
     def run(self, source, cpu_count=None, **kwargs):
-        if not isinstance(source, _sources.Source):
-            source = _sources.Source(source)
-
-        tags = self.get_tags(source, cpu_count)
         language = kwargs.get("language", "Python").lower()
-
-        if language == "python":
-            dataframe = self._get_dataframe(source.source_path)
-            f = self._get_benchmark_function(dataframe)
-            yield self.benchmark(f, tags, kwargs)
-        elif language == "r":
-            command = self._get_r_command(source, kwargs)
-            yield self.r_benchmark(command, tags, kwargs)
+        for source in self.get_sources(source):
+            tags = self.get_tags(source, cpu_count)
+            if language == "python":
+                dataframe = self._get_dataframe(source.source_path)
+                f = self._get_benchmark_function(dataframe)
+                yield self.benchmark(f, tags, kwargs)
+            elif language == "r":
+                command = self._get_r_command(source, kwargs)
+                yield self.r_benchmark(command, tags, kwargs)
 
     def _get_benchmark_function(self, dataframe):
         return lambda: pyarrow.Table.from_pandas(dataframe)

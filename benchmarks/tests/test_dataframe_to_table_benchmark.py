@@ -37,7 +37,7 @@ type_nested_big = _sources.Source("sample_nested")
 simple_features_big = _sources.Source("sample_simple_features")
 
 
-def test_dataframe_to_table_chi_traffic():
+def test_dataframe_to_table_one():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     [(result, output)] = benchmark.run(chi_traffic, iterations=1)
     assert_benchmark(result, chi_traffic.name, benchmark.name)
@@ -46,61 +46,49 @@ def test_dataframe_to_table_chi_traffic():
 
 
 @pytest.mark.slow
-def test_dataframe_to_table_type_strings():
+def test_dataframe_to_table_all():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_strings_big, iterations=1)
+    run = list(benchmark.run("TEST", iterations=1))
+    assert len(run) == 7
+
+    result, output = run[0]
+    assert_benchmark(result, chi_traffic.name, benchmark.name)
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert "pyarrow.Table" in str(output)
+
+    result, output = run[1]
     assert_benchmark(result, type_strings_big.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_dict():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_dict_big, iterations=1)
+    result, output = run[2]
     assert_benchmark(result, type_dict_big.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_integers():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_integers_big, iterations=1)
+    result, output = run[3]
     assert_benchmark(result, type_integers_big.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_floats():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_floats_big, iterations=1)
+    result, output = run[4]
     assert_benchmark(result, type_floats_big.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_nested():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_nested_big, iterations=1)
+    result, output = run[5]
     assert_benchmark(result, type_nested_big.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_simple_features():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(simple_features_big, iterations=1)
+    result, output = run[6]
     assert_benchmark(result, simple_features_big.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
 
 @pytest.mark.slow
-def test_dataframe_to_table_chi_traffic_r():
+def test_dataframe_to_table_one_r():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     [(result, output)] = benchmark.run(chi_traffic_big, language="R")
     assert_benchmark(result, chi_traffic_big.name, benchmark.name, language="R")
@@ -109,54 +97,42 @@ def test_dataframe_to_table_chi_traffic_r():
 
 
 @pytest.mark.slow
-def test_dataframe_to_table_type_strings_r():
+def test_dataframe_to_table_all_r():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_strings_big, language="R")
+    # TODO: Change from "ALL" to "TEST" once R supports the samples
+    run = list(benchmark.run("ALL", language="R"))
+
+    result, output = run[0]
+    assert_benchmark(result, chi_traffic_big.name, benchmark.name, language="R")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert R_CLI in str(output)
+
+    result, output = run[1]
     assert_benchmark(result, type_strings_big.name, benchmark.name, language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_dict_r():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_dict_big, language="R")
+    result, output = run[2]
     assert_benchmark(result, type_dict_big.name, benchmark.name, language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_integers_r():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_integers_big, language="R")
+    result, output = run[3]
     assert_benchmark(result, type_integers_big.name, benchmark.name, language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_floats_r():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_floats_big, language="R")
+    result, output = run[4]
     assert_benchmark(result, type_floats_big.name, benchmark.name, language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_type_nested_r():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(type_nested_big, language="R")
+    result, output = run[5]
     assert_benchmark(result, type_nested_big.name, benchmark.name, language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
-
-@pytest.mark.slow
-def test_dataframe_to_table_simple_features_r():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(simple_features_big, language="R")
+    result, output = run[6]
     assert_benchmark(result, simple_features_big.name, benchmark.name, language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)

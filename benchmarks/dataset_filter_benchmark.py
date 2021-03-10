@@ -1,7 +1,7 @@
 import conbench.runner
 import pyarrow.dataset
 
-from benchmarks import _benchmark, _sources
+from benchmarks import _benchmark
 
 
 @conbench.runner.register_benchmark
@@ -36,18 +36,16 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
     name = "dataset-filter"
     arguments = ["source"]
     sources = ["nyctaxi_2010-01"]
+    sources_test = ["nyctaxi_sample"]
     options = {"cpu_count": {"type": int}}
 
     def run(self, source, cpu_count=None, **kwargs):
-        if not isinstance(source, _sources.Source):
-            source = _sources.Source(source)
-
-        path = source.create_if_not_exists("parquet", "lz4")
-        data = pyarrow.dataset.dataset(path, format="parquet")
-
-        f = self._get_benchmark_function(data)
-        tags = self.get_tags(source, cpu_count)
-        yield self.benchmark(f, tags, kwargs)
+        for source in self.get_sources(source):
+            path = source.create_if_not_exists("parquet", "lz4")
+            data = pyarrow.dataset.dataset(path, format="parquet")
+            f = self._get_benchmark_function(data)
+            tags = self.get_tags(source, cpu_count)
+            yield self.benchmark(f, tags, kwargs)
 
     def _get_benchmark_function(self, data):
         # for this filter to work, source must be one of:

@@ -58,6 +58,6 @@ def test_wide_dataframe(case):
     assert "100 rows x 10000 columns" in str(output)
 
 
-def test_wide_dataframe_read_cli():
+def test_wide_dataframe_cli():
     command = ["conbench", "wide-dataframe", "--help"]
     assert_cli(command, HELP)

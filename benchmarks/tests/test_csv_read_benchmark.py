@@ -26,7 +26,7 @@ fanniemae = _sources.Source("fanniemae_sample")
 nyctaxi = _sources.Source("nyctaxi_sample")
 
 
-def test_csv_read_fanniemae():
+def test_csv_read_one():
     benchmark = csv_read_benchmark.CsvReadBenchmark()
     [(result, output)] = benchmark.run(fanniemae, iterations=1)
     assert_benchmark(result, fanniemae.name, benchmark.name)
@@ -34,9 +34,17 @@ def test_csv_read_fanniemae():
     assert "pyarrow.Table" in str(output)
 
 
-def test_csv_read_nyctaxi():
+def test_csv_read_all():
     benchmark = csv_read_benchmark.CsvReadBenchmark()
-    [(result, output)] = benchmark.run(nyctaxi, iterations=1)
+    run = list(benchmark.run("TEST", iterations=1))
+    assert len(run) == 2
+
+    result, output = run[0]
+    assert_benchmark(result, fanniemae.name, benchmark.name)
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert "pyarrow.Table" in str(output)
+
+    result, output = run[1]
     assert_benchmark(result, nyctaxi.name, benchmark.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)

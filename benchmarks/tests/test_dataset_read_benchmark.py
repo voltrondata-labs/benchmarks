@@ -69,8 +69,19 @@ def assert_benchmark(result, case, source):
 
 
 @pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
-def test_dataset_read(case):
+def test_dataset_read_one(case):
     [(result, output)] = benchmark.run(nyctaxi, case, iterations=1)
+    assert_benchmark(result, case, nyctaxi.name)
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert "pyarrow.Table" in str(output)
+
+
+@pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
+def test_dataset_read_all(case):
+    run = list(benchmark.run("TEST", case, iterations=1))
+    assert len(run) == 1
+
+    result, output = run[0]
     assert_benchmark(result, case, nyctaxi.name)
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)

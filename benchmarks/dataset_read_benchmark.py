@@ -3,7 +3,7 @@ import pyarrow
 import pyarrow.dataset
 import pyarrow.fs
 
-from benchmarks import _benchmark, _sources
+from benchmarks import _benchmark
 
 
 @conbench.runner.register_benchmark
@@ -50,33 +50,29 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
     )
     arguments = ["source"]
     sources = ["nyctaxi_multi_parquet_s3"]
+    sources_test = ["nyctaxi_multi_parquet_s3_sample"]
     options = {"cpu_count": {"type": int}}
 
     def run(self, source, case=None, cpu_count=None, **kwargs):
-        if not isinstance(source, _sources.Source):
-            source = _sources.Source(source)
-
-        tags = self.get_tags(source, cpu_count)
         cases = self.get_cases(case, kwargs)
-        schema = self._get_schema(source)
-        s3 = pyarrow.fs.S3FileSystem(region=source.region)
-
-        for case in cases:
-            (pre_buffer,) = case
-            legacy, parquet = self._get_format(pre_buffer)
-            case = (None,) if legacy else case
-            data = pyarrow.dataset.FileSystemDataset.from_paths(
-                source.paths,
-                schema=schema,
-                format=parquet,
-                filesystem=s3,
-            )
-            f = self._get_benchmark_function(data)
-            yield self.benchmark(f, tags, kwargs, case)
-
-            # no need to run the null legacy case twice
-            if legacy:
-                break
+        for source in self.get_sources(source):
+            tags = self.get_tags(source, cpu_count)
+            schema = self._get_schema(source)
+            s3 = pyarrow.fs.S3FileSystem(region=source.region)
+            for case in cases:
+                (pre_buffer,) = case
+                legacy, parquet = self._get_format(pre_buffer)
+                case = (None,) if legacy else case
+                data = pyarrow.dataset.FileSystemDataset.from_paths(
+                    source.paths,
+                    schema=schema,
+                    format=parquet,
+                    filesystem=s3,
+                )
+                f = self._get_benchmark_function(data)
+                yield self.benchmark(f, tags, kwargs, case)
+                if legacy:
+                    break  # no need to run the null legacy case twice
 
     def _get_benchmark_function(self, data):
         return lambda: data.to_table()

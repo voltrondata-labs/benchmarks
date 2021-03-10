@@ -118,7 +118,7 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
 
 
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
-def test_write_nyctaxi(case):
+def test_write_one(case):
     [(result, output)] = write_benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name, "write", "input_type")
     print(json.dumps(result, indent=4, sort_keys=True))
@@ -126,7 +126,7 @@ def test_write_nyctaxi(case):
 
 
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
-def test_read_nyctaxi(case):
+def test_read_one(case):
     [(result, output)] = read_benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name, "read", "output_type")
     print(json.dumps(result, indent=4, sort_keys=True))
@@ -134,19 +134,35 @@ def test_read_nyctaxi(case):
 
 
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
-def test_write_fanniemae(case):
-    [(result, output)] = write_benchmark.run(fanniemae, case, iterations=1)
+def test_write_all(case):
+    run = list(write_benchmark.run("TEST", case, iterations=1))
+    assert len(run) == 2
+
+    result, output = run[0]
     assert_benchmark(result, case, fanniemae.name, "write", "input_type")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert output is None
+
+    result, output = run[1]
+    assert_benchmark(result, case, nyctaxi.name, "write", "input_type")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert output is None
 
 
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
-def test_read_fanniemae(case):
-    [(result, output)] = read_benchmark.run(fanniemae, case, iterations=1)
+def test_read_all(case):
+    run = list(read_benchmark.run("TEST", case, iterations=1))
+    assert len(run) == 2
+
+    result, output = run[0]
     assert_benchmark(result, case, fanniemae.name, "read", "output_type")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output) or "[757 rows x 108 columns]" in str(output)
+
+    result, output = run[1]
+    assert_benchmark(result, case, nyctaxi.name, "read", "output_type")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert "pyarrow.Table" in str(output) or "[998 rows x 18 columns]" in str(output)
 
 
 NO_LZ4 = "arrowbench doesn't support compression=lz4 case"
@@ -160,7 +176,7 @@ def skip_lz4(case):
 
 @pytest.mark.slow
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
-def test_write_nyctaxi_r(case):
+def test_write_one_r(case):
     skip_lz4(case)
     name = nyctaxi_big.name
     [(result, output)] = write_benchmark.run(nyctaxi_big, case, language="R")
@@ -171,7 +187,7 @@ def test_write_nyctaxi_r(case):
 
 @pytest.mark.slow
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
-def test_read_nyctaxi_r(case):
+def test_read_one_r(case):
     skip_lz4(case)
     name = nyctaxi_big.name
     [(result, output)] = read_benchmark.run(nyctaxi_big, case, language="R")
@@ -182,10 +198,20 @@ def test_read_nyctaxi_r(case):
 
 @pytest.mark.slow
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
-def test_write_fanniemae_r(case):
+def test_write_all_r(case):
     skip_lz4(case)
+    # TODO: Change from "ALL" to "TEST" once R supports the samples
+    run = list(write_benchmark.run("ALL", case, language="R"))
+    assert len(run) == 2
+
+    result, output = run[0]
     name = fanniemae_big.name
-    [(result, output)] = write_benchmark.run(fanniemae_big, case, language="R")
+    assert_benchmark(result, case, name, "write", "input_type", language="R")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert R_CLI in str(output)
+
+    result, output = run[1]
+    name = nyctaxi_big.name
     assert_benchmark(result, case, name, "write", "input_type", language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
@@ -193,20 +219,30 @@ def test_write_fanniemae_r(case):
 
 @pytest.mark.slow
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
-def test_read_fanniemae_r(case):
+def test_read_all_r(case):
     skip_lz4(case)
+    # TODO: Change from "ALL" to "TEST" once R supports the samples
+    run = list(read_benchmark.run("ALL", case, language="R"))
+    assert len(run) == 2
+
+    result, output = run[0]
     name = fanniemae_big.name
-    [(result, output)] = read_benchmark.run(fanniemae_big, case, language="R")
+    assert_benchmark(result, case, name, "read", "output_type", language="R")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert R_CLI in str(output)
+
+    result, output = run[1]
+    name = nyctaxi_big.name
     assert_benchmark(result, case, name, "read", "output_type", language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
-def test_file_read_cli():
+def test_read_cli():
     command = ["conbench", "file-read", "--help"]
     assert_cli(command, FILE_READ_HELP)
 
 
-def test_file_write_cli():
+def test_write_cli():
     command = ["conbench", "file-write", "--help"]
     assert_cli(command, FILE_WRITE_HELP)

@@ -6,6 +6,8 @@ import subprocess
 import conbench.runner
 import pyarrow
 
+from benchmarks import _sources
+
 
 class Benchmark(conbench.runner.Benchmark):
     def __init__(self):
@@ -43,6 +45,15 @@ class Benchmark(conbench.runner.Benchmark):
         )
         self.conbench.publish(benchmark)
         return benchmark, output
+
+    def get_sources(self, source):
+        if not isinstance(source, _sources.Source):
+            if source == "ALL":
+                return [_sources.Source(s) for s in self.sources]
+            if source == "TEST":
+                return [_sources.Source(s) for s in self.sources_test]
+            return [_sources.Source(source)]
+        return [source]
 
     def get_tags(self, source, cpu_count):
         info = {"cpu_count": cpu_count}
