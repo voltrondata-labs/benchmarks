@@ -14,6 +14,7 @@ class Benchmark(conbench.runner.Benchmark):
         self.conbench = conbench.runner.Conbench()
         self.arrow_info = self._arrow_info()
         self.run_info = self._run_info(self.arrow_info)
+        self.r_info = None
 
     def benchmark(self, f, extra_tags, options, case=None):
         cpu_count = options.get("cpu_count", None)
@@ -72,6 +73,27 @@ class Benchmark(conbench.runner.Benchmark):
             "commit": arrow_info["arrow_git_revision"],
         }
 
+    def _r_info(self):
+        version, arrow_version = None, None
+
+        r = "cat(version[['version.string']], '\n')"
+        command = ["R", "-s", "-q", "-e", r]
+        result = subprocess.run(command, capture_output=True)
+        if result.returncode == 0:
+            version = result.stdout.decode("utf-8").strip()
+
+        r = "packageVersion('arrow')"
+        command = ["R", "-s", "-q", "-e", r]
+        result = subprocess.run(command, capture_output=True)
+        if result.returncode == 0:
+            output = result.stdout.decode("utf-8").strip()
+            arrow_version = output.split("[1] ")[1].strip("‘").strip("’")
+
+        return {
+            "version": version,
+            "arrow_version": arrow_version,
+        }
+
     def _arrow_info(self):
         if pyarrow.__version__ > "0.17.1":
             build_info = pyarrow.cpp_build_info
@@ -110,7 +132,7 @@ class BenchmarkR:
     def _get_benchmark_result(self, command):
         shutil.rmtree("results", ignore_errors=True)
         command = ["R", "-e", command]
-        result = subprocess.run(command, capture_output=True, check=True)
+        result = subprocess.run(command, capture_output=True)
         output = result.stdout.decode("utf-8").strip()
         try:
             result_path = self._get_results_path()
@@ -127,9 +149,13 @@ class BenchmarkR:
 
     def _record_result(self, result, tags, case, options, output):
         tags["language"] = "R"
+        if self.r_info is None:
+            self.r_info = self._r_info()
+
         context = {
             "benchmark_language": "R",
-            "benchmark_language_version": "TODO",
+            "benchmark_language_version": self.r_info["version"],
+            "arrow_version_r": self.r_info["arrow_version"],
         }
 
         # The benchmark measurement and execution time happen to be
