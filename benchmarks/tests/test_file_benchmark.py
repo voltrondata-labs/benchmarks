@@ -96,6 +96,38 @@ fanniemae_big = _sources.Source("fanniemae_2016Q4")
 nyctaxi_big = _sources.Source("nyctaxi_2010-01")
 
 
+def assert_run_write(run, index, case, source):
+    result, output = run[index]
+    assert_benchmark(result, case, source.name, "write", "input_type")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert output is None
+
+
+def assert_run_read(run, index, case, source):
+    result, output = run[index]
+    assert_benchmark(result, case, source.name, "read", "output_type")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert (
+        "pyarrow.Table" in str(output)
+        or "[757 rows x 108 columns]" in str(output)
+        or "[998 rows x 18 columns]" in str(output)
+    )
+
+
+def assert_run_write_r(run, index, case, source):
+    result, output = run[index]
+    assert_benchmark(result, case, source.name, "write", "input_type", language="R")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert R_CLI in str(output)
+
+
+def assert_run_read_r(run, index, case, source):
+    result, output = run[index]
+    assert_benchmark(result, case, source.name, "read", "output_type", language="R")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert R_CLI in str(output)
+
+
 def assert_benchmark(result, case, source, action, type_tag, language="Python"):
     munged = copy.deepcopy(result)
     name = "file-write" if action == "write" else "file-read"
@@ -137,32 +169,16 @@ def test_read_one(case):
 def test_write_all(case):
     run = list(write_benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
-
-    result, output = run[0]
-    assert_benchmark(result, case, fanniemae.name, "write", "input_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert output is None
-
-    result, output = run[1]
-    assert_benchmark(result, case, nyctaxi.name, "write", "input_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert output is None
+    assert_run_write(run, 0, case, fanniemae)
+    assert_run_write(run, 1, case, nyctaxi)
 
 
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
 def test_read_all(case):
     run = list(read_benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
-
-    result, output = run[0]
-    assert_benchmark(result, case, fanniemae.name, "read", "output_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output) or "[757 rows x 108 columns]" in str(output)
-
-    result, output = run[1]
-    assert_benchmark(result, case, nyctaxi.name, "read", "output_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output) or "[998 rows x 18 columns]" in str(output)
+    assert_run_read(run, 0, case, fanniemae)
+    assert_run_read(run, 1, case, nyctaxi)
 
 
 NO_LZ4 = "arrowbench doesn't support compression=lz4 case"
@@ -203,18 +219,8 @@ def test_write_all_r(case):
     # TODO: Change from "ALL" to "TEST" once R supports the samples
     run = list(write_benchmark.run("ALL", case, language="R"))
     assert len(run) == 2
-
-    result, output = run[0]
-    name = fanniemae_big.name
-    assert_benchmark(result, case, name, "write", "input_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[1]
-    name = nyctaxi_big.name
-    assert_benchmark(result, case, name, "write", "input_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
+    assert_run_write_r(run, 0, case, fanniemae_big)
+    assert_run_write_r(run, 1, case, nyctaxi_big)
 
 
 @pytest.mark.slow
@@ -224,18 +230,8 @@ def test_read_all_r(case):
     # TODO: Change from "ALL" to "TEST" once R supports the samples
     run = list(read_benchmark.run("ALL", case, language="R"))
     assert len(run) == 2
-
-    result, output = run[0]
-    name = fanniemae_big.name
-    assert_benchmark(result, case, name, "read", "output_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[1]
-    name = nyctaxi_big.name
-    assert_benchmark(result, case, name, "read", "output_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
+    assert_run_read_r(run, 0, case, fanniemae_big)
+    assert_run_read_r(run, 1, case, nyctaxi_big)
 
 
 def test_read_cli():

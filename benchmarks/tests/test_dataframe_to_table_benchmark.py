@@ -37,6 +37,20 @@ type_nested_big = _sources.Source("sample_nested")
 simple_features_big = _sources.Source("sample_simple_features")
 
 
+def assert_run(run, index, benchmark, source):
+    result, output = run[index]
+    assert_benchmark(result, source.name, benchmark.name)
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert "pyarrow.Table" in str(output)
+
+
+def assert_run_r(run, index, benchmark, source):
+    result, output = run[index]
+    assert_benchmark(result, source.name, benchmark.name, language="R")
+    print(json.dumps(result, indent=4, sort_keys=True))
+    assert R_CLI in str(output)
+
+
 def test_dataframe_to_table_one():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     [(result, output)] = benchmark.run(chi_traffic, iterations=1)
@@ -50,41 +64,13 @@ def test_dataframe_to_table_all():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     run = list(benchmark.run("TEST", iterations=1))
     assert len(run) == 7
-
-    result, output = run[0]
-    assert_benchmark(result, chi_traffic.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output)
-
-    result, output = run[1]
-    assert_benchmark(result, type_strings_big.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output)
-
-    result, output = run[2]
-    assert_benchmark(result, type_dict_big.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output)
-
-    result, output = run[3]
-    assert_benchmark(result, type_integers_big.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output)
-
-    result, output = run[4]
-    assert_benchmark(result, type_floats_big.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output)
-
-    result, output = run[5]
-    assert_benchmark(result, type_nested_big.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output)
-
-    result, output = run[6]
-    assert_benchmark(result, simple_features_big.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert "pyarrow.Table" in str(output)
+    assert_run(run, 0, benchmark, chi_traffic)
+    assert_run(run, 1, benchmark, type_strings_big)
+    assert_run(run, 2, benchmark, type_dict_big)
+    assert_run(run, 3, benchmark, type_integers_big)
+    assert_run(run, 4, benchmark, type_floats_big)
+    assert_run(run, 5, benchmark, type_nested_big)
+    assert_run(run, 6, benchmark, simple_features_big)
 
 
 @pytest.mark.slow
@@ -101,41 +87,14 @@ def test_dataframe_to_table_all_r():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     # TODO: Change from "ALL" to "TEST" once R supports the samples
     run = list(benchmark.run("ALL", language="R"))
-
-    result, output = run[0]
-    assert_benchmark(result, chi_traffic_big.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[1]
-    assert_benchmark(result, type_strings_big.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[2]
-    assert_benchmark(result, type_dict_big.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[3]
-    assert_benchmark(result, type_integers_big.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[4]
-    assert_benchmark(result, type_floats_big.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[5]
-    assert_benchmark(result, type_nested_big.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
-
-    result, output = run[6]
-    assert_benchmark(result, simple_features_big.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
-    assert R_CLI in str(output)
+    assert len(run) == 7
+    assert_run_r(run, 0, benchmark, chi_traffic_big)
+    assert_run_r(run, 1, benchmark, type_strings_big)
+    assert_run_r(run, 2, benchmark, type_dict_big)
+    assert_run_r(run, 3, benchmark, type_integers_big)
+    assert_run_r(run, 4, benchmark, type_floats_big)
+    assert_run_r(run, 5, benchmark, type_nested_big)
+    assert_run_r(run, 6, benchmark, simple_features_big)
 
 
 def test_dataframe_to_table_cli():
