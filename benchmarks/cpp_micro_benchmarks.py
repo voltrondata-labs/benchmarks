@@ -134,6 +134,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     options.update(**RUN_OPTIONS)
     description = "Run the Arrow C++ micro benchmarks."
     iterations = 1
+    flags = {"language": "C++"}
 
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:

@@ -5,45 +5,64 @@ LIST = """
 [
   {
     "command": "cpp-micro --iterations=1",
-    "flags": {}
-  },
-  {
-    "command": "csv-read ALL --iterations=3",
-    "flags": {}
-  },
-  {
-    "command": "dataframe-to-table ALL --iterations=3",
-    "flags": {}
-  },
-  {
-    "command": "dataset-filter ALL --iterations=3",
-    "flags": {}
-  },
-  {
-    "command": "dataset-read ALL --all=true --iterations=1",
     "flags": {
-      "cloud": true
+      "language": "C++"
     }
   },
   {
-    "command": "file-read ALL --all=true --iterations=3",
-    "flags": {}
+    "command": "csv-read ALL --iterations=3",
+    "flags": {
+      "language": "Python"
+    }
   },
   {
-    "command": "file-read ALL --all=true --iterations=3 --language=R",
-    "flags": {}
+    "command": "dataframe-to-table ALL --iterations=3",
+    "flags": {
+      "language": "Python"
+    }
   },
   {
-    "command": "file-write ALL --all=true --iterations=3",
-    "flags": {}
+    "command": "dataset-filter ALL --iterations=3",
+    "flags": {
+      "language": "Python"
+    }
   },
   {
-    "command": "file-write ALL --all=true --iterations=3 --language=R",
-    "flags": {}
+    "command": "dataset-read ALL --iterations=1 --all=true",
+    "flags": {
+      "cloud": true,
+      "language": "Python"
+    }
   },
   {
-    "command": "wide-dataframe --all=true --iterations=3",
-    "flags": {}
+    "command": "file-read ALL --iterations=3 --all=true",
+    "flags": {
+      "language": "Python"
+    }
+  },
+  {
+    "command": "file-read ALL --iterations=3 --all=true --language=R",
+    "flags": {
+      "language": "R"
+    }
+  },
+  {
+    "command": "file-write ALL --iterations=3 --all=true",
+    "flags": {
+      "language": "Python"
+    }
+  },
+  {
+    "command": "file-write ALL --iterations=3 --all=true --language=R",
+    "flags": {
+      "language": "R"
+    }
+  },
+  {
+    "command": "wide-dataframe --iterations=3 --all=true",
+    "flags": {
+      "language": "Python"
+    }
   }
 ]
 """

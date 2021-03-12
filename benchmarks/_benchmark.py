@@ -25,19 +25,26 @@ class BenchmarkList(conbench.runner.BenchmarkList):
                 continue
 
             instance, parts = benchmark(), [name]
+
             exclude = getattr(benchmark, "exclude", [])
             if "source" in getattr(benchmark, "arguments", []):
                 parts.append("ALL")
-            if instance.cases:
-                parts.append("--all=true")
+
             iterations = getattr(instance, "iterations", 3)
             parts.append(f"--iterations={iterations}")
 
+            if instance.cases:
+                parts.append("--all=true")
+
             flags = getattr(instance, "flags", {})
+            if "language" not in flags:
+                flags["language"] = "Python"
             add(benchmarks, parts, flags, exclude)
             if hasattr(instance, "r_name"):
+                flags_ = flags.copy()
+                flags_["language"] = "R"
                 parts.append("--language=R")
-                add(benchmarks, parts, flags, exclude)
+                add(benchmarks, parts, flags_, exclude)
 
         return sorted(benchmarks, key=lambda k: k["command"])
 
