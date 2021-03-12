@@ -133,6 +133,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
     description = "Run the Arrow C++ micro benchmarks."
+    iterations = 1
 
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:

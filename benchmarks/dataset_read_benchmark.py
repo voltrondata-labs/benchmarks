@@ -53,6 +53,10 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
     sources_test = ["nyctaxi_multi_parquet_s3_sample"]
     options = {"cpu_count": {"type": int}}
 
+    # TODO: set --iterations=1 for now to avoid OOM in EC2
+    iterations = 1
+    flags = {"cloud": True}
+
     def run(self, source, case=None, cpu_count=None, **kwargs):
         cases = self.get_cases(case, kwargs)
         for source in self.get_sources(source):

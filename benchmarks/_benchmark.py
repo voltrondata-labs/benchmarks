@@ -9,6 +9,39 @@ import pyarrow
 from benchmarks import _sources
 
 
+@conbench.runner.register_list
+class BenchmarkList(conbench.runner.BenchmarkList):
+    def list(self, classes):
+        """List of benchmarks to run for all cases & all sources."""
+
+        def add(benchmarks, parts, flags, exclude):
+            command = " ".join(parts)
+            if command not in exclude:
+                benchmarks.append({"command": command, "flags": flags})
+
+        benchmarks = []
+        for name, benchmark in classes.items():
+            if name.startswith("example"):
+                continue
+
+            instance, parts = benchmark(), [name]
+            exclude = getattr(benchmark, "exclude", [])
+            if "source" in getattr(benchmark, "arguments", []):
+                parts.append("ALL")
+            if instance.cases:
+                parts.append("--all=true")
+            iterations = getattr(instance, "iterations", 3)
+            parts.append(f"--iterations={iterations}")
+
+            flags = getattr(instance, "flags", {})
+            add(benchmarks, parts, flags, exclude)
+            if hasattr(instance, "r_name"):
+                parts.append("--language=R")
+                add(benchmarks, parts, flags, exclude)
+
+        return sorted(benchmarks, key=lambda k: k["command"])
+
+
 class Benchmark(conbench.runner.Benchmark):
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
