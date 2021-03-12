@@ -38,6 +38,10 @@ class DataframeToTableBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     """
 
     name, r_name = "dataframe-to-table", "df_to_table"
+    exclude = [
+        # https://issues.apache.org/jira/browse/ARROW-11832
+        "dataframe-to-table ALL --iterations=3 --language=R"
+    ]
     arguments = ["source"]
     sources = [
         "chi_traffic_2020_Q1",
