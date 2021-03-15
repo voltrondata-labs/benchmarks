@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 
+import click
 import conbench.runner
 import pyarrow
 
@@ -40,6 +41,7 @@ class BenchmarkList(conbench.runner.BenchmarkList):
             if "language" not in flags:
                 flags["language"] = "Python"
             add(benchmarks, parts, flags, exclude)
+
             if hasattr(instance, "r_name"):
                 flags_ = flags.copy()
                 flags_["language"] = "R"
@@ -174,12 +176,14 @@ class BenchmarkR:
         command = ["R", "-e", command]
         result = subprocess.run(command, capture_output=True)
         output = result.stdout.decode("utf-8").strip()
+        error = result.stderr.decode("utf-8").strip()
         try:
             result_path = self._get_results_path()
             with open(result_path) as json_file:
                 data = json.load(json_file)
         except FileNotFoundError:
             print(output)
+            click.echo(click.style(error, fg="red"))
             raise
         return data, output
 
