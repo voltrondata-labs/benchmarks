@@ -40,8 +40,12 @@ def assert_context(munged, language="Python"):
         assert munged["context"] == {"benchmark_language": "Python"}
 
 
-def assert_cli(command, expected):
+def get_cli_output(command):
     os.chdir(benchmarks_dir)
     result = subprocess.run(command, capture_output=True, check=True)
-    actual = result.stdout.decode("utf-8").strip().replace("\x08", "")
+    return result.stdout.decode("utf-8").strip().replace("\x08", "")
+
+
+def assert_cli(command, expected):
+    actual = get_cli_output(command)
     assert actual == expected.strip(), actual

@@ -1,73 +1,29 @@
-from ..tests._asserts import assert_cli
+import json
+import os
+
+from ..tests._asserts import assert_cli, get_cli_output
 
 
-LIST = """
-[
-  {
-    "command": "cpp-micro --iterations=1",
-    "flags": {
-      "language": "C++"
-    }
-  },
-  {
-    "command": "csv-read ALL --iterations=3",
-    "flags": {
-      "language": "Python"
-    }
-  },
-  {
-    "command": "dataframe-to-table ALL --iterations=3",
-    "flags": {
-      "language": "Python"
-    }
-  },
-  {
-    "command": "dataset-filter ALL --iterations=3",
-    "flags": {
-      "language": "Python"
-    }
-  },
-  {
-    "command": "dataset-read ALL --iterations=1 --all=true",
-    "flags": {
-      "cloud": true,
-      "language": "Python"
-    }
-  },
-  {
-    "command": "file-read ALL --iterations=3 --all=true",
-    "flags": {
-      "language": "Python"
-    }
-  },
-  {
-    "command": "file-read ALL --iterations=3 --all=true --language=R",
-    "flags": {
-      "language": "R"
-    }
-  },
-  {
-    "command": "file-write ALL --iterations=3 --all=true",
-    "flags": {
-      "language": "Python"
-    }
-  },
-  {
-    "command": "file-write ALL --iterations=3 --all=true --language=R",
-    "flags": {
-      "language": "R"
-    }
-  },
-  {
-    "command": "wide-dataframe --iterations=3 --all=true",
-    "flags": {
-      "language": "Python"
-    }
-  }
-]
-"""
+this_dir = os.path.abspath(os.path.dirname(__file__))
+benchmarks_file = os.path.join(this_dir, "..", "..", "benchmarks.json")
 
 
 def test_list_cli():
     command = ["conbench", "list"]
-    assert_cli(command, LIST)
+
+    with open(benchmarks_file) as f:
+        benchmarks = json.dumps(json.load(f), indent=2)
+
+    try:
+        assert_cli(command, benchmarks)
+    except AssertionError:
+        output = get_cli_output(command)
+        with open(benchmarks_file, "w") as f:
+            f.write(output)
+            f.write("\n")
+            msg = (
+                "Warning benchmarks.json was re-generated. "
+                "Confirm the diff and commit it. "
+                "This test should pass if you now run it again. "
+            )
+        assert False, msg
