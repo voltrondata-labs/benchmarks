@@ -4,18 +4,49 @@
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
-# Arrow Benchmarks
+
+# Apache Arrow Benchmarks
 
 <b>Language-independent Continuous Benchmarking (CB) for Apache Arrow</b>
 <br/>
 
 
-* [Setup](https://github.com/ursacomputing/benchmarks#setup)
+This package contains Python macro benchmarks for Apache Arrow, as well
+as benchmarks that execute and record the results for both the Arrow
+C++ micro benchmarks and the Arrow R macro benchmarks (which are found
+in the [arrowbench](https://github.com/ursacomputing/arrowbench)
+repository). These benchmarks use the
+[Conbench runner](https://github.com/ursacomputing/conbench) for
+benchmark execution, and the results are published to Arrow's public
+[Conbench server](https://conbench.ursa.dev/).
+
+On each commit to the main [Arrow](https://github.com/apache/arrow)
+branch, the C++, Python, and R benchmarks in this repository are run on
+a variety of physical benchmarking machines & EC2 instances of different
+sizes, and the results are published to Conbench. Additionally,
+benchmarks can also be run on an Arrow pull request by adding a GitHub
+comment with the text: **`@ursabot please benchmark`**. A baseline
+benchmarking run against the pull request's head with also be scheduled,
+and Conbench comparison links will be posted as a follow-up GitHub comment.
+
+Benchmarks added to this repository and declared in
+[benchmarks.json](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks.json)
+will automatically be picked up by by Arrow's Continuous Benchmarking
+pipeline. This file is regenerated each time the unit tests are run
+based on the various benchmark class attributes. See the
+[`BenchmarkList`](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/_benchmark.py)
+class for more information on how to override any of the benchmark
+defaults or to disable a particular benchmark.
+
+
+## Index
+
+* [Contributing](https://github.com/ursacomputing/benchmarks#contributing)
 * [Running benchmarks](https://github.com/ursacomputing/benchmarks#running-benchmarks)
 * [Authoring benchmarks](https://github.com/ursacomputing/benchmarks#authoring-benchmarks)
 
 
-## Setup
+## Contributing
 
 
 ### Create workspace
@@ -64,6 +95,8 @@
 
 
 ### Conbench credentials default to this following (edit .conbench to configure)
+
+(This is only needed if you plan on publishing benchmark results to a Conbench server.)
 
     (qa) $ cd ~/workspace/benchmarks/benchmarks/
     (qa) $ cat .conbench
@@ -329,18 +362,21 @@
 
 ## Authoring benchmarks
 
-These example benchmarks and their tests can be found here:
+There are three main types of benchmarks: "simple benchmarks" that time
+the execution of a unit of work, "external benchmarks" that just record
+benchmark results that were obtained from some other benchmarking tool,
+and "case benchmarks" which time the execution of a unit of work under
+different scenarios.
+
+Included in this repository are contrived, minimal examples of these
+different kinds of benchmarks to be used as templates for benchmark
+authoring. These example benchmarks and their tests can be found here:
 
 * [_example_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/_example_benchmarks.py)
 * [test_example_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/tests/test_example_benchmarks.py)
 
 
 ### Example simple benchmark
-
-Other benchmarks that have minimal scaffolding:
-
-* [csv_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
-* [dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
 
 
 ```python
@@ -375,11 +411,13 @@ class SimpleBenchmark(_benchmark.Benchmark):
 ```
 
 
+More simple benchmark examples that have minimal scaffolding:
+
+* [csv_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
+* [dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
+
+
 ### Example external benchmark
-
-Also see this actual external benchmark:
-
-* [cpp_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
 
 
 ```python
@@ -424,11 +462,13 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
 ```
 
 
-### Example cases benchmark
+More external benchmark examples that record C++ and R benchmark results:
 
-Also see this actual benchmark with many cases, options, and a source:
+* [cpp_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
+* [dataframe_to_table_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataframe_to_table_benchmark.py)
 
-* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
+
+### Example case benchmark
 
 
 ```python
@@ -496,3 +536,9 @@ class CasesBenchmark(_benchmark.Benchmark):
         info = {"count": count}
         return {**source.tags, **info}
 ```
+
+More case benchmark examples:
+
+* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [wide_dataframe_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/wide_dataframe_benchmark.py)
+* [dataset_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_read_benchmark.py)
