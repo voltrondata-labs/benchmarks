@@ -1,3 +1,4 @@
+dist: focal
 language: python
 python:
   - "3.8"
@@ -8,6 +9,13 @@ install:
   - pip install https://github.com/ursacomputing/conbench/archive/main.zip
   - pip install coveralls
   - python setup.py install
+  - sudo apt-get install -y r-base
+  - mkdir R_libs
+  - export R_LIBS_USER=$(pwd)/R_libs/
+  - R -e "install.packages('remotes', lib='$(pwd)/R_libs/', repos='http://cran.r-project.org')"
+  - export LIBARROW_BINARY=TRUE
+  - R -e "install.packages('arrow', lib='$(pwd)/R_libs/', repos='http://cran.r-project.org')"
+  - R -e "remotes::install_github('ursacomputing/arrowbench', lib='$(pwd)/R_libs/', repos='http://cran.r-project.org')"
 script:
   - coverage run --source benchmarks -m pytest benchmarks/tests/
 after_success:

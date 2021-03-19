@@ -91,11 +91,6 @@ fanniemae = _sources.Source("fanniemae_sample")
 nyctaxi = _sources.Source("nyctaxi_sample")
 
 
-# TODO: ability to test R benchmarks with sample sources
-fanniemae_big = _sources.Source("fanniemae_2016Q4")
-nyctaxi_big = _sources.Source("nyctaxi_2010-01")
-
-
 def assert_run_write(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "write", "input_type")
@@ -190,48 +185,42 @@ def skip_lz4(case):
         pytest.skip(NO_LZ4)
 
 
-@pytest.mark.slow
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
 def test_write_one_r(case):
     skip_lz4(case)
-    name = nyctaxi_big.name
-    [(result, output)] = write_benchmark.run(nyctaxi_big, case, language="R")
+    name = nyctaxi.name
+    [(result, output)] = write_benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "write", "input_type", language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
-@pytest.mark.slow
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
 def test_read_one_r(case):
     skip_lz4(case)
-    name = nyctaxi_big.name
-    [(result, output)] = read_benchmark.run(nyctaxi_big, case, language="R")
+    name = nyctaxi.name
+    [(result, output)] = read_benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "read", "output_type", language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
-@pytest.mark.slow
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
 def test_write_all_r(case):
     skip_lz4(case)
-    # TODO: Change from "ALL" to "TEST" once R supports the samples
-    run = list(write_benchmark.run("ALL", case, language="R"))
+    run = list(write_benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
-    assert_run_write_r(run, 0, case, fanniemae_big)
-    assert_run_write_r(run, 1, case, nyctaxi_big)
+    assert_run_write_r(run, 0, case, fanniemae)
+    assert_run_write_r(run, 1, case, nyctaxi)
 
 
-@pytest.mark.slow
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
 def test_read_all_r(case):
     skip_lz4(case)
-    # TODO: Change from "ALL" to "TEST" once R supports the samples
-    run = list(read_benchmark.run("ALL", case, language="R"))
+    run = list(read_benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
-    assert_run_read_r(run, 0, case, fanniemae_big)
-    assert_run_read_r(run, 1, case, nyctaxi_big)
+    assert_run_read_r(run, 0, case, fanniemae)
+    assert_run_read_r(run, 1, case, nyctaxi)
 
 
 def test_read_cli():
