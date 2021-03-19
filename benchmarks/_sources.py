@@ -58,29 +58,29 @@ STORE = {
         "path": _source("chi_traffic_2020_Q1.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/chitraffic/chi_traffic_2020_Q1.parquet",
     },
-    "sample_strings": {
-        "path": _source("sample_strings.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/sample_types/sample_strings.parquet",
+    "type_strings": {
+        "path": _source("type_strings.parquet"),
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_strings.parquet",
     },
-    "sample_dict": {
-        "path": _source("sample_dict.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/sample_types/sample_dict.parquet",
+    "type_dict": {
+        "path": _source("type_dict.parquet"),
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_dict.parquet",
     },
-    "sample_integers": {
-        "path": _source("sample_integers.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/sample_types/sample_integers.parquet",
+    "type_integers": {
+        "path": _source("type_integers.parquet"),
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_integers.parquet",
     },
-    "sample_floats": {
-        "path": _source("sample_floats.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/sample_types/sample_floats.parquet",
+    "type_floats": {
+        "path": _source("type_floats.parquet"),
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_floats.parquet",
     },
-    "sample_nested": {
-        "path": _source("sample_nested.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/sample_types/sample_nested.parquet",
+    "type_nested": {
+        "path": _source("type_nested.parquet"),
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_nested.parquet",
     },
-    "sample_simple_features": {
-        "path": _source("sample_simple_features.parquet"),
-        "source": "https://ursa-qa.s3.amazonaws.com/sample_types/sample_simple_features.parquet",
+    "type_simple_features": {
+        "path": _source("type_simple_features.parquet"),
+        "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_simple_features.parquet",
     },
     "nyctaxi_multi_parquet_s3": {
         "download": False,

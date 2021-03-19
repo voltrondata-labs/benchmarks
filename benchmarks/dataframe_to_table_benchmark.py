@@ -45,21 +45,21 @@ class DataframeToTableBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     arguments = ["source"]
     sources = [
         "chi_traffic_2020_Q1",
-        "sample_strings",
-        "sample_dict",
-        "sample_integers",
-        "sample_floats",
-        "sample_nested",
-        "sample_simple_features",
+        "type_strings",
+        "type_dict",
+        "type_integers",
+        "type_floats",
+        "type_nested",
+        "type_simple_features",
     ]
     sources_test = [
         "chi_traffic_sample",
-        "sample_strings",
-        "sample_dict",
-        "sample_integers",
-        "sample_floats",
-        "sample_nested",
-        "sample_simple_features",
+        "type_strings",
+        "type_dict",
+        "type_integers",
+        "type_floats",
+        "type_nested",
+        "type_simple_features",
     ]
     options = {
         "language": {"type": str, "choices": ["Python", "R"]},
