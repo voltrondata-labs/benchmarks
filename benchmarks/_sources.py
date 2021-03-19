@@ -112,9 +112,9 @@ class Source:
     ├── nyctaxi_2010-01.csv.gz
     ├── nyctaxi_sample.csv
     └── temp
-        ├── fanniemae_sample_zstd.feather
-        ├── nyctaxi_2010-01_snappy.parquet
-        └── nyctaxi_sample_snappy.parquet
+        ├── fanniemae_sample.zstd.feather
+        ├── nyctaxi_2010-01.snappy.parquet
+        └── nyctaxi_sample.snappy.parquet
 
     Files in the "data/" folder are canonical source files used for
     benchmarking.
@@ -166,12 +166,12 @@ class Source:
         """A path in the benchmarks data/temp/ folder.
 
         For example:
-            data/temp/nyctaxi_sample_snappy.parquet
+            data/temp/nyctaxi_sample.snappy.parquet
 
         If the data/temp/ folder does not exist, it will be created.
         """
         pathlib.Path(temp_dir).mkdir(exist_ok=True)
-        return pathlib.Path(_temp(f"{self.name}_{compression}.{file_type}"))
+        return pathlib.Path(_temp(f"{self.name}.{compression}.{file_type}"))
 
     def create_if_not_exists(self, file_type, compression):
         """Used to create files for benchmarking based on the canonical
@@ -182,7 +182,7 @@ class Source:
             source.create_if_not_exists("parquet", "snappy")
 
         Will create the following file:
-            data/temp/nyctaxi_sample_snappy.parquet
+            data/temp/nyctaxi_sample.snappy.parquet
 
         Using the following source file:
             data/nyctaxi_sample.csv
