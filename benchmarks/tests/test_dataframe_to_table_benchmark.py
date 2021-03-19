@@ -28,7 +28,6 @@ Options:
 chi_traffic = _sources.Source("chi_traffic_sample")
 
 # TODO: ability to test R benchmarks with sample sources
-chi_traffic_big = _sources.Source("chi_traffic_2020_Q1")
 type_strings_big = _sources.Source("type_strings")
 type_dict_big = _sources.Source("type_dict")
 type_integers_big = _sources.Source("type_integers")
@@ -73,11 +72,10 @@ def test_dataframe_to_table_all():
     assert_run(run, 6, benchmark, simple_features_big)
 
 
-@pytest.mark.slow
 def test_dataframe_to_table_one_r():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(chi_traffic_big, language="R")
-    assert_benchmark(result, chi_traffic_big.name, benchmark.name, language="R")
+    [(result, output)] = benchmark.run(chi_traffic, language="R")
+    assert_benchmark(result, chi_traffic.name, benchmark.name, language="R")
     print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
@@ -85,10 +83,9 @@ def test_dataframe_to_table_one_r():
 @pytest.mark.slow
 def test_dataframe_to_table_all_r():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    # TODO: Change from "ALL" to "TEST" once R supports the samples
-    run = list(benchmark.run("ALL", language="R"))
+    run = list(benchmark.run("TEST", language="R"))
     assert len(run) == 7
-    assert_run_r(run, 0, benchmark, chi_traffic_big)
+    assert_run_r(run, 0, benchmark, chi_traffic)
     assert_run_r(run, 1, benchmark, type_strings_big)
     assert_run_r(run, 2, benchmark, type_dict_big)
     assert_run_r(run, 3, benchmark, type_integers_big)
