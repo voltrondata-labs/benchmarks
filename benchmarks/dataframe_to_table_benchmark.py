@@ -52,15 +52,6 @@ class DataframeToTableBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
         "type_nested",
         "type_simple_features",
     ]
-    sources_test = [
-        "chi_traffic_sample",
-        "type_strings",
-        "type_dict",
-        "type_integers",
-        "type_floats",
-        "type_nested",
-        "type_simple_features",
-    ]
     options = {
         "language": {"type": str, "choices": ["Python", "R"]},
         "cpu_count": {"type": int},
