@@ -153,12 +153,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         tags["suite"] = suite["name"]
         tags["source"] = self.name
 
-        values = {
-            "data": result["values"],
-            "unit": self._format_unit(result["unit"]),
-            "times": result.get("times", []),
-            "time_unit": result.get("time_unit", "s"),
-        }
+        values = self._get_values(result)
 
         return self.record(
             values,
@@ -168,6 +163,14 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
             output=result,
             name=name,
         )
+
+    def _get_values(self, result):
+        return {
+            "data": result["values"],
+            "unit": self._format_unit(result["unit"]),
+            "times": result.get("times", []),
+            "time_unit": result.get("time_unit", "s"),
+        }
 
     def _format_unit(self, x):
         if x == "bytes_per_second":
