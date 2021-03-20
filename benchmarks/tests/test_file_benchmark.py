@@ -176,18 +176,8 @@ def test_read_all(case):
     assert_run_read(run, 1, case, nyctaxi)
 
 
-NO_LZ4 = "arrowbench doesn't support compression=lz4 case"
-
-
-def skip_lz4(case):
-    _, compression, _ = case
-    if compression == "lz4":
-        pytest.skip(NO_LZ4)
-
-
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
 def test_write_one_r(case):
-    skip_lz4(case)
     name = nyctaxi.name
     [(result, output)] = write_benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "write", "input_type", language="R")
@@ -197,7 +187,6 @@ def test_write_one_r(case):
 
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
 def test_read_one_r(case):
-    skip_lz4(case)
     name = nyctaxi.name
     [(result, output)] = read_benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "read", "output_type", language="R")
@@ -207,7 +196,6 @@ def test_read_one_r(case):
 
 @pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
 def test_write_all_r(case):
-    skip_lz4(case)
     run = list(write_benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
     assert_run_write_r(run, 0, case, fanniemae)
@@ -216,7 +204,6 @@ def test_write_all_r(case):
 
 @pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
 def test_read_all_r(case):
-    skip_lz4(case)
     run = list(read_benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
     assert_run_read_r(run, 0, case, fanniemae)

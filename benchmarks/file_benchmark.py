@@ -32,15 +32,10 @@ class FileBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     def run(self, source, case=None, cpu_count=None, **kwargs):
         cases = self.get_cases(case, kwargs)
         language = kwargs.get("language", "Python").lower()
-        msg = "Warning: arrowbench doesn't support the compression=lz4 case."
 
         for source in self.get_sources(source):
             tags = self.get_tags(source, cpu_count)
             for case in cases:
-                _, compression, _ = case
-                if compression == "lz4" and language == "r":
-                    click.echo(click.style(msg, fg="red"))
-                    continue
                 if language == "python":
                     f = self._get_benchmark_function(source, case)
                     yield self.benchmark(f, tags, kwargs, case)
