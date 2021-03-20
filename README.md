@@ -140,8 +140,12 @@ defaults or to disable a particular benchmark.
 
 ### Run benchmarks from command line
 
+Benchmarks must be run from the following directory.
+
     (qa) $ cd ~/workspace/benchmarks/benchmarks/
 
+
+Use the `conbench --help` command to see the available benchmarks.
 
     (qa) $ conbench --help
     Usage: conbench [OPTIONS] COMMAND [ARGS]...
@@ -162,6 +166,8 @@ defaults or to disable a particular benchmark.
       file-write        Run file-write benchmark(s).
       list              List available benchmarks commands by language.
 
+
+Help is also available for individual benchmark commands.
 
     (qa) $ conbench file-write --help
     Usage: conbench file-write [OPTIONS] SOURCE
@@ -199,9 +205,9 @@ defaults or to disable a particular benchmark.
       --run-id TEXT                   Group executions together with a run id.
       --help                          Show this message and exit.
 
+Example benchmark execution.
 
-    (qa) $ conbench file-read nyctaxi_sample --file-type=parquet \
-      --iterations=10 --gc-disable=false
+    (qa) $ conbench file-read nyctaxi_sample --file-type=parquet --iterations=10 --gc-disable=false
     {
         "context": {
             "arrow_compiler_flags": "-fPIC -arch x86_64 -arch x86_64 -std=c++11 -Qunused-arguments -fcolor-diagnostics -O3 -DNDEBUG",
