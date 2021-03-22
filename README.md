@@ -156,15 +156,19 @@ Use the `conbench --help` command to see the available benchmarks.
       --help  Show this message and exit.
 
     Commands:
-      compare           Compare benchmark runs.
-      cpp-micro         Run the Arrow C++ micro benchmarks.
-      csv-read          Run csv-read benchmark.
-      dataset-filter    Run dataset-filter benchmark.
-      example-external  Run example-external benchmark.
-      example-simple    Run example-simple benchmark.
-      file-read         Run file-read benchmark(s).
-      file-write        Run file-write benchmark(s).
-      list              List available benchmarks commands by language.
+      compare             Compare benchmark runs.
+      cpp-micro           Run the Arrow C++ micro benchmarks.
+      csv-read            Run csv-read benchmark.
+      dataframe-to-table  Run dataframe-to-table benchmark.
+      dataset-filter      Run dataset-filter benchmark.
+      dataset-read        Run dataset-read benchmark(s).
+      example-cases       Run example-cases benchmark(s).
+      example-external    Run example-external benchmark.
+      example-simple      Run example-simple benchmark.
+      file-read           Run file-read benchmark(s).
+      file-write          Run file-write benchmark(s).
+      list                List of registered benchmarks (for orchestration).
+      wide-dataframe      Run wide-dataframe benchmark(s).
 
 
 Help is also available for individual benchmark commands.
@@ -179,6 +183,10 @@ Help is also available for individual benchmark commands.
       Valid benchmark combinations:
       --file-type=parquet --compression=uncompressed --input-type=table
       --file-type=parquet --compression=uncompressed --input-type=dataframe
+      --file-type=parquet --compression=lz4 --input-type=table
+      --file-type=parquet --compression=lz4 --input-type=dataframe
+      --file-type=parquet --compression=zstd --input-type=table
+      --file-type=parquet --compression=zstd --input-type=dataframe
       --file-type=parquet --compression=snappy --input-type=table
       --file-type=parquet --compression=snappy --input-type=dataframe
       --file-type=feather --compression=uncompressed --input-type=table
@@ -192,11 +200,12 @@ Help is also available for individual benchmark commands.
       $ conbench file-write --all=true
 
     Options:
-      --all BOOLEAN                   [default: false]
       --file-type [feather|parquet]
-      --compression [uncompressed|snappy|lz4|zstd]
-      --input-type [table|dataframe]
-      --cpu-count INTEGER             [default: 1]
+      --compression [lz4|snappy|uncompressed|zstd]
+      --input-type [dataframe|table]
+      --all BOOLEAN                   [default: false]
+      --language [Python|R]
+      --cpu-count INTEGER
       --iterations INTEGER            [default: 1]
       --gc-collect BOOLEAN            [default: true]
       --gc-disable BOOLEAN            [default: true]
