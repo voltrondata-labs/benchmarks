@@ -162,6 +162,7 @@ Use the `conbench --help` command to see the available benchmarks.
       dataframe-to-table  Run dataframe-to-table benchmark.
       dataset-filter      Run dataset-filter benchmark.
       dataset-read        Run dataset-read benchmark(s).
+      example-R-only      Run example-R-only benchmark.
       example-cases       Run example-cases benchmark(s).
       example-external    Run example-external benchmark.
       example-simple      Run example-simple benchmark.
@@ -391,8 +392,11 @@ authoring. These example benchmarks and their tests can be found here:
 * [test_example_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/tests/test_example_benchmarks.py)
 
 
-### Example simple benchmark
+### Example simple benchmarks
 
+Note that this benchmark extends `benchmarks._benchmark.Benchmark`,
+implements the minimum required `run()` method, and registers itself
+with the `@conbench.runner.register_benchmark` decorator.
 
 ```python
 @conbench.runner.register_benchmark
@@ -432,8 +436,10 @@ More simple benchmark examples that have minimal scaffolding:
 * [dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
 
 
-### Example external benchmark
+### Example external benchmarks
 
+Note that the following benchmark sets `external = True`, and calls
+`record()` rather than `benchmark()` as the example above does.
 
 ```python
 @conbench.runner.register_benchmark
@@ -476,6 +482,51 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
         )
 ```
 
+Note that the following benchmark extends `BenchmarkR`, sets both
+`external` and `r_only` to `True`, defines `r_name`,
+implements `_get_r_command()`, and calls `r_benchmark()` rather than
+`benchmark()` or `record()`.
+
+```python
+@conbench.runner.register_benchmark
+class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
+    """Example R benchmark that doesn't have a Python equivalent.
+
+    $ conbench example-R-only --help
+    Usage: conbench example-R-only [OPTIONS]
+
+      Run example-R-only benchmark.
+
+    Options:
+      --iterations INTEGER   [default: 1]
+      --cpu-count INTEGER
+      --show-result BOOLEAN  [default: true]
+      --show-output BOOLEAN  [default: false]
+      --run-id TEXT          Group executions together with a run id.
+      --help                 Show this message and exit.
+    """
+
+    external, r_only = True, True
+    name, r_name = "example-R-only", "placebo"
+    options = {
+        "iterations": {"default": 1, "type": int},
+        "cpu_count": {"type": int},
+    }
+
+    def run(self, **kwargs):
+        tags = {"year": "2020", "cpu_count": kwargs.get("cpu_count")}
+        command = self._get_r_command(kwargs)
+        yield self.r_benchmark(command, tags, kwargs)
+
+    def _get_r_command(self, options):
+        return (
+            f"library(arrowbench); "
+            f"run_one(arrowbench:::{self.r_name}, "
+            f'n_iter={options.get("iterations", 1)}, '
+            f"cpu_count={self.r_cpu_count(options)})"
+        )
+```
+
 
 More external benchmark examples that record C++ and R benchmark results:
 
@@ -483,7 +534,13 @@ More external benchmark examples that record C++ and R benchmark results:
 * [dataframe_to_table_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataframe_to_table_benchmark.py)
 
 
-### Example case benchmark
+### Example case benchmarks
+
+Note that the following benchmark declares the valid combinations
+in `valid_cases`, which reads like a CSV (the first row contains the
+cases names). This benchmark example also accepts a data source
+argument (see `arguments`), and additional `options` that re reflected
+in the resulting command line interface.
 
 
 ```python

@@ -74,6 +74,45 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
 
 
 @conbench.runner.register_benchmark
+class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
+    """Example R benchmark that doesn't have a Python equivalent.
+
+    $ conbench example-R-only --help
+    Usage: conbench example-R-only [OPTIONS]
+
+      Run example-R-only benchmark.
+
+    Options:
+      --iterations INTEGER   [default: 1]
+      --cpu-count INTEGER
+      --show-result BOOLEAN  [default: true]
+      --show-output BOOLEAN  [default: false]
+      --run-id TEXT          Group executions together with a run id.
+      --help                 Show this message and exit.
+    """
+
+    external, r_only = True, True
+    name, r_name = "example-R-only", "placebo"
+    options = {
+        "iterations": {"default": 1, "type": int},
+        "cpu_count": {"type": int},
+    }
+
+    def run(self, **kwargs):
+        tags = {"year": "2020", "cpu_count": kwargs.get("cpu_count")}
+        command = self._get_r_command(kwargs)
+        yield self.r_benchmark(command, tags, kwargs)
+
+    def _get_r_command(self, options):
+        return (
+            f"library(arrowbench); "
+            f"run_one(arrowbench:::{self.r_name}, "
+            f'n_iter={options.get("iterations", 1)}, '
+            f"cpu_count={self.r_cpu_count(options)})"
+        )
+
+
+@conbench.runner.register_benchmark
 class CasesBenchmark(_benchmark.Benchmark):
     """Example benchmark with a source, cases, and an option (count).
 

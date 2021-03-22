@@ -12,15 +12,21 @@ benchmarks_file = os.path.join(this_dir, "..", "..", "benchmarks.json")
 def test_list():
     simple = _example_benchmarks.SimpleBenchmark
     external = _example_benchmarks.RecordExternalBenchmark
+    r_only = _example_benchmarks.WithoutPythonBenchmark
     cases = _example_benchmarks.CasesBenchmark
     classes = {
         "simple": simple,
         "external": external,
         "cases": cases,
+        "R-only": r_only,
         "example": cases,  # should be skipped
     }
     actual = _benchmark.BenchmarkList().list(classes)
     expected = [
+        {
+            "command": "R-only --iterations=3",
+            "flags": {"language": "R"},
+        },
         {
             "command": "cases ALL --iterations=3 --all=true",
             "flags": {"language": "Python"},
