@@ -67,19 +67,19 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
                 (pre_buffer,) = case
                 legacy, parquet = self._get_format(pre_buffer)
                 case = (None,) if legacy else case
-                data = pyarrow.dataset.FileSystemDataset.from_paths(
+                dataset = pyarrow.dataset.FileSystemDataset.from_paths(
                     source.paths,
                     schema=schema,
                     format=parquet,
                     filesystem=s3,
                 )
-                f = self._get_benchmark_function(data)
+                f = self._get_benchmark_function(dataset)
                 yield self.benchmark(f, tags, kwargs, case)
                 if legacy:
                     break  # no need to run the null legacy case twice
 
-    def _get_benchmark_function(self, data):
-        return lambda: data.to_table()
+    def _get_benchmark_function(self, dataset):
+        return lambda: dataset.to_table()
 
     def _get_schema(self, source):
         # TODO: FileSystemDataset.from_paths() can't currently discover
