@@ -12,6 +12,10 @@ from benchmarks import _benchmark, _sources
 CASES = [
     ("parquet", "uncompressed", "table"),
     ("parquet", "uncompressed", "dataframe"),
+    ("parquet", "lz4", "table"),
+    ("parquet", "lz4", "dataframe"),
+    ("parquet", "zstd", "table"),
+    ("parquet", "zstd", "dataframe"),
     ("parquet", "snappy", "table"),
     ("parquet", "snappy", "dataframe"),
     ("feather", "uncompressed", "table"),

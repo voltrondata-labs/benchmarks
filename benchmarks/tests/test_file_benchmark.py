@@ -18,6 +18,10 @@ Usage: conbench file-read [OPTIONS] SOURCE
   Valid benchmark combinations:
   --file-type=parquet --compression=uncompressed --output-type=table
   --file-type=parquet --compression=uncompressed --output-type=dataframe
+  --file-type=parquet --compression=lz4 --output-type=table
+  --file-type=parquet --compression=lz4 --output-type=dataframe
+  --file-type=parquet --compression=zstd --output-type=table
+  --file-type=parquet --compression=zstd --output-type=dataframe
   --file-type=parquet --compression=snappy --output-type=table
   --file-type=parquet --compression=snappy --output-type=dataframe
   --file-type=feather --compression=uncompressed --output-type=table
@@ -56,6 +60,10 @@ Usage: conbench file-write [OPTIONS] SOURCE
   Valid benchmark combinations:
   --file-type=parquet --compression=uncompressed --input-type=table
   --file-type=parquet --compression=uncompressed --input-type=dataframe
+  --file-type=parquet --compression=lz4 --input-type=table
+  --file-type=parquet --compression=lz4 --input-type=dataframe
+  --file-type=parquet --compression=zstd --input-type=table
+  --file-type=parquet --compression=zstd --input-type=dataframe
   --file-type=parquet --compression=snappy --input-type=table
   --file-type=parquet --compression=snappy --input-type=dataframe
   --file-type=feather --compression=uncompressed --input-type=table
