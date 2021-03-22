@@ -21,13 +21,30 @@ benchmark execution, and the results are published to Arrow's public
 [Conbench server](https://conbench.ursa.dev/).
 
 On each commit to the main [Arrow](https://github.com/apache/arrow)
-branch, the C++, Python, and R benchmarks in this repository are run on
-a variety of physical benchmarking machines & EC2 instances of different
-sizes, and the results are published to Conbench. Additionally,
-benchmarks can also be run on an Arrow pull request by adding a GitHub
-comment with the text: **`@ursabot please benchmark`**. A baseline
-benchmarking run against the pull request's head with also be scheduled,
-and Conbench comparison links will be posted as a follow-up GitHub comment.
+branch, the C++, Python, and R benchmarks are run on a variety of
+physical benchmarking machines & EC2 instances of different sizes, and
+the results are published to Conbench. Additionally, benchmarks can
+also be run on an Arrow pull request by adding a GitHub comment with
+the text: **`@ursabot please benchmark`**. A baseline benchmarking run
+against the pull request's head with also be scheduled, and Conbench
+comparison links will be posted as a follow-up GitHub comment.
+
+You can also filter the pull request benchmarks runs by filter name,
+language, or specific command. A GitHub comment with text
+**`@ursabot benchmark help`** will follow-up with a list of available
+ursabot benchmark commands.
+
+```
+@ursabot benchmark help
+@ursabot please benchmark
+@ursabot please benchmark lang=Python
+@ursabot please benchmark lang=C++
+@ursabot please benchmark lang=R
+@ursabot please benchmark name=file-write
+@ursabot please benchmark name=file-write lang=Python
+@ursabot please benchmark name=file-.*
+@ursabot please benchmark command=cpp-micro --suite-filter=arrow-compute-vector-selection-benchmark --benchmark-filter=TakeStringRandomIndicesWithNulls/262144/2 --iterations=3
+```
 
 Benchmarks added to this repository and declared in
 [benchmarks.json](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks.json)
