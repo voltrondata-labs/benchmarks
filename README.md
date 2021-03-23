@@ -118,7 +118,7 @@ defaults or to disable a particular benchmark.
 
 (This is only needed if you plan on publishing benchmark results to a Conbench server.)
 
-    (qa) $ cd ~/workspace/benchmarks/benchmarks/
+    (qa) $ cd ~/workspace/benchmarks/
     (qa) $ cat .conbench
     url: http://localhost:5000
     email: conbench@example.com
@@ -160,8 +160,9 @@ defaults or to disable a particular benchmark.
 
 ### Run benchmarks from command line
 
-Benchmarks must be run from the following directory.
+Conbench can be run from either of the following directories.
 
+    (qa) $ cd ~/workspace/benchmarks/
     (qa) $ cd ~/workspace/benchmarks/benchmarks/
 
 

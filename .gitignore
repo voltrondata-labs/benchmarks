@@ -128,7 +128,18 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# eclipse
+.project
+.pydevproject
+
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
 # package specific
+.conbench
 benchmarks/.conbench
 benchmarks/data/
 results/
