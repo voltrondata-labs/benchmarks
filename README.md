@@ -176,7 +176,6 @@ Use the `conbench --help` command to see the available benchmarks.
       --help  Show this message and exit.
 
     Commands:
-      compare             Compare benchmark runs.
       cpp-micro           Run the Arrow C++ micro benchmarks.
       csv-read            Run csv-read benchmark.
       dataframe-to-table  Run dataframe-to-table benchmark.
