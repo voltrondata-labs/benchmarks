@@ -70,6 +70,9 @@ defaults or to disable a particular benchmark.
     $ cd
     $ mkdir -p envs
     $ mkdir -p workspace
+    $ mkdir -p data
+    $ export BENCHMARKS_DATA_DIR=$(pwd)/data
+    $ export ARROWBENCH_DATA_DIR=$(pwd)/data
 
 
 ### Create virualenv

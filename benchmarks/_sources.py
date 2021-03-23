@@ -10,15 +10,23 @@ import requests
 
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.join(this_dir, "data")
-temp_dir = os.path.join(this_dir, "data", "temp")
+local_data_dir = os.path.join(this_dir, "data")
+data_dir = os.getenv("BENCHMARKS_DATA_DIR", local_data_dir)
+temp_dir = os.path.join(data_dir, "temp")
+
+
+def _local(name):
+    """Sources for unit testing, committed to benchmarks/data."""
+    return os.path.join(local_data_dir, name)
 
 
 def _source(name):
+    """Sources downloaded from S3 and otherwise untouched."""
     return os.path.join(data_dir, name)
 
 
 def _temp(name):
+    """Sources generated from the canonical sources."""
     return os.path.join(temp_dir, name)
 
 
@@ -30,17 +38,17 @@ def munge_compression(c, file_type):
 
 STORE = {
     "fanniemae_sample": {
-        "path": _source("fanniemae_sample.csv"),
+        "path": _local("fanniemae_sample.csv"),
         "sep": "|",
         "header": None,
     },
     "nyctaxi_sample": {
-        "path": _source("nyctaxi_sample.csv"),
+        "path": _local("nyctaxi_sample.csv"),
         "sep": ",",
         "header": 0,
     },
     "chi_traffic_sample": {
-        "path": _source("chi_traffic_sample.parquet"),
+        "path": _local("chi_traffic_sample.parquet"),
     },
     "fanniemae_2016Q4": {
         "path": _source("fanniemae_2016Q4.csv.gz"),
