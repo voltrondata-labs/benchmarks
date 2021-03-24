@@ -108,6 +108,18 @@ STORE = {
         ],
         "region": "us-east-2",
     },
+    "nyctaxi_multi_parquet_s3_repartitioned": {
+        "download": False,
+        "paths": [
+            f"ursa-labs-taxi-data-repartitioned-10k/{year}/{month:02}/{part:04}/data.parquet"
+            for year in range(2009, 2020)
+            for month in range(1, 13)
+            for part in range(101)
+            if not (year == 2019 and month > 6)  # Data ends in 2019/06
+            and not (year == 2010 and month == 3)  # Data is missing in 2010/03
+        ],
+        "region": "us-east-2",
+    },
 }
 
 
