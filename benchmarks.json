@@ -31,6 +31,13 @@
     }
   },
   {
+    "command": "dataset-select ALL --iterations=3",
+    "flags": {
+      "cloud": true,
+      "language": "Python"
+    }
+  },
+  {
     "command": "file-read ALL --iterations=3 --all=true",
     "flags": {
       "language": "Python"
