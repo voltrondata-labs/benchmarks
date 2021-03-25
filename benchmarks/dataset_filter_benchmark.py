@@ -30,7 +30,6 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
         return lambda: dataset.to_table(filter=(vendor == "DDS") & (count > 3))
 
 
-
 class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     """
     Read and filter a partitioned dataset.
@@ -55,7 +54,6 @@ class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.Benchma
         output : The output from the benchmarked function.
     """
 
-
     external, r_only = True, True
     name, r_name = "dataset-taxi-parquet", "dataset_taxi_parquet"
     valid_cases = (
@@ -72,10 +70,13 @@ class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.Benchma
     def run(self, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)
         for case in cases:
-            tags = {"dataset": "dataset-taxi-parquet", "cpu_count": kwargs.get("cpu_count")}
+            tags = {
+                "dataset": "dataset-taxi-parquet",
+                "cpu_count": kwargs.get("cpu_count"),
+            }
             command = self._get_r_command(kwargs, case)
             yield self.r_benchmark(command, tags, kwargs, case)
-        
+
     def _get_r_command(self, options, case):
         return (
             f"library(arrowbench); "

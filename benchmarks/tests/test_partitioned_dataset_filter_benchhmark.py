@@ -42,7 +42,10 @@ def assert_benchmark(result, source, name, case, language="Python"):
     assert munged["tags"] == expected
     assert_context(munged, language=language)
 
+
 benchmark = dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
+
+
 @pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
 def test_partitioned_dataset_filter_one(case):
     pytest.skip("needs a test partitioned dataset")
