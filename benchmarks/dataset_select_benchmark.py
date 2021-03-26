@@ -36,7 +36,8 @@ class DatasetSelectBenchmark(_benchmark.Benchmark):
     name = "dataset-select"
     arguments = ["source"]
     sources = ["nyctaxi_multi_parquet_s3_repartitioned"]
-    # This does not load a large amount of data in tests because we always pluck exactly one file from the dataset
+    # This does not load a large amount of data in tests because we
+    # always pluck exactly one file from the dataset
     sources_test = ["nyctaxi_multi_parquet_s3_repartitioned"]
     options = {"cpu_count": {"type": int}}
     flags = {"cloud": True}

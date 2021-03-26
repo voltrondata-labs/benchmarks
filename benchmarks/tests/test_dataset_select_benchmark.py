@@ -1,8 +1,6 @@
 import copy
 import json
 
-import pytest
-
 from .. import _sources
 from .. import dataset_select_benchmark
 from ..tests._asserts import assert_cli, assert_benchmark
