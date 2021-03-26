@@ -65,5 +65,5 @@ class DatasetSelectBenchmark(_benchmark.Benchmark):
         year = pyarrow.dataset.field("year")
         month = pyarrow.dataset.field("month")
         part = pyarrow.dataset.field("part")
-        filter_expr = (year == "2011") & (month == 1) & (part == 2)
+        filter_expr = (year == 2011) & (month == 1) & (part == 2)
         return lambda: dataset.to_table(filter=filter_expr)
