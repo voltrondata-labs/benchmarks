@@ -21,9 +21,11 @@ jobs:
           pip install -r requirements-build.txt
           pip install https://github.com/ursacomputing/conbench/archive/main.zip
           pip install coveralls
-      - name: Install R dependencies
+      - name: Install libcurl-devel (for R)
         run: |
           sudo apt-get install libcurl-devel
+      - name: Install R dependencies
+        run: |
           install.packages('remotes')
           install.packages('arrow')
           remotes::install_github('ursacomputing/arrowbench')"
