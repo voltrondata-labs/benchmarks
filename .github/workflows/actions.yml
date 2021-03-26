@@ -1,0 +1,42 @@
+name: build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout benchmarks
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+      - name: Lint (black)
+        uses: psf/black@stable
+        with:
+          args: ". --check"
+      - name: Install Python dependencies
+        run: |
+          python setup.py develop
+          pip install -r requirements-test.txt
+          pip install -r requirements-build.txt
+          pip install https://github.com/ursacomputing/conbench/archive/main.zip
+          pip install coveralls
+      - name: Install libcurl (for R arrow)
+        run: |
+          sudo apt-get -y install libssl-dev libcurl4-openssl-dev
+      - name: Install R dependencies
+        run: |
+          install.packages('remotes')
+          install.packages('arrow')
+          remotes::install_github('ursacomputing/arrowbench')
+        shell: Rscript {0}
+        env:
+          LIBARROW_BINARY: TRUE
+      - name: Run tests
+        run: |
+          coverage run --source benchmarks -m pytest benchmarks/tests/
+      - name: Publish coverage
+        run: |
+          coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
