@@ -1,4 +1,4 @@
-name: Tests & Lint & Coverage
+name: build
 on: [push, pull_request]
 jobs:
   build:
@@ -23,6 +23,7 @@ jobs:
           pip install coveralls
       - name: Install R dependencies
         run: |
+          sudo apt-get install libcurl-devel
           install.packages('remotes')
           install.packages('arrow')
           remotes::install_github('ursacomputing/arrowbench')"
