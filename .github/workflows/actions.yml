@@ -19,6 +19,14 @@ jobs:
           pip install -r requirements-build.txt
           pip install https://github.com/ursacomputing/conbench/archive/main.zip
           pip install coveralls
+      - name: Install R dependencies
+        run: |
+          install.packages('remotes')
+          install.packages('arrow')
+          remotes::install_github('ursacomputing/arrowbench')"
+        shell: Rscript {0}
+        env:
+          LIBARROW_BINARY: TRUE
       - name: Run tests
         run: |
           coverage run --source benchmarks -m pytest benchmarks/tests/
