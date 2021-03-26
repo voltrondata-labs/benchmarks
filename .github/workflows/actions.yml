@@ -8,22 +8,27 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
       - name: Lint (black)
         uses: psf/black@stable
         with:
           args: ". --check"
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
+          python setup.py develop
           pip install -r requirements-test.txt
           pip install -r requirements-build.txt
           pip install https://github.com/ursacomputing/conbench/archive/main.zip
           pip install coveralls
-          mkdir R_libs
-          export R_LIBS_USER=$(pwd)/R_libs/
-          R -e "install.packages('remotes', lib='$(pwd)/R_libs/', repos='http://cran.r-project.org')"
-          export LIBARROW_BINARY=TRUE
-          R -e "install.packages('arrow', lib='$(pwd)/R_libs/', repos='http://cran.r-project.org')"
-          R -e "remotes::install_github('ursacomputing/arrowbench', lib='$(pwd)/R_libs/', repos='http://cran.r-project.org')"
+      - name: Install R dependencies
+        run: |
+          install.packages('remotes')
+          install.packages('arrow')
+          remotes::install_github('ursacomputing/arrowbench')"
+        shell: Rscript {0}
+        env:
+          LIBARROW_BINARY=TRUE
       - name: Run tests
         run: |
           coverage run --source benchmarks -m pytest benchmarks/tests/
