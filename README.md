@@ -233,6 +233,7 @@ Help is also available for individual benchmark commands.
       --show-result BOOLEAN           [default: true]
       --show-output BOOLEAN           [default: false]
       --run-id TEXT                   Group executions together with a run id.
+      --run-name TEXT                 Name of run (commit, pull request, etc).
       --help                          Show this message and exit.
 
 Example benchmark execution.
@@ -435,6 +436,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
       --show-result BOOLEAN  [default: true]
       --show-output BOOLEAN  [default: false]
       --run-id TEXT          Group executions together with a run id.
+      --run-name TEXT        Name of run (commit, pull request, etc).
       --help                 Show this message and exit.
     """
 
@@ -475,6 +477,7 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
       --show-result BOOLEAN  [default: true]
       --show-output BOOLEAN  [default: false]
       --run-id TEXT          Group executions together with a run id.
+      --run-name TEXT        Name of run (commit, pull request, etc).
       --help                 Show this message and exit.
     """
 
@@ -523,6 +526,7 @@ class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
       --show-result BOOLEAN  [default: true]
       --show-output BOOLEAN  [default: false]
       --run-id TEXT          Group executions together with a run id.
+      --run-name TEXT        Name of run (commit, pull request, etc).
       --help                 Show this message and exit.
     """
 
@@ -596,6 +600,7 @@ class CasesBenchmark(_benchmark.Benchmark):
       --show-result BOOLEAN        [default: true]
       --show-output BOOLEAN        [default: false]
       --run-id TEXT                Group executions together with a run id.
+      --run-name TEXT              Name of run (commit, pull request, etc).
       --help                       Show this message and exit.
     """
 

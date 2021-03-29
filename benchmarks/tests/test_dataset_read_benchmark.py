@@ -32,6 +32,7 @@ Options:
   --show-result BOOLEAN      [default: true]
   --show-output BOOLEAN      [default: false]
   --run-id TEXT              Group executions together with a run id.
+  --run-name TEXT            Name of run (commit, pull request, etc).
   --help                     Show this message and exit.
 """
 

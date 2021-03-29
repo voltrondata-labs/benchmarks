@@ -34,6 +34,8 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         Whether to do disable collection during each benchmark run.
     run_id : str, optional
         Group executions together with a run id.
+    run_name : str, optional
+        Name of run (commit, pull request, etc).
 
     Returns
     -------

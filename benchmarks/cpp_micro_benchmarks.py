@@ -120,6 +120,8 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         Number of times to run the benchmark.
     run_id : str, optional
         Group executions together with a run id.
+    run_name : str, optional
+        Name of run (commit, pull request, etc).
 
     Returns
     -------
