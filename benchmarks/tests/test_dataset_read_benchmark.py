@@ -72,7 +72,6 @@ def assert_benchmark(result, case, source):
 def assert_run(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
 
@@ -80,7 +79,6 @@ def assert_run(run, index, case, source):
 def test_dataset_read_one(case):
     [(result, output)] = benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
 

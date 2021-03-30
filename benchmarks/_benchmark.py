@@ -1,4 +1,6 @@
+import datetime
 import json
+import logging
 import os
 import shutil
 import subprocess
@@ -8,6 +10,14 @@ import conbench.runner
 import pyarrow
 
 from benchmarks import _sources
+
+
+logging.basicConfig(format="%(levelname)s: %(message)s")
+
+
+def _now_formatted():
+    now = datetime.datetime.now(datetime.timezone.utc)
+    return now.isoformat()
 
 
 @conbench.runner.register_list
@@ -56,6 +66,21 @@ class BenchmarkList(conbench.runner.BenchmarkList):
         return sorted(benchmarks, key=lambda k: k["command"])
 
 
+def _handle_error(e, name, tags, context, command=None):
+    output = None
+    tags["name"] = name
+    error = {
+        "timestamp": _now_formatted(),
+        "tags": tags,
+        "context": context,
+        "error": str(e),
+    }
+    if command is not None:
+        error["command"] = command
+    logging.exception(json.dumps(error))
+    return error, output
+
+
 class Benchmark(conbench.runner.Benchmark):
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
@@ -68,10 +93,13 @@ class Benchmark(conbench.runner.Benchmark):
         if cpu_count is not None:
             pyarrow.set_cpu_count(cpu_count)
         tags, context = self._get_tags_and_context(case, extra_tags)
-        benchmark, output = self.conbench.benchmark(
-            f, self.name, tags, context, self.run_info, options
-        )
-        self.conbench.publish(benchmark)
+        try:
+            benchmark, output = self.conbench.benchmark(
+                f, self.name, tags, context, self.run_info, options
+            )
+            self.conbench.publish(benchmark)
+        except Exception as e:
+            benchmark, output = _handle_error(e, self.name, tags, context)
         return benchmark, output
 
     def record(
@@ -163,14 +191,19 @@ class Benchmark(conbench.runner.Benchmark):
 
 class BenchmarkR:
     def r_benchmark(self, command, extra_tags, options, case=None):
-        result, output = self._get_benchmark_result(command)
-        return self._record_result(
-            result,
-            extra_tags,
-            case,
-            options,
-            output,
-        )
+        try:
+            result, output = self._get_benchmark_result(command)
+            return self._record_result(
+                result,
+                extra_tags,
+                case,
+                options,
+                output,
+            )
+        except Exception as e:
+            tags, context = self._get_tags_and_context(case, extra_tags)
+            tags["language"] = "R"
+            return _handle_error(e, self.name, tags, context, command)
 
     def r_cpu_count(self, options):
         cpu_count = options.get("cpu_count", None)
@@ -182,14 +215,11 @@ class BenchmarkR:
         result = subprocess.run(command, capture_output=True)
         output = result.stdout.decode("utf-8").strip()
         error = result.stderr.decode("utf-8").strip()
-        try:
-            result_path = self._get_results_path()
-            with open(result_path) as json_file:
-                data = json.load(json_file)
-        except FileNotFoundError:
-            print(output)
-            click.echo(click.style(error, fg="red"))
-            raise
+        if result.returncode != 0:
+            raise Exception(error)
+        result_path = self._get_results_path()
+        with open(result_path) as json_file:
+            data = json.load(json_file)
         return data, output
 
     def _get_results_path(self):

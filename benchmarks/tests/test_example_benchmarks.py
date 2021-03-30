@@ -88,20 +88,7 @@ Options:
 
 nyctaxi = _sources.Source("nyctaxi_sample")
 cases_benchmark = _example_benchmarks.CasesBenchmark()
-
-
-def assert_cases_benchmark(result, case, source):
-    munged = copy.deepcopy(result)
-    assert munged["tags"] == {
-        "name": "example-cases",
-        "count": 1,
-        "dataset": source,
-        "gc_collect": True,
-        "gc_disable": True,
-        "color": case[0],
-        "fruit": case[1],
-    }
-    assert_context(munged)
+cases_exception = _example_benchmarks.CasesBenchmarkException()
 
 
 def assert_simple_benchmark(result):
@@ -113,6 +100,16 @@ def assert_simple_benchmark(result):
         "gc_disable": True,
     }
     assert_context(munged)
+
+
+def assert_simple_benchmark_exception(result):
+    munged = copy.deepcopy(result)
+    del munged["context"]
+    del munged["timestamp"]
+    assert munged == {
+        "error": "division by zero",
+        "tags": {"name": "example-simple-exception", "year": "2020"},
+    }
 
 
 def assert_r_only_benchmark(result):
@@ -134,6 +131,24 @@ def assert_r_only_benchmark(result):
     assert "benchmark_language_version" in munged["context"]
     del munged["context"]["benchmark_language_version"]
     assert munged["context"] == {"benchmark_language": "R"}
+
+
+def assert_r_only_benchmark_exception(result):
+    munged = copy.deepcopy(result)
+    del munged["context"]
+    del munged["timestamp"]
+    assert munged == {
+        "tags": {
+            "name": "example-R-only-exception",
+            "year": "2020",
+            "language": "R",
+        },
+        "command": "library(arrowbench); run_one(arrowbench:::foo)",
+        "error": "Error in get(name, envir = asNamespace(pkg), inherits = FALSE) : \n"
+        "  object 'foo' not found\n"
+        "Calls: run_one -> modifyList -> stopifnot -> ::: -> get\n"
+        "Execution halted",
+    }
 
 
 def assert_external_benchmark(result):
@@ -173,12 +188,47 @@ def assert_external_benchmark(result):
     assert munged["context"] == {"benchmark_language": "C++"}
 
 
+def assert_cases_benchmark(result, case, source):
+    munged = copy.deepcopy(result)
+    assert munged["tags"] == {
+        "name": "example-cases",
+        "count": 1,
+        "dataset": source,
+        "gc_collect": True,
+        "gc_disable": True,
+        "color": case[0],
+        "fruit": case[1],
+    }
+    assert_context(munged)
+
+
+def assert_cases_benchmark_exception(result, case):
+    munged = copy.deepcopy(result)
+    del munged["context"]
+    del munged["timestamp"]
+    assert munged == {
+        "error": "division by zero",
+        "tags": {
+            "name": "example-cases-exception",
+            "year": "2020",
+            "color": case[0],
+            "fruit": case[1],
+        },
+    }
+
+
 def test_simple():
     benchmark = _example_benchmarks.SimpleBenchmark()
     [(result, output)] = benchmark.run(iterations=1)
     assert_simple_benchmark(result)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert output == "hello!"
+
+
+def test_simple_exception():
+    benchmark = _example_benchmarks.SimpleBenchmarkException()
+    [(result, output)] = benchmark.run(iterations=1)
+    assert_simple_benchmark_exception(result)
+    assert output is None
 
 
 def test_simple_cli():
@@ -190,7 +240,6 @@ def test_external():
     benchmark = _example_benchmarks.RecordExternalBenchmark()
     [(result, output)] = benchmark.run()
     assert_external_benchmark(result)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert output == [100, 200, 300]
 
 
@@ -203,8 +252,14 @@ def test_r_only():
     benchmark = _example_benchmarks.WithoutPythonBenchmark()
     [(result, output)] = benchmark.run()
     assert_r_only_benchmark(result)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
+
+
+def test_r_only_exception():
+    benchmark = _example_benchmarks.WithoutPythonBenchmarkException()
+    [(result, output)] = benchmark.run()
+    assert_r_only_benchmark_exception(result)
+    assert output is None
 
 
 def test_r_only_cli():
@@ -216,8 +271,14 @@ def test_r_only_cli():
 def test_cases(case):
     [(result, output)] = cases_benchmark.run(nyctaxi, case, iterations=1)
     assert_cases_benchmark(result, case, nyctaxi.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "nyctaxi_sample" in output
+
+
+@pytest.mark.parametrize("case", cases_exception.cases, ids=cases_exception.case_ids)
+def test_cases_exception(case):
+    [(result, output)] = cases_exception.run(case)
+    assert_cases_benchmark_exception(result, case)
+    assert output is None
 
 
 def test_cases_cli():

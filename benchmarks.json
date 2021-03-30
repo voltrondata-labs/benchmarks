@@ -18,6 +18,12 @@
     }
   },
   {
+    "command": "dataframe-to-table ALL --iterations=3 --language=R",
+    "flags": {
+      "language": "R"
+    }
+  },
+  {
     "command": "dataset-filter ALL --iterations=3",
     "flags": {
       "language": "Python"

@@ -29,7 +29,6 @@ nyctaxi = _sources.Source("nyctaxi_sample")
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
     assert_benchmark(result, source.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
 
@@ -37,7 +36,6 @@ def test_dataset_filter_one():
     benchmark = dataset_filter_benchmark.DatasetFilterBenchmark()
     [(result, output)] = benchmark.run(nyctaxi, iterations=1)
     assert_benchmark(result, nyctaxi.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
 

@@ -177,3 +177,50 @@ class CasesBenchmark(_benchmark.Benchmark):
     def _get_tags(self, source, count):
         info = {"count": count}
         return {**source.tags, **info}
+
+
+@conbench.runner.register_benchmark
+class SimpleBenchmarkException(_benchmark.Benchmark):
+    name = "example-simple-exception"
+
+    def run(self, **kwargs):
+        tags = {"year": "2020"}
+        f = self._get_benchmark_function()
+        yield self.benchmark(f, tags, kwargs)
+
+    def _get_benchmark_function(self):
+        return lambda: 100 / 0
+
+
+@conbench.runner.register_benchmark
+class WithoutPythonBenchmarkException(_benchmark.Benchmark, _benchmark.BenchmarkR):
+    name, r_name = "example-R-only-exception", "foo"
+
+    def run(self, **kwargs):
+        tags = {"year": "2020"}
+        command = self._get_r_command()
+        yield self.r_benchmark(command, tags, kwargs)
+
+    def _get_r_command(self):
+        return f"library(arrowbench); run_one(arrowbench:::{self.r_name})"
+
+
+@conbench.runner.register_benchmark
+class CasesBenchmarkException(_benchmark.Benchmark):
+
+    name = "example-cases-exception"
+    valid_cases = (
+        ("color", "fruit"),
+        ("pink", "apple"),
+        ("yellow", "orange"),
+    )
+
+    def run(self, case=None, **kwargs):
+        tags = {"year": "2020"}
+        cases = self.get_cases(case, kwargs)
+        for case in cases:
+            f = self._get_benchmark_function()
+            yield self.benchmark(f, tags, kwargs, case)
+
+    def _get_benchmark_function(self):
+        return lambda: 100 / 0

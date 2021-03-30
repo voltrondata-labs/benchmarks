@@ -140,7 +140,6 @@ def test_cpp_micro():
         iterations=1,
     )
     assert_benchmark(result)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert benchmark_filter in str(output)
 
 

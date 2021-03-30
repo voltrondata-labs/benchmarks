@@ -104,14 +104,12 @@ nyctaxi = _sources.Source("nyctaxi_sample")
 def assert_run_write(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "write", "input_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert output is None
 
 
 def assert_run_read(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert (
         "pyarrow.Table" in str(output)
         or "[757 rows x 108 columns]" in str(output)
@@ -122,14 +120,12 @@ def assert_run_read(run, index, case, source):
 def assert_run_write_r(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "write", "input_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
 def assert_run_read_r(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
@@ -158,7 +154,6 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
 def test_write_one(case):
     [(result, output)] = write_benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name, "write", "input_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert output is None
 
 
@@ -166,7 +161,6 @@ def test_write_one(case):
 def test_read_one(case):
     [(result, output)] = read_benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name, "read", "output_type")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output) or "[998 rows x 18 columns]" in str(output)
 
 
@@ -191,7 +185,6 @@ def test_write_one_r(case):
     name = nyctaxi.name
     [(result, output)] = write_benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "write", "input_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
@@ -200,7 +193,6 @@ def test_read_one_r(case):
     name = nyctaxi.name
     [(result, output)] = read_benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "read", "output_type", language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
