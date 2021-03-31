@@ -29,6 +29,7 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
         count = pyarrow.dataset.field("passenger_count")
         return lambda: dataset.to_table(filter=(vendor == "DDS") & (count > 3))
 
+
 @conbench.runner.register_benchmark
 class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     """
@@ -39,7 +40,7 @@ class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.Benchma
     Parameters
     ----------
     case : str
-        A case name from the benchmark (one of: "vignette", 
+        A case name from the benchmark (one of: "vignette",
         "payment_type_3", "small_no_files")
     cpu_count : int, optional
         Set the number of threads to use in parallel operations (arrow).
