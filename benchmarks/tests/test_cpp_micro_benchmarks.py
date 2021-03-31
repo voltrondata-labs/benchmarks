@@ -4,7 +4,7 @@ import json
 import pytest
 
 from .. import cpp_micro_benchmarks
-from ..tests._asserts import assert_cli
+from ..tests._asserts import assert_cli, assert_context
 
 
 HELP = """
@@ -115,6 +115,7 @@ def test_get_run_command():
 
 def assert_benchmark(result):
     munged = copy.deepcopy(result)
+    assert_context(munged, language="C++")
     assert munged["tags"] == {
         "name": "TakeStringRandomIndicesWithNulls",
         "params": "262144/1000",
@@ -125,8 +126,6 @@ def assert_benchmark(result):
     assert munged["stats"]["time_unit"] == "ns"
     assert len(munged["stats"]["data"]) == 1
     assert len(munged["stats"]["times"]) == 1
-    assert "arrow_version" in munged["context"]
-    assert munged["context"]["benchmark_language"] == "C++"
 
 
 @pytest.mark.slow

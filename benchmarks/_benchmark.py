@@ -66,21 +66,6 @@ class BenchmarkList(conbench.runner.BenchmarkList):
         return sorted(benchmarks, key=lambda k: k["command"])
 
 
-def _handle_error(e, name, tags, context, command=None):
-    output = None
-    tags["name"] = name
-    error = {
-        "timestamp": _now_formatted(),
-        "tags": tags,
-        "context": context,
-        "error": str(e),
-    }
-    if command is not None:
-        error["command"] = command
-    logging.exception(json.dumps(error))
-    return error, output
-
-
 class Benchmark(conbench.runner.Benchmark):
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
@@ -99,7 +84,7 @@ class Benchmark(conbench.runner.Benchmark):
             )
             self.conbench.publish(benchmark)
         except Exception as e:
-            benchmark, output = _handle_error(e, self.name, tags, context)
+            benchmark, output = self._handle_error(e, self.name, tags, context)
         return benchmark, output
 
     def record(
@@ -148,27 +133,6 @@ class Benchmark(conbench.runner.Benchmark):
             "commit": arrow_info["arrow_git_revision"],
         }
 
-    def _r_info(self):
-        version, arrow_version = None, None
-
-        r = "cat(version[['version.string']], '\n')"
-        command = ["R", "-s", "-q", "-e", r]
-        result = subprocess.run(command, capture_output=True)
-        if result.returncode == 0:
-            version = result.stdout.decode("utf-8").strip()
-
-        r = "packageVersion('arrow')"
-        command = ["R", "-s", "-q", "-e", r]
-        result = subprocess.run(command, capture_output=True)
-        if result.returncode == 0:
-            output = result.stdout.decode("utf-8").strip()
-            arrow_version = output.split("[1] ")[1].strip("‘").strip("’")
-
-        return {
-            "version": version,
-            "arrow_version": arrow_version,
-        }
-
     def _arrow_info(self):
         if pyarrow.__version__ > "0.17.1":
             build_info = pyarrow.cpp_build_info
@@ -188,22 +152,39 @@ class Benchmark(conbench.runner.Benchmark):
             "arrow_git_revision": None,
         }
 
+    def _handle_error(self, e, name, tags, context, r_command=None):
+        output = None
+        tags["name"] = name
+        error = {
+            "timestamp": _now_formatted(),
+            "tags": tags,
+            "context": context,
+            "error": str(e),
+        }
+        if r_command is not None:
+            error["command"] = r_command
+        else:
+            context.update(self.conbench.language)
+        logging.exception(json.dumps(error))
+        return error, output
+
 
 class BenchmarkR:
     def r_benchmark(self, command, extra_tags, options, case=None):
+        tags, context = self._get_tags_and_context(case, extra_tags)
+        tags, context = self._add_r_tags_and_context(tags, context)
         try:
             result, output = self._get_benchmark_result(command)
             return self._record_result(
                 result,
-                extra_tags,
+                tags,
+                context,
                 case,
                 options,
                 output,
             )
         except Exception as e:
-            tags, context = self._get_tags_and_context(case, extra_tags)
-            tags["language"] = "R"
-            return _handle_error(e, self.name, tags, context, command)
+            return self._handle_error(e, self.name, tags, context, command)
 
     def r_cpu_count(self, options):
         cpu_count = options.get("cpu_count", None)
@@ -229,17 +210,41 @@ class BenchmarkR:
         for file in os.listdir(f"results/{self.r_name}"):
             return os.path.join(f"results/{self.r_name}", file)
 
-    def _record_result(self, result, tags, case, options, output):
+    def _add_r_tags_and_context(self, tags, context):
         tags["language"] = "R"
         if self.r_info is None:
             self.r_info = self._r_info()
 
-        context = {
+        r_context = {
             "benchmark_language": "R",
             "benchmark_language_version": self.r_info["version"],
             "arrow_version_r": self.r_info["arrow_version"],
         }
+        context.update(r_context)
+        return tags, context
 
+    def _r_info(self):
+        version, arrow_version = None, None
+
+        r = "cat(version[['version.string']], '\n')"
+        command = ["R", "-s", "-q", "-e", r]
+        result = subprocess.run(command, capture_output=True)
+        if result.returncode == 0:
+            version = result.stdout.decode("utf-8").strip()
+
+        r = "packageVersion('arrow')"
+        command = ["R", "-s", "-q", "-e", r]
+        result = subprocess.run(command, capture_output=True)
+        if result.returncode == 0:
+            output = result.stdout.decode("utf-8").strip()
+            arrow_version = output.split("[1] ")[1].strip("‘").strip("’")
+
+        return {
+            "version": version,
+            "arrow_version": arrow_version,
+        }
+
+    def _record_result(self, result, tags, context, case, options, output):
         # The benchmark measurement and execution time happen to be
         # the same in this case: both are execution time in seconds.
         # (since data == times, just record an empty list for times)

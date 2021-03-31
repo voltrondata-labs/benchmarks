@@ -104,8 +104,9 @@ def assert_simple_benchmark(result):
 
 def assert_simple_benchmark_exception(result):
     munged = copy.deepcopy(result)
-    del munged["context"]
+    assert_context(munged)
     del munged["timestamp"]
+    del munged["context"]
     assert munged == {
         "error": "division by zero",
         "tags": {"name": "example-simple-exception", "year": "2020"},
@@ -114,27 +115,18 @@ def assert_simple_benchmark_exception(result):
 
 def assert_r_only_benchmark(result):
     munged = copy.deepcopy(result)
-
-    # assert tags
     assert munged["tags"] == {
         "name": "example-R-only",
         "year": "2020",
         "language": "R",
         "cpu_count": None,
     }
-
-    # assert context
-    context = list(munged["context"].keys())
-    for c in context:
-        if c.startswith("arrow"):
-            munged["context"].pop(c)
-    assert "benchmark_language_version" in munged["context"]
-    del munged["context"]["benchmark_language_version"]
-    assert munged["context"] == {"benchmark_language": "R"}
+    assert_context(munged, language="R")
 
 
 def assert_r_only_benchmark_exception(result):
     munged = copy.deepcopy(result)
+    assert_context(munged, language="R")
     del munged["context"]
     del munged["timestamp"]
     assert munged == {
@@ -153,6 +145,7 @@ def assert_r_only_benchmark_exception(result):
 
 def assert_r_only_benchmark_exception_no_result(result):
     munged = copy.deepcopy(result)
+    assert_context(munged, language="R")
     del munged["context"]
     del munged["timestamp"]
     assert munged == {
@@ -170,6 +163,7 @@ def assert_r_only_benchmark_exception_no_result(result):
 
 def assert_external_benchmark(result):
     munged = copy.deepcopy(result)
+    assert_context(munged, language="C++")
 
     # assert tags
     assert munged["tags"] == {
@@ -197,13 +191,6 @@ def assert_external_benchmark(result):
         "iqr": "100.000000",
     }
 
-    # assert context
-    context = list(munged["context"].keys())
-    for c in context:
-        if c.startswith("arrow"):
-            munged["context"].pop(c)
-    assert munged["context"] == {"benchmark_language": "C++"}
-
 
 def assert_cases_benchmark(result, case, source):
     munged = copy.deepcopy(result)
@@ -221,6 +208,7 @@ def assert_cases_benchmark(result, case, source):
 
 def assert_cases_benchmark_exception(result, case):
     munged = copy.deepcopy(result)
+    assert_context(munged)
     del munged["context"]
     del munged["timestamp"]
     assert munged == {
