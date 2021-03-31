@@ -8,20 +8,25 @@ from ..tests._asserts import assert_benchmark, assert_context, assert_cli, R_CLI
 
 
 HELP = """
-Usage: conbench dataset-filter [OPTIONS] SOURCE
-
-  Run partitioned-dataset-filter benchmark.
-
+Usage: conbench partitioned-dataset-filter [OPTIONS]
+  Run partitioned-dataset-filter benchmark(s).
+  For each benchmark option, the first option value is the default.
+  Valid benchmark combinations:
+  --query=vignette
+  --query=payment_type_3
+  --query=small_no_files
+  To run all combinations:
+  $ conbench partitioned-dataset-filter --all=true
 Options:
+  --query [payment_type_3|small_no_files|vignette]
+  --all BOOLEAN                   [default: false]
+  --iterations INTEGER            [default: 3]
   --cpu-count INTEGER
-  --iterations INTEGER   [default: 1]
-  --gc-collect BOOLEAN   [default: true]
-  --gc-disable BOOLEAN   [default: true]
-  --show-result BOOLEAN  [default: true]
-  --show-output BOOLEAN  [default: false]
-  --run-id TEXT          Group executions together with a run id.
-  --run-name TEXT        Name of run (commit, pull request, etc).
-  --help                 Show this message and exit.
+  --show-result BOOLEAN           [default: true]
+  --show-output BOOLEAN           [default: false]
+  --run-id TEXT                   Group executions together with a run id.
+  --run-name TEXT                 Name of run (commit, pull request, etc).
+  --help                          Show this message and exit.
 """
 
 
