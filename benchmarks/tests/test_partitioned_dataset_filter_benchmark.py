@@ -3,7 +3,6 @@ import json
 
 import pytest
 
-from .. import _sources
 from .. import dataset_filter_benchmark
 from ..tests._asserts import assert_benchmark, assert_context, R_CLI
 
@@ -11,7 +10,7 @@ from ..tests._asserts import assert_benchmark, assert_context, R_CLI
 HELP = """
 Usage: conbench dataset-filter [OPTIONS] SOURCE
 
-  Run dataset-taxi-parquet benchmark.
+  Run partitioned-dataset-filter benchmark.
 
 Options:
   --cpu-count INTEGER
@@ -52,5 +51,4 @@ def test_partitioned_dataset_filter_one(case):
     benchmark = dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
     [(result, output)] = benchmark.run(case, iterations=1)
     assert_benchmark(result, "dataset-taxi-parquet", benchmark.name, case, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
