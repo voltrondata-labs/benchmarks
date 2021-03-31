@@ -5,7 +5,6 @@ import os
 import shutil
 import subprocess
 
-import click
 import conbench.runner
 import pyarrow
 
