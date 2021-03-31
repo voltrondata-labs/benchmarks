@@ -45,9 +45,11 @@ def assert_benchmark(result, source, name, case, language="Python"):
 
 benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
 
+
 def test_partitioned_dataset_filter_cli():
     command = ["conbench", "partitioned-dataset-filter", "--help"]
     assert_cli(command, HELP)
+
 
 @pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
 def test_partitioned_dataset_filter_one(case):
