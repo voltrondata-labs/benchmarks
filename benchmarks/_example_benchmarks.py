@@ -5,23 +5,7 @@ from benchmarks import _benchmark
 
 @conbench.runner.register_benchmark
 class SimpleBenchmark(_benchmark.Benchmark):
-    """Example benchmark with no source, cases, or options.
-
-    $ conbench example-simple --help
-    Usage: conbench example-simple [OPTIONS]
-
-      Run example-simple benchmark.
-
-    Options:
-      --iterations INTEGER   [default: 1]
-      --gc-collect BOOLEAN   [default: true]
-      --gc-disable BOOLEAN   [default: true]
-      --show-result BOOLEAN  [default: true]
-      --show-output BOOLEAN  [default: false]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example benchmark with no source, cases, or options."""
 
     name = "example-simple"
 
@@ -36,20 +20,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
 
 @conbench.runner.register_benchmark
 class RecordExternalBenchmark(_benchmark.Benchmark):
-    """Example benchmark that just records external results.
-
-    $ conbench example-external --help
-    Usage: conbench example-external [OPTIONS]
-
-      Run example-external benchmark.
-
-    Options:
-      --show-result BOOLEAN  [default: true]
-      --show-output BOOLEAN  [default: false]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example benchmark that just records external results."""
 
     name = "example-external"
     external = True
@@ -77,22 +48,7 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
 
 @conbench.runner.register_benchmark
 class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
-    """Example R benchmark that doesn't have a Python equivalent.
-
-    $ conbench example-R-only --help
-    Usage: conbench example-R-only [OPTIONS]
-
-      Run example-R-only benchmark.
-
-    Options:
-      --iterations INTEGER   [default: 1]
-      --cpu-count INTEGER
-      --show-result BOOLEAN  [default: true]
-      --show-output BOOLEAN  [default: false]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example R benchmark that doesn't have a Python equivalent."""
 
     external, r_only = True, True
     name, r_name = "example-R-only", "placebo"

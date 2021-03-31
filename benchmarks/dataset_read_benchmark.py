@@ -8,41 +8,7 @@ from benchmarks import _benchmark
 
 @conbench.runner.register_benchmark
 class DatasetReadBenchmark(_benchmark.Benchmark):
-    """
-    Read many S3 parquet files into an arrow table.
-
-        DatasetReadBenchmark().run(<source>, options...)
-
-    Parameters
-    ----------
-    source : str
-        A source name from the benchmarks source store.
-    all : boolean, optional
-        Run all benchmark cases
-    pre_buffer : str, optional
-        Valid values: "true", "false"
-    case : sequence, optional
-        Benchmark options as a sequence (rather than individual params):
-        [<pre_buffer>]
-    cpu_count : int, optional
-        Set the number of threads to use in parallel operations (arrow).
-    iterations : int, default 1
-        Number of times to run the benchmark.
-    gc_collect : boolean, default True
-        Whether to do garbage collection before each benchmark run.
-    gc_disable : boolean, default True
-        Whether to do disable collection during each benchmark run.
-    run_id : str, optional
-        Group executions together with a run id.
-    run_name : str, optional
-        Name of run (commit, pull request, etc).
-
-    Returns
-    -------
-    (result, output) : sequence
-        result : The benchmark result.
-        output : The output from the benchmarked function.
-    """
+    """Read many S3 parquet files into an arrow table."""
 
     name = "dataset-read"
     valid_cases = (

@@ -107,28 +107,7 @@ def _parse_benchmark_name(full_name):
 
 @conbench.runner.register_benchmark
 class RecordCppMicroBenchmarks(_benchmark.Benchmark):
-    """
-    Run the Arrow c++ micro benchmarks.
-
-        RecordCppMicroBenchmarks().run(options...)
-
-    Parameters
-    ----------
-    kwargs : dict
-        See COMMON_OPTIONS
-    iterations : int, default 1
-        Number of times to run the benchmark.
-    run_id : str, optional
-        Group executions together with a run id.
-    run_name : str, optional
-        Name of run (commit, pull request, etc).
-
-    Returns
-    -------
-    (result, output) : sequence
-        result : The benchmark result.
-        output : The output from the benchmarked function.
-    """
+    """Run the Arrow c++ micro benchmarks."""
 
     name = "cpp-micro"
     external = True

@@ -65,47 +65,7 @@ class FileBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
 
 @conbench.runner.register_benchmark
 class FileReadBenchmark(FileBenchmark):
-    """
-    Read parquet & feather files to arrow tables & pandas data frames.
-
-        FileReadBenchmark().run(<source>, options...)
-
-    Parameters
-    ----------
-    source : str
-        A source name from the benchmarks source store.
-    all : boolean, optional
-        Run all benchmark cases
-    language : str, optional
-        Valid values: "Python", "R".
-    file_type : str, optional
-        The file type of the file to read ("parquet" or "feather").
-    compression : str, optional
-        Valid values: "uncompressed", "snappy", "lz4", "zstd".
-    output_type : str, optional
-        The target output type on read ("table" or "dataframe").
-    case : sequence, optional
-        Benchmark options as a sequence (rather than individual params):
-        [<file_type>, <compression>, <output_type>]
-    cpu_count : int, optional
-        Set the number of threads to use in parallel operations (arrow).
-    iterations : int, default 1
-        Number of times to run the benchmark.
-    gc_collect : boolean, default True
-        Whether to do garbage collection before each benchmark run.
-    gc_disable : boolean, default True
-        Whether to do disable collection during each benchmark run.
-    run_id : str, optional
-        Group executions together with a run id.
-    run_name : str, optional
-        Name of run (commit, pull request, etc).
-
-    Returns
-    -------
-    (result, output) : sequence
-        result : The benchmark result.
-        output : The output from the benchmarked function.
-    """
+    """Read parquet & feather files to arrow tables & pandas data frames."""
 
     name, r_name = "file-read", "read_file"
     valid_cases = [("file_type", "compression", "output_type")] + CASES
@@ -135,47 +95,7 @@ class FileReadBenchmark(FileBenchmark):
 
 @conbench.runner.register_benchmark
 class FileWriteBenchmark(FileBenchmark):
-    """
-    Write parquet & feather files from arrow tables & pandas data frames.
-
-        FileWriteBenchmark().run(<source>, options...)
-
-    Parameters
-    ----------
-    source : str
-        A source name from the benchmarks source store.
-    all : boolean, optional
-        Run all benchmark cases
-    language : str, optional
-        Valid values: "Python", "R".
-    file_type : str, optional
-        The resulting file type on write ("feather" or "parquet").
-    compression : str, optional
-        Valid values: "uncompressed", "snappy", "lz4", "zstd".
-    input_type : str, optional
-        The type of the data to read ("table" or "dataframe").
-    case : sequence, optional
-        Benchmark options as a sequence (rather than individual params):
-        [<file_type>, <compression>, <input_type>]
-    cpu_count : int, optional
-        Set the number of threads to use in parallel operations (arrow).
-    iterations : int, default 1
-        Number of times to run the benchmark.
-    gc_collect : boolean, default True
-        Whether to do garbage collection before each benchmark run.
-    gc_disable : boolean, default True
-        Whether to do disable collection during each benchmark run.
-    run_id : str, optional
-        Group executions together with a run id.
-    run_name : str, optional
-        Name of run (commit, pull request, etc).
-
-    Returns
-    -------
-    (result, output) : sequence
-        result : The benchmark result.
-        output : The output from the benchmarked function.
-    """
+    """Write parquet & feather files from arrow tables & pandas data frames."""
 
     name, r_name = "file-write", "write_file"
     valid_cases = [("file_type", "compression", "input_type")] + CASES
