@@ -217,9 +217,12 @@ class BenchmarkR:
         error = result.stderr.decode("utf-8").strip()
         if result.returncode != 0:
             raise Exception(error)
-        result_path = self._get_results_path()
-        with open(result_path) as json_file:
-            data = json.load(json_file)
+        try:
+            result_path = self._get_results_path()
+            with open(result_path) as json_file:
+                data = json.load(json_file)
+        except FileNotFoundError:
+            raise Exception(error)
         return data, output
 
     def _get_results_path(self):

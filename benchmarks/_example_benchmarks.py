@@ -193,7 +193,7 @@ class SimpleBenchmarkException(_benchmark.Benchmark):
 
 
 @conbench.runner.register_benchmark
-class WithoutPythonBenchmarkException(_benchmark.Benchmark, _benchmark.BenchmarkR):
+class BenchmarkExceptionR(_benchmark.Benchmark, _benchmark.BenchmarkR):
     name, r_name = "example-R-only-exception", "foo"
 
     def run(self, **kwargs):
@@ -203,6 +203,19 @@ class WithoutPythonBenchmarkException(_benchmark.Benchmark, _benchmark.Benchmark
 
     def _get_r_command(self):
         return f"library(arrowbench); run_one(arrowbench:::{self.r_name})"
+
+
+@conbench.runner.register_benchmark
+class BenchmarkExceptionNoResultR(_benchmark.Benchmark, _benchmark.BenchmarkR):
+    name, r_name = "example-R-only-exception-no-result", "placebo"
+
+    def run(self, **kwargs):
+        tags = {"year": "2020"}
+        command = self._get_r_command()
+        yield self.r_benchmark(command, tags, kwargs)
+
+    def _get_r_command(self):
+        return f"library(arrowbench); run_one(arrowbench:::{self.r_name}, error_type=1)"
 
 
 @conbench.runner.register_benchmark

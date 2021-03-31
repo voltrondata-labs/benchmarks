@@ -151,6 +151,23 @@ def assert_r_only_benchmark_exception(result):
     }
 
 
+def assert_r_only_benchmark_exception_no_result(result):
+    munged = copy.deepcopy(result)
+    del munged["context"]
+    del munged["timestamp"]
+    assert munged == {
+        "tags": {
+            "name": "example-R-only-exception-no-result",
+            "year": "2020",
+            "language": "R",
+        },
+        "command": "library(arrowbench); run_one(arrowbench:::placebo, error_type=1)",
+        "error": "Error: Error in placebo_func() : something went wrong (but I knew that)\n"
+        "Calls: run_bm ... eval.parent -> eval -> eval -> eval -> placebo_func\n"
+        "Execution halted",
+    }
+
+
 def assert_external_benchmark(result):
     munged = copy.deepcopy(result)
 
@@ -256,9 +273,16 @@ def test_r_only():
 
 
 def test_r_only_exception():
-    benchmark = _example_benchmarks.WithoutPythonBenchmarkException()
+    benchmark = _example_benchmarks.BenchmarkExceptionR()
     [(result, output)] = benchmark.run()
     assert_r_only_benchmark_exception(result)
+    assert output is None
+
+
+def test_r_only_exception_no_result():
+    benchmark = _example_benchmarks.BenchmarkExceptionNoResultR()
+    [(result, output)] = benchmark.run()
+    assert_r_only_benchmark_exception_no_result(result)
     assert output is None
 
 
