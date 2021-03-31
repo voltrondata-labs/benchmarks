@@ -98,7 +98,7 @@ defaults or to disable a particular benchmark.
 ### Install arrowbench (to run R benchmarks)
     $ R
     > install.packages('remotes')
-    > remotes::install_github("ursacomputing/arrowbench")
+    > remotes::install_github("ursacomputing/arrowbench", dependencies = TRUE)
 
 
 ### Install archery (to run C++ micro benchmarks)
