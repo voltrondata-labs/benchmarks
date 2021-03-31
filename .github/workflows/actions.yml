@@ -28,7 +28,7 @@ jobs:
         run: |
           install.packages('remotes')
           install.packages('arrow')
-          remotes::install_github('ursacomputing/arrowbench')
+          remotes::install_github('ursacomputing/arrowbench', dependencies = TRUE)
         shell: Rscript {0}
         env:
           LIBARROW_BINARY: TRUE
