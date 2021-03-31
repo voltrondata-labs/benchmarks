@@ -40,14 +40,12 @@ simple_features_big = _sources.Source("type_simple_features")
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
     assert_benchmark(result, source.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
 
 def assert_run_r(run, index, benchmark, source):
     result, output = run[index]
     assert_benchmark(result, source.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 
@@ -55,7 +53,6 @@ def test_dataframe_to_table_one():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     [(result, output)] = benchmark.run(chi_traffic, iterations=1)
     assert_benchmark(result, chi_traffic.name, benchmark.name)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "pyarrow.Table" in str(output)
 
 
@@ -77,7 +74,6 @@ def test_dataframe_to_table_one_r():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     [(result, output)] = benchmark.run(chi_traffic, language="R")
     assert_benchmark(result, chi_traffic.name, benchmark.name, language="R")
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert R_CLI in str(output)
 
 

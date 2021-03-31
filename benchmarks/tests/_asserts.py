@@ -30,6 +30,8 @@ def assert_benchmark(result, source, name, language="Python"):
 def assert_context(munged, language="Python"):
     context = list(munged["context"].keys())
     assert "arrow_version" in context
+    if language == "R":
+        assert "arrow_version_r" in munged["context"]
     for c in context:
         if c.startswith("arrow"):
             munged["context"].pop(c)
@@ -38,6 +40,12 @@ def assert_context(munged, language="Python"):
         version = munged["context"].pop("benchmark_language_version")
         assert version.startswith("Python")
         assert munged["context"] == {"benchmark_language": "Python"}
+    elif language == "R":
+        version = munged["context"].pop("benchmark_language_version")
+        assert version.startswith("R version")
+        assert munged["context"] == {"benchmark_language": "R"}
+    elif language == "C++":
+        assert munged["context"] == {"benchmark_language": "C++"}
 
 
 def get_cli_output(command):

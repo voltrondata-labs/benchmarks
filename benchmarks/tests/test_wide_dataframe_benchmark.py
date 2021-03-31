@@ -55,7 +55,6 @@ def assert_benchmark(result, case):
 def test_wide_dataframe(case):
     [(result, output)] = benchmark.run(case, iterations=1)
     assert_benchmark(result, case)
-    print(json.dumps(result, indent=4, sort_keys=True))
     assert "100 rows x 10000 columns" in str(output)
 
 
