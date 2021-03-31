@@ -3,8 +3,8 @@ import json
 
 import pytest
 
-from .. import dataset_filter_benchmark
-from ..tests._asserts import assert_benchmark, assert_context, R_CLI
+from .. import partitioned_dataset_filter_benchmark
+from ..tests._asserts import assert_benchmark, assert_context, assert_cli, R_CLI
 
 
 HELP = """
@@ -20,6 +20,7 @@ Options:
   --show-result BOOLEAN  [default: true]
   --show-output BOOLEAN  [default: false]
   --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
   --help                 Show this message and exit.
 """
 
@@ -42,13 +43,16 @@ def assert_benchmark(result, source, name, case, language="Python"):
     assert_context(munged, language=language)
 
 
-benchmark = dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
+benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
 
+def test_partitioned_dataset_filter_cli():
+    command = ["conbench", "partitioned-dataset-filter", "--help"]
+    assert_cli(command, HELP)
 
 @pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
 def test_partitioned_dataset_filter_one(case):
     pytest.skip("needs a test partitioned dataset")
-    benchmark = dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
+    benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
     [(result, output)] = benchmark.run(case, iterations=1)
     assert_benchmark(result, "dataset-taxi-parquet", benchmark.name, case, language="R")
     assert R_CLI in str(output)
