@@ -15,36 +15,6 @@ class WideDataframeBenchmark(_benchmark.Benchmark):
     """
     Read wide dataframe from parquet with pandas.
     See: https://issues.apache.org/jira/browse/ARROW-11469
-
-        WideDataframeBenchmark().run(options...)
-
-    Parameters
-    ----------
-    all : boolean, optional
-        Run all benchmark cases
-    use_legacy_dataset : str, optional
-        Valid values: "true", "false"
-    case : sequence, optional
-        Benchmark options as a sequence (rather than individual params):
-        [<use_legacy_dataset>]
-    cpu_count : int, optional
-        Set the number of threads to use in parallel operations (arrow).
-    iterations : int, default 1
-        Number of times to run the benchmark.
-    gc_collect : boolean, default True
-        Whether to do garbage collection before each benchmark run.
-    gc_disable : boolean, default True
-        Whether to do disable collection during each benchmark run.
-    run_id : str, optional
-        Group executions together with a run id.
-    run_name : str, optional
-        Name of run (commit, pull request, etc).
-
-    Returns
-    -------
-    (result, output) : sequence
-        result : The benchmark result.
-        output : The output from the benchmarked function.
     """
 
     name = "wide-dataframe"
