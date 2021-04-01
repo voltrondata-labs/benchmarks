@@ -52,10 +52,6 @@ class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
 
     external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
-    options = {
-        "iterations": {"default": 1, "type": int},
-        "cpu_count": {"type": int},
-    }
 
     def run(self, **kwargs):
         tags = {"year": "2020", "cpu_count": kwargs.get("cpu_count")}

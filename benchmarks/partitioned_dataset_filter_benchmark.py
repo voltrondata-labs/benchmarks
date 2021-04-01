@@ -15,10 +15,6 @@ class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.Benchma
         ["payment_type_3"],
         ["small_no_files"],
     )
-    options = {
-        "iterations": {"default": 1, "type": int},
-        "cpu_count": {"type": int},
-    }
 
     def run(self, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)
