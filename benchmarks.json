@@ -68,6 +68,12 @@
     }
   },
   {
+    "command": "partitioned-dataset-filter --iterations=3 --all=true",
+    "flags": {
+      "language": "R"
+    }
+  },
+  {
     "command": "wide-dataframe --iterations=3 --all=true",
     "flags": {
       "language": "Python"
