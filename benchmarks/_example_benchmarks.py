@@ -164,7 +164,7 @@ class BenchmarkExceptionR(_benchmark.Benchmark, _benchmark.BenchmarkR):
 
 @conbench.runner.register_benchmark
 class BenchmarkExceptionNoResultR(_benchmark.Benchmark, _benchmark.BenchmarkR):
-    name, r_name = "example-R-only-exception-no-result", "placebo"
+    name, r_name = "example-R-only-no-result", "placebo"
 
     def run(self, **kwargs):
         tags = {"year": "2020"}

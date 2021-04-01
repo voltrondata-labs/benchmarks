@@ -152,7 +152,7 @@ def assert_r_only_benchmark_exception_no_result(result):
     del munged["timestamp"]
     assert munged == {
         "tags": {
-            "name": "example-R-only-exception-no-result",
+            "name": "example-R-only-no-result",
             "year": "2020",
             "language": "R",
         },

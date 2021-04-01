@@ -177,19 +177,24 @@ Use the `conbench --help` command to see the available benchmarks.
       --help  Show this message and exit.
 
     Commands:
-      cpp-micro           Run the Arrow C++ micro benchmarks.
-      csv-read            Run csv-read benchmark.
-      dataframe-to-table  Run dataframe-to-table benchmark.
-      dataset-filter      Run dataset-filter benchmark.
-      dataset-read        Run dataset-read benchmark(s).
-      example-R-only      Run example-R-only benchmark.
-      example-cases       Run example-cases benchmark(s).
-      example-external    Run example-external benchmark.
-      example-simple      Run example-simple benchmark.
-      file-read           Run file-read benchmark(s).
-      file-write          Run file-write benchmark(s).
-      list                List of registered benchmarks (for orchestration).
-      wide-dataframe      Run wide-dataframe benchmark(s).
+      cpp-micro                 Run the Arrow C++ micro benchmarks.
+      csv-read                  Run csv-read benchmark.
+      dataframe-to-table        Run dataframe-to-table benchmark.
+      dataset-filter            Run dataset-filter benchmark.
+      dataset-read              Run dataset-read benchmark(s).
+      dataset-select            Run dataset-select benchmark.
+      example-R-only            Run example-R-only benchmark.
+      example-R-only-exception  Run example-R-only-exception benchmark.
+      example-R-only-no-result  Run example-R-only-no-result benchmark.
+      example-cases             Run example-cases benchmark(s).
+      example-cases-exception   Run example-cases-exception benchmark(s).
+      example-external          Run example-external benchmark.
+      example-simple            Run example-simple benchmark.
+      example-simple-exception  Run example-simple-exception benchmark.
+      file-read                 Run file-read benchmark(s).
+      file-write                Run file-write benchmark(s).
+      list                      List of benchmarks (for orchestration).
+      wide-dataframe            Run wide-dataframe benchmark(s).
 
 
 Help is also available for individual benchmark commands.
