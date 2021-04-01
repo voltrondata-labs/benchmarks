@@ -25,7 +25,7 @@ Usage: conbench partitioned-dataset-filter [OPTIONS]
 Options:
   --query [payment_type_3|small_no_files|vignette]
   --all BOOLEAN                   [default: false]
-  --iterations INTEGER            [default: 3]
+  --iterations INTEGER            [default: 1]
   --cpu-count INTEGER
   --show-result BOOLEAN           [default: true]
   --show-output BOOLEAN           [default: false]

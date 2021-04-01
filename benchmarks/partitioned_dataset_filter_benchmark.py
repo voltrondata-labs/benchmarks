@@ -16,7 +16,7 @@ class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.Benchma
         ["small_no_files"],
     )
     options = {
-        "iterations": {"default": 3, "type": int},
+        "iterations": {"default": 1, "type": int},
         "cpu_count": {"type": int},
     }
 
