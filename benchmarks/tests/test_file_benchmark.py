@@ -42,6 +42,7 @@ Options:
   --language [Python|R]
   --cpu-count INTEGER
   --iterations INTEGER            [default: 1]
+  --drop-caches BOOLEAN           [default: false]
   --gc-collect BOOLEAN            [default: true]
   --gc-disable BOOLEAN            [default: true]
   --show-result BOOLEAN           [default: true]
@@ -85,6 +86,7 @@ Options:
   --language [Python|R]
   --cpu-count INTEGER
   --iterations INTEGER            [default: 1]
+  --drop-caches BOOLEAN           [default: false]
   --gc-collect BOOLEAN            [default: true]
   --gc-disable BOOLEAN            [default: true]
   --show-result BOOLEAN           [default: true]
