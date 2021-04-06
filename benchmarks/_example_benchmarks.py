@@ -50,7 +50,7 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
 class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     """Example R benchmark that doesn't have a Python equivalent."""
 
-    r_only = True
+    external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
 
     def run(self, **kwargs):

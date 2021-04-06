@@ -512,9 +512,10 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
         )
 ```
 
-Note that the following benchmark extends `BenchmarkR`, sets`r_only` to
-`True`, defines `r_name`, implements `_get_r_command()`, and calls
-`r_benchmark()` rather than `benchmark()` or `record()`.
+Note that the following benchmark extends `BenchmarkR`, sets both
+`external` and `r_only` to `True`, defines `r_name`,
+implements `_get_r_command()`, and calls `r_benchmark()` rather than
+`benchmark()` or `record()`.
 
 ```python
 @conbench.runner.register_benchmark
@@ -536,7 +537,7 @@ class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
       --help                 Show this message and exit.
     """
 
-    r_only = True
+    external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
 
     def run(self, **kwargs):
