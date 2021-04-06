@@ -169,6 +169,11 @@ class Benchmark(conbench.runner.Benchmark):
 
 
 class BenchmarkR:
+    options = {
+        "iterations": {"default": 1, "type": int},
+        "cpu_count": {"type": int},
+    }
+
     def r_benchmark(self, command, extra_tags, options, case=None):
         tags, context = self._get_tags_and_context(case, extra_tags)
         tags, context = self._add_r_tags_and_context(tags, context)
