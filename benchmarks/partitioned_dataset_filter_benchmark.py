@@ -7,7 +7,7 @@ from benchmarks import _benchmark
 class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
     """Read and filter a partitioned dataset."""
 
-    external, r_only = True, True
+    r_only = True
     name, r_name = "partitioned-dataset-filter", "dataset_taxi_parquet"
     valid_cases = (
         ["query"],
