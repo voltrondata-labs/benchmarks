@@ -169,7 +169,6 @@ class Benchmark(conbench.runner.Benchmark):
 
 
 class BenchmarkR:
-    external = True
     options = {
         "iterations": {"default": 1, "type": int},
         "cpu_count": {"type": int},
