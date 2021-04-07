@@ -138,15 +138,11 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
         "name": name,
         "cpu_count": None,
         "dataset": source,
-        "gc_collect": True,
-        "gc_disable": True,
         "file_type": case[0],
         "compression": case[1],
         type_tag: case[2],
     }
     if language == "R":
-        del expected["gc_collect"]
-        del expected["gc_disable"]
         expected["language"] = "R"
     assert munged["tags"] == expected
     assert_context(munged, language=language)

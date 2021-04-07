@@ -49,16 +49,12 @@ def assert_benchmark(result, case, source):
         "name": "dataset-read",
         "dataset": source,
         "cpu_count": None,
-        "gc_collect": True,
-        "gc_disable": True,
         "pre_buffer": None,
     }
     pre_buffer = {
         "name": "dataset-read",
         "dataset": source,
         "cpu_count": None,
-        "gc_collect": True,
-        "gc_disable": True,
         "pre_buffer": case[0],
     }
 
