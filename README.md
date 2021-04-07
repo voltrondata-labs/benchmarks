@@ -306,8 +306,6 @@ Example benchmark execution.
             "cpu_count": 1,
             "dataset": "nyctaxi_sample",
             "file_type": "parquet",
-            "gc_collect": true,
-            "gc_disable": false,
             "name": "file-read",
             "output_type": "table"
         }
@@ -328,9 +326,7 @@ Example benchmark execution.
     ...     compression="snappy",
     ...     input_type="table",
     ...     iterations=5,
-    ...     cpu_count=2,
-    ...     gc_collect=True,
-    ...     gc_disable=True
+    ...     cpu_count=2
     ... )
     >>> print(json.dumps(result, indent=4, sort_keys=True))
     {
@@ -394,8 +390,6 @@ Example benchmark execution.
             "cpu_count": 2,
             "dataset": "nyctaxi_sample",
             "file_type": "parquet",
-            "gc_collect": true,
-            "gc_disable": true,
             "input_type": "table",
             "name": "file-write"
         }

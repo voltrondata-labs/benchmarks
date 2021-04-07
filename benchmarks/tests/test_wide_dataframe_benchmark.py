@@ -45,8 +45,6 @@ def assert_benchmark(result, case):
     assert munged["tags"] == {
         "name": "wide-dataframe",
         "cpu_count": None,
-        "gc_collect": True,
-        "gc_disable": True,
         "use_legacy_dataset": case[0],
     }
     assert_context(munged)

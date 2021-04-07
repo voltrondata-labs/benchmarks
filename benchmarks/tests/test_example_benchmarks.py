@@ -98,8 +98,6 @@ def assert_simple_benchmark(result):
     assert munged["tags"] == {
         "name": "example-simple",
         "year": "2020",
-        "gc_collect": True,
-        "gc_disable": True,
     }
     assert_context(munged)
 
@@ -200,8 +198,6 @@ def assert_cases_benchmark(result, case, source):
         "name": "example-cases",
         "count": 1,
         "dataset": source,
-        "gc_collect": True,
-        "gc_disable": True,
         "color": case[0],
         "fruit": case[1],
     }
