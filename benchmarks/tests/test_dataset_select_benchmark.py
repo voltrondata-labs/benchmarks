@@ -1,6 +1,3 @@
-import copy
-import json
-
 from .. import _sources
 from .. import dataset_select_benchmark
 from ..tests._asserts import assert_cli, assert_benchmark
