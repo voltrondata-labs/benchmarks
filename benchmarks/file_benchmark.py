@@ -1,6 +1,5 @@
 import time
 
-import click
 import conbench.runner
 import pyarrow
 import pyarrow.feather as feather

@@ -1,5 +1,3 @@
-import json
-
 from .. import _sources
 from .. import csv_read_benchmark
 from ..tests._asserts import assert_benchmark, assert_cli

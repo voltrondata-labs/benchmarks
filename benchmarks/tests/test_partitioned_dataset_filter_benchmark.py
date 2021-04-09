@@ -1,10 +1,9 @@
 import copy
-import json
 
 import pytest
 
 from .. import partitioned_dataset_filter_benchmark
-from ..tests._asserts import assert_benchmark, assert_context, assert_cli, R_CLI
+from ..tests._asserts import assert_context, assert_cli, R_CLI
 
 
 HELP = """
