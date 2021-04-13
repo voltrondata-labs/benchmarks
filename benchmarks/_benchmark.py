@@ -66,6 +66,9 @@ class BenchmarkList(conbench.runner.BenchmarkList):
 
 
 class Benchmark(conbench.runner.Benchmark):
+    arguments = ["source"]
+    options = {"cpu_count": {"type": int}}
+
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
         self.arrow_info = self._arrow_info()
@@ -115,9 +118,12 @@ class Benchmark(conbench.runner.Benchmark):
             return [_sources.Source(source)]
         return [source]
 
-    def get_tags(self, source, cpu_count):
-        info = {"cpu_count": cpu_count}
-        return {**source.tags, **info}
+    def get_tags(self, options, source=None):
+        info = {"cpu_count": options.get("cpu_count", None)}
+        if source:
+            return {**source.tags, **info}
+        else:
+            return info
 
     def _get_tags_and_context(self, case, extra_tags):
         context = {**self.arrow_info}
@@ -168,7 +174,8 @@ class Benchmark(conbench.runner.Benchmark):
         return error, output
 
 
-class BenchmarkR:
+class BenchmarkR(Benchmark):
+    arguments = ["source"]
     options = {
         "iterations": {"default": 1, "type": int},
         "cpu_count": {"type": int},
@@ -268,3 +275,11 @@ class BenchmarkR:
             case=case,
             output=output,
         )
+
+
+class BenchmarkPythonR(BenchmarkR):
+    arguments = ["source"]
+    options = {
+        "language": {"type": str, "choices": ["Python", "R"]},
+        "cpu_count": {"type": int},
+    }

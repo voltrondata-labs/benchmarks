@@ -4,7 +4,7 @@ from benchmarks import _benchmark
 
 
 @conbench.runner.register_benchmark
-class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
+class PartitionedDatasetFilterBenchmark(_benchmark.BenchmarkR):
     """Read and filter a partitioned dataset."""
 
     external, r_only = True, True
@@ -15,14 +15,13 @@ class PartitionedDatasetFilterBenchmark(_benchmark.Benchmark, _benchmark.Benchma
         ["payment_type_3"],
         ["small_no_files"],
     )
+    arguments = []
 
     def run(self, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)
         for case in cases:
-            tags = {
-                "dataset": "dataset-taxi-parquet",
-                "cpu_count": kwargs.get("cpu_count"),
-            }
+            tags = self.get_tags(kwargs)
+            tags["dataset"] = "dataset-taxi-parquet"
             command = self._get_r_command(kwargs, case)
             yield self.r_benchmark(command, tags, kwargs, case)
 
