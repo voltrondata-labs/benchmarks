@@ -16,19 +16,17 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         ["true"],
         ["false"],
     )
-    arguments = ["source"]
     sources = ["nyctaxi_multi_parquet_s3"]
     sources_test = ["nyctaxi_multi_parquet_s3_sample"]
-    options = {"cpu_count": {"type": int}}
 
     # TODO: set --iterations=1 for now to avoid OOM in EC2
     iterations = 1
     flags = {"cloud": True}
 
-    def run(self, source, case=None, cpu_count=None, **kwargs):
+    def run(self, source, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)
         for source in self.get_sources(source):
-            tags = self.get_tags(source, cpu_count)
+            tags = self.get_tags(kwargs, source)
             schema = self._get_schema(source)
             s3 = pyarrow.fs.S3FileSystem(region=source.region)
             for case in cases:

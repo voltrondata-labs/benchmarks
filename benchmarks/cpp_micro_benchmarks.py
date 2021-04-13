@@ -109,8 +109,9 @@ def _parse_benchmark_name(full_name):
 class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     """Run the Arrow c++ micro benchmarks."""
 
-    name = "cpp-micro"
     external = True
+    name = "cpp-micro"
+    arguments = []
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
     description = "Run the Arrow C++ micro benchmarks."

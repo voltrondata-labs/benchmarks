@@ -8,6 +8,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
     """Example benchmark with no source, cases, or options."""
 
     name = "example-simple"
+    arguments, options = [], {}
 
     def run(self, **kwargs):
         tags = {"year": "2020"}
@@ -22,8 +23,9 @@ class SimpleBenchmark(_benchmark.Benchmark):
 class RecordExternalBenchmark(_benchmark.Benchmark):
     """Example benchmark that just records external results."""
 
-    name = "example-external"
     external = True
+    name = "example-external"
+    arguments, options = [], {}
 
     def run(self, **kwargs):
         tags = {"year": "2020"}
@@ -47,14 +49,16 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
 
 
 @conbench.runner.register_benchmark
-class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
+class WithoutPythonBenchmark(_benchmark.BenchmarkR):
     """Example R benchmark that doesn't have a Python equivalent."""
 
     external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
+    arguments = []
 
     def run(self, **kwargs):
-        tags = {"year": "2020", "cpu_count": kwargs.get("cpu_count")}
+        tags = self.get_tags(kwargs)
+        tags["year"] = "2020"
         command = self._get_r_command(kwargs)
         yield self.r_benchmark(command, tags, kwargs)
 
@@ -146,7 +150,7 @@ class SimpleBenchmarkException(_benchmark.Benchmark):
 
 
 @conbench.runner.register_benchmark
-class BenchmarkExceptionR(_benchmark.Benchmark, _benchmark.BenchmarkR):
+class BenchmarkExceptionR(_benchmark.BenchmarkR):
     name, r_name = "example-R-only-exception", "foo"
 
     def run(self, **kwargs):
@@ -159,7 +163,7 @@ class BenchmarkExceptionR(_benchmark.Benchmark, _benchmark.BenchmarkR):
 
 
 @conbench.runner.register_benchmark
-class BenchmarkExceptionNoResultR(_benchmark.Benchmark, _benchmark.BenchmarkR):
+class BenchmarkExceptionNoResultR(_benchmark.BenchmarkR):
     name, r_name = "example-R-only-no-result", "placebo"
 
     def run(self, **kwargs):

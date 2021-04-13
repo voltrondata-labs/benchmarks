@@ -442,6 +442,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
     """
 
     name = "example-simple"
+    arguments, options = [], {}
 
     def run(self, **kwargs):
         tags = {"year": "2020"}
@@ -449,7 +450,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
         yield self.benchmark(f, tags, kwargs)
 
     def _get_benchmark_function(self):
-        return lambda: print("hello!")
+        return lambda: "hello!"
 ```
 
 
@@ -482,8 +483,9 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
       --help                 Show this message and exit.
     """
 
-    name = "example-external"
     external = True
+    name = "example-external"
+    arguments, options = [], {}
 
     def run(self, **kwargs):
         tags = {"year": "2020"}
@@ -513,7 +515,7 @@ implements `_get_r_command()`, and calls `r_benchmark()` rather than
 
 ```python
 @conbench.runner.register_benchmark
-class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
+class WithoutPythonBenchmark(_benchmark.BenchmarkR):
     """Example R benchmark that doesn't have a Python equivalent.
 
     $ conbench example-R-only --help
@@ -533,9 +535,11 @@ class WithoutPythonBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
 
     external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
+    arguments = []
 
     def run(self, **kwargs):
-        tags = {"year": "2020", "cpu_count": kwargs.get("cpu_count")}
+        tags = self.get_tags(kwargs)
+        tags["year"] = "2020"
         command = self._get_r_command(kwargs)
         yield self.r_benchmark(command, tags, kwargs)
 
@@ -560,7 +564,7 @@ More external benchmark examples that record C++ and R benchmark results:
 Note that the following benchmark declares the valid combinations
 in `valid_cases`, which reads like a CSV (the first row contains the
 cases names). This benchmark example also accepts a data source
-argument (see `arguments`), and additional `options` that re reflected
+argument (see `arguments`), and additional `options` that are reflected
 in the resulting command line interface.
 
 
@@ -614,18 +618,16 @@ class CasesBenchmark(_benchmark.Benchmark):
     arguments = ["source"]
     options = {"count": {"default": 1, "type": int}}
 
-    def run(self, dataset, case=None, count=1, **kwargs):
-        if not isinstance(source, _sources.Source):
-            source = _sources.Source(source)
-
+    def run(self, source, case=None, count=1, **kwargs):
         cases = self.get_cases(case, kwargs)
-        tags = self._get_tags(source, count)
-        for case in cases:
-            f = self._get_benchmark_function(source, count, case)
-            yield self.benchmark(f, tags, kwargs, case)
+        for source in self.get_sources(source):
+            tags = self._get_tags(source, count)
+            for case in cases:
+                f = self._get_benchmark_function(source, count, case)
+                yield self.benchmark(f, tags, kwargs, case)
 
     def _get_benchmark_function(self, source, count, case):
-        return lambda: print(count * f"{source.name}, {case}\n")
+        return lambda: count * f"{source.name}, {case}"
 
     def _get_tags(self, source, count):
         info = {"count": count}

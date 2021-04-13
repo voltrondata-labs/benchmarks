@@ -9,15 +9,13 @@ class DatasetSelectBenchmark(_benchmark.Benchmark):
     """ Read and filter a dataset on partition expressions."""
 
     name = "dataset-select"
-    arguments = ["source"]
     sources = ["nyctaxi_multi_parquet_s3_repartitioned"]
     # This does not load a large amount of data in tests because we
     # always pluck exactly one file from the dataset
     sources_test = ["nyctaxi_multi_parquet_s3_repartitioned"]
-    options = {"cpu_count": {"type": int}}
     flags = {"cloud": True}
 
-    def run(self, source, cpu_count=None, **kwargs):
+    def run(self, source, **kwargs):
         path_prefix = "ursa-labs-taxi-data-repartitioned-10k/"
         partitioning = pyarrow.dataset.DirectoryPartitioning.discover(
             field_names=["year", "month", "part"],
@@ -33,7 +31,7 @@ class DatasetSelectBenchmark(_benchmark.Benchmark):
                 partition_base_dir=path_prefix,
             )
             f = self._get_benchmark_function(dataset)
-            tags = self.get_tags(source, cpu_count)
+            tags = self.get_tags(kwargs, source)
             yield self.benchmark(f, tags, kwargs)
 
     def _get_benchmark_function(self, dataset):

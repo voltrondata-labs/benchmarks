@@ -31,13 +31,13 @@ CHOICES = {
 }
 
 
-class FileBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
-    def run(self, source, case=None, cpu_count=None, **kwargs):
+class FileBenchmark(_benchmark.BenchmarkPythonR):
+    def run(self, source, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)
         language = kwargs.get("language", "Python").lower()
 
         for source in self.get_sources(source):
-            tags = self.get_tags(source, cpu_count)
+            tags = self.get_tags(kwargs, source)
             for case in cases:
                 if language == "python":
                     f = self._get_benchmark_function(source, case)
@@ -68,13 +68,8 @@ class FileReadBenchmark(FileBenchmark):
 
     name, r_name = "file-read", "read_file"
     valid_cases = [("file_type", "compression", "output_type")] + CASES
-    arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources_test = ["fanniemae_sample", "nyctaxi_sample"]
-    options = {
-        "language": {"type": str, "choices": ["Python", "R"]},
-        "cpu_count": {"type": int},
-    }
 
     def _get_benchmark_function(self, source, case):
         file_type, compression, output_type = case
@@ -98,13 +93,8 @@ class FileWriteBenchmark(FileBenchmark):
 
     name, r_name = "file-write", "write_file"
     valid_cases = [("file_type", "compression", "input_type")] + CASES
-    arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources_test = ["fanniemae_sample", "nyctaxi_sample"]
-    options = {
-        "language": {"type": str, "choices": ["Python", "R"]},
-        "cpu_count": {"type": int},
-    }
 
     def _get_benchmark_function(self, source, case):
         file_type, compression, input_type = case

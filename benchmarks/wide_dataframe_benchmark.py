@@ -23,9 +23,9 @@ class WideDataframeBenchmark(_benchmark.Benchmark):
         ["true"],
         ["false"],
     )
-    options = {"cpu_count": {"type": int}}
+    arguments = []
 
-    def run(self, case=None, cpu_count=None, **kwargs):
+    def run(self, case=None, **kwargs):
         path = os.path.join(_sources.temp_dir, "wide.parquet")
         self._create_if_not_exists(path)
         cases = self.get_cases(case, kwargs)
@@ -34,7 +34,7 @@ class WideDataframeBenchmark(_benchmark.Benchmark):
             (legacy,) = case
             # not using actual booleans... see hacks.py in conbench
             legacy = True if legacy == "true" else False
-            tags = {"cpu_count": cpu_count}
+            tags = self.get_tags(kwargs)
             f = self._get_benchmark_function(path, legacy)
             yield self.benchmark(f, tags, kwargs, case)
 

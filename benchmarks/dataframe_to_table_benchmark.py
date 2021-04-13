@@ -7,11 +7,10 @@ from benchmarks import _benchmark
 
 
 @conbench.runner.register_benchmark
-class DataframeToTableBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
+class DataframeToTableBenchmark(_benchmark.BenchmarkPythonR):
     """Convert a pandas dataframe to an arrow table."""
 
     name, r_name = "dataframe-to-table", "df_to_table"
-    arguments = ["source"]
     sources = [
         "chi_traffic_2020_Q1",
         "type_strings",
@@ -30,15 +29,11 @@ class DataframeToTableBenchmark(_benchmark.Benchmark, _benchmark.BenchmarkR):
         "type_nested",
         "type_simple_features",
     ]
-    options = {
-        "language": {"type": str, "choices": ["Python", "R"]},
-        "cpu_count": {"type": int},
-    }
 
-    def run(self, source, cpu_count=None, **kwargs):
+    def run(self, source, **kwargs):
         language = kwargs.get("language", "Python").lower()
         for source in self.get_sources(source):
-            tags = self.get_tags(source, cpu_count)
+            tags = self.get_tags(kwargs, source)
             if language == "python":
                 dataframe = self._get_dataframe(source.source_path)
                 f = self._get_benchmark_function(dataframe)
