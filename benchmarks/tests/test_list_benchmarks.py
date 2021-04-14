@@ -24,19 +24,19 @@ def test_list():
     actual = _benchmark.BenchmarkList().list(classes)
     expected = [
         {
-            "command": "R-only --iterations=3",
+            "command": "R-only --iterations=3 --drop-caches=true",
             "flags": {"language": "R"},
         },
         {
-            "command": "cases ALL --iterations=3 --all=true",
+            "command": "cases ALL --iterations=3 --all=true --drop-caches=true",
             "flags": {"language": "Python"},
         },
         {
-            "command": "external --iterations=3",
+            "command": "external --iterations=3 --drop-caches=true",
             "flags": {"language": "Python"},
         },
         {
-            "command": "simple --iterations=3",
+            "command": "simple --iterations=3 --drop-caches=true",
             "flags": {"language": "Python"},
         },
     ]

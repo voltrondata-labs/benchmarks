@@ -6,75 +6,75 @@
     }
   },
   {
-    "command": "csv-read ALL --iterations=3",
+    "command": "csv-read ALL --iterations=3 --drop-caches=true",
     "flags": {
       "language": "Python"
     }
   },
   {
-    "command": "dataframe-to-table ALL --iterations=3",
+    "command": "dataframe-to-table ALL --iterations=3 --drop-caches=true",
     "flags": {
       "language": "Python"
     }
   },
   {
-    "command": "dataframe-to-table ALL --iterations=3 --language=R",
+    "command": "dataframe-to-table ALL --iterations=3 --drop-caches=true --language=R",
     "flags": {
       "language": "R"
     }
   },
   {
-    "command": "dataset-filter ALL --iterations=3",
+    "command": "dataset-filter ALL --iterations=3 --drop-caches=true",
     "flags": {
       "language": "Python"
     }
   },
   {
-    "command": "dataset-read ALL --iterations=1 --all=true",
+    "command": "dataset-read ALL --iterations=1 --all=true --drop-caches=true",
     "flags": {
       "cloud": true,
       "language": "Python"
     }
   },
   {
-    "command": "dataset-select ALL --iterations=3",
+    "command": "dataset-select ALL --iterations=3 --drop-caches=true",
     "flags": {
       "cloud": true,
       "language": "Python"
     }
   },
   {
-    "command": "file-read ALL --iterations=3 --all=true",
+    "command": "file-read ALL --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "Python"
     }
   },
   {
-    "command": "file-read ALL --iterations=3 --all=true --language=R",
+    "command": "file-read ALL --iterations=3 --all=true --drop-caches=true --language=R",
     "flags": {
       "language": "R"
     }
   },
   {
-    "command": "file-write ALL --iterations=3 --all=true",
+    "command": "file-write ALL --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "Python"
     }
   },
   {
-    "command": "file-write ALL --iterations=3 --all=true --language=R",
+    "command": "file-write ALL --iterations=3 --all=true --drop-caches=true --language=R",
     "flags": {
       "language": "R"
     }
   },
   {
-    "command": "partitioned-dataset-filter --iterations=3 --all=true",
+    "command": "partitioned-dataset-filter --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "R"
     }
   },
   {
-    "command": "wide-dataframe --iterations=3 --all=true",
+    "command": "wide-dataframe --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "Python"
     }
