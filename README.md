@@ -547,7 +547,6 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
         return (
             f"library(arrowbench); "
             f"run_one(arrowbench:::{self.r_name}, "
-            f'n_iter={options.get("iterations", 1)}, '
             f"cpu_count={self.r_cpu_count(options)})"
         )
 ```

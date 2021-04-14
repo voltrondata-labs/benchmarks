@@ -57,7 +57,6 @@ class FileBenchmark(_benchmark.BenchmarkPythonR):
             f'format="{file_type}", '
             f'compression="{compression}", '
             f'{_name}="{_type}", '
-            f'n_iter={options.get("iterations", 1)}, '
             f"cpu_count={self.r_cpu_count(options)})"
         )
 

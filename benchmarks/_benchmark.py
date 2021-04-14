@@ -25,6 +25,8 @@ class BenchmarkList(conbench.runner.BenchmarkList):
         """List of benchmarks to run for all cases & all sources."""
 
         def add(benchmarks, parts, flags, exclude):
+            if flags["language"] != "C++" and "--drop-caches=true" not in parts:
+                parts.append("--drop-caches=true")
             command = " ".join(parts)
             if command not in exclude:
                 benchmarks.append({"command": command, "flags": flags})
@@ -184,18 +186,25 @@ class BenchmarkR(Benchmark):
     def r_benchmark(self, command, extra_tags, options, case=None):
         tags, context = self._get_tags_and_context(case, extra_tags)
         tags, context = self._add_r_tags_and_context(tags, context)
-        try:
-            result, output = self._get_benchmark_result(command)
-            return self._record_result(
-                result,
-                tags,
-                context,
-                case,
-                options,
-                output,
-            )
-        except Exception as e:
-            return self._handle_error(e, self.name, tags, context, command)
+        data, iterations = [], options.get("iterations", 1)
+
+        for _ in range(iterations):
+            if options.get("drop_caches", False):
+                self.conbench.sync_and_drop_caches()
+            try:
+                result, output = self._get_benchmark_result(command)
+                data.extend([row["real"] for row in result["result"]])
+            except Exception as e:
+                return self._handle_error(e, self.name, tags, context, command)
+
+        return self._record_result(
+            data,
+            tags,
+            context,
+            case,
+            options,
+            output,
+        )
 
     def r_cpu_count(self, options):
         cpu_count = options.get("cpu_count", None)
@@ -255,11 +264,10 @@ class BenchmarkR(Benchmark):
             "arrow_version": arrow_version,
         }
 
-    def _record_result(self, result, tags, context, case, options, output):
+    def _record_result(self, data, tags, context, case, options, output):
         # The benchmark measurement and execution time happen to be
         # the same in this case: both are execution time in seconds.
         # (since data == times, just record an empty list for times)
-        data = [row["real"] for row in result["result"]]
         values = {
             "data": data,
             "unit": "s",
