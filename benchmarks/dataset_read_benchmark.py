@@ -57,9 +57,8 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
     def _get_format(self, pre_buffer):
         # not using actual booleans... see hacks.py in conbench
         pre_buffer = True if pre_buffer == "true" else False
-        read_options = {"pre_buffer": pre_buffer}
         parquet_format = pyarrow.dataset.ParquetFileFormat
         try:
-            return False, parquet_format(read_options=read_options)
+            return False, parquet_format(pre_buffer=pre_buffer)
         except TypeError:
-            return True, parquet_format(read_options={})
+            return True, parquet_format()
