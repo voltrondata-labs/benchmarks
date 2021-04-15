@@ -31,6 +31,7 @@ jobs:
         run: |
           git clone https://github.com/apache/arrow.git
           pip install arrow/dev/archery
+          sudo apt-get install libjemalloc-dev libboost-dev libboost-filesystem-dev libboost-system-dev libboost-regex-dev
       - name: Install libcurl (for R arrow)
         run: |
           sudo apt-get -y install libssl-dev libcurl4-openssl-dev
