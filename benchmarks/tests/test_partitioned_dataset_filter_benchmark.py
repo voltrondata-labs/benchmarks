@@ -25,6 +25,7 @@ Options:
   --query [payment_type_3|small_no_files|vignette]
   --all BOOLEAN                   [default: false]
   --iterations INTEGER            [default: 1]
+  --drop-caches BOOLEAN           [default: false]
   --cpu-count INTEGER
   --show-result BOOLEAN           [default: true]
   --show-output BOOLEAN           [default: false]

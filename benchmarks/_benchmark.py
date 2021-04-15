@@ -180,6 +180,7 @@ class BenchmarkR(Benchmark):
     arguments = ["source"]
     options = {
         "iterations": {"default": 1, "type": int},
+        "drop_caches": {"type": bool, "default": "false"},
         "cpu_count": {"type": int},
     }
 
