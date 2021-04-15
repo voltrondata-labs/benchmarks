@@ -3,6 +3,10 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env: 
+      # Note, if ubuntu-latest changes to a different release, we will need to 
+      # swap `focal` below to what that new name is for that release.
+      RSPM: "https://packagemanager.rstudio.com/all/__linux__/focal/latest"
     steps:
       - name: Checkout benchmarks
         uses: actions/checkout@v2
