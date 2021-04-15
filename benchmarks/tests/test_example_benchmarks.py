@@ -44,6 +44,7 @@ Usage: conbench example-R-only [OPTIONS]
 
 Options:
   --iterations INTEGER   [default: 1]
+  --drop-caches BOOLEAN  [default: false]
   --cpu-count INTEGER
   --show-result BOOLEAN  [default: true]
   --show-output BOOLEAN  [default: false]
