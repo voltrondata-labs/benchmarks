@@ -54,6 +54,7 @@ benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchma
 
 @pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
 def test_partitioned_dataset_filter_one(case):
+    pytest.skip("needs a test partitioned dataset")
     benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
     [(result, output)] = benchmark.run(case, iterations=1)
     assert_benchmark(result, "dataset-taxi-parquet", benchmark.name, case, language="R")
