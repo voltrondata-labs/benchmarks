@@ -47,7 +47,7 @@ jobs:
         run: |
           export ARROW_SRC=$(pwd)/arrow/
           echo $ARROW_SRC
-          coverage run --source benchmarks -m pytest -x --run-slow benchmarks/tests/
+          coverage run --source benchmarks -m pytest --run-slow benchmarks/tests/
       - name: Publish coverage
         run: |
           coveralls --service=github
