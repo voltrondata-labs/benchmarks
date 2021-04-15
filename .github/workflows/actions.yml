@@ -15,7 +15,7 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@v1
       - name: Lint (black)
-        uses: psf/black@stable
+        uses: psf/black@20.8b1
         with:
           args: ". --check"
       - name: Install Python dependencies
