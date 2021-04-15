@@ -31,8 +31,6 @@ jobs:
         run: |
           git clone https://github.com/apache/arrow.git
           pip install arrow/dev/archery
-          export ARROW_SRC=$(pwd)/arrow/
-          echo $ARROW_SRC
       - name: Install libcurl (for R arrow)
         run: |
           sudo apt-get -y install libssl-dev libcurl4-openssl-dev
@@ -46,6 +44,7 @@ jobs:
           LIBARROW_BINARY: TRUE
       - name: Run tests
         run: |
+          export ARROW_SRC=$(pwd)/arrow/
           echo $ARROW_SRC
           coverage run --source benchmarks -m pytest -x --run-slow benchmarks/tests/
       - name: Publish coverage
