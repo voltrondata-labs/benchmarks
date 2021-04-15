@@ -25,6 +25,12 @@ jobs:
           pip install -r requirements-build.txt
           pip install https://github.com/ursacomputing/conbench/archive/main.zip
           pip install coveralls
+      - name: Arrow for C++ benchmarks
+        run: |
+          git clone https://github.com/apache/arrow.git
+          pip install arrow/dev/archery
+        env:
+          ARROW_SRC: $(pwd)/arrow/
       - name: Lint (flake8)
         run: |
           flake8
@@ -41,7 +47,7 @@ jobs:
           LIBARROW_BINARY: TRUE
       - name: Run tests
         run: |
-          coverage run --source benchmarks -m pytest benchmarks/tests/
+          coverage run --source benchmarks -m pytest --run-slow benchmarks/tests/
       - name: Publish coverage
         run: |
           coveralls --service=github
