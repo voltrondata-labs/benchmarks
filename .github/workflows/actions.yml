@@ -46,6 +46,7 @@ jobs:
           LIBARROW_BINARY: TRUE
       - name: Run tests
         run: |
+          echo $ARROW_SRC
           coverage run --source benchmarks -m pytest -x --run-slow benchmarks/tests/
       - name: Publish coverage
         run: |
