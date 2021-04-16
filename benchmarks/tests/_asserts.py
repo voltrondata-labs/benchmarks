@@ -1,10 +1,5 @@
 import copy
-import os
 import subprocess
-
-
-this_dir = os.path.dirname(os.path.abspath(__file__))
-benchmarks_dir = os.path.join(this_dir, "..")
 
 
 R_CLI = "The R Foundation for Statistical Computing"
