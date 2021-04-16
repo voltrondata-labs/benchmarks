@@ -1,10 +1,5 @@
 import copy
-import os
 import subprocess
-
-
-this_dir = os.path.dirname(os.path.abspath(__file__))
-benchmarks_dir = os.path.join(this_dir, "..")
 
 
 R_CLI = "The R Foundation for Statistical Computing"
@@ -45,7 +40,6 @@ def assert_context(munged, language="Python"):
 
 
 def get_cli_output(command):
-    os.chdir(benchmarks_dir)
     result = subprocess.run(command, capture_output=True, check=True)
     return result.stdout.decode("utf-8").strip().replace("\x08", "")
 
