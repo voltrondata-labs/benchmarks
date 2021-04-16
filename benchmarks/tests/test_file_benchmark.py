@@ -96,10 +96,13 @@ Options:
 """
 
 
-write_benchmark = file_benchmark.FileWriteBenchmark()
-read_benchmark = file_benchmark.FileReadBenchmark()
 fanniemae = _sources.Source("fanniemae_sample")
 nyctaxi = _sources.Source("nyctaxi_sample")
+
+_read = file_benchmark.FileReadBenchmark()
+_write = file_benchmark.FileWriteBenchmark()
+read_cases, read_case_ids = _read.cases, _read.case_ids
+write_cases, write_case_ids = _write.cases, _write.case_ids
 
 
 def assert_run_write(run, index, case, source):
@@ -147,63 +150,71 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
     assert_context(munged, language=language)
 
 
-@pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
+@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
 def test_write_one(case):
-    [(result, output)] = write_benchmark.run(nyctaxi, case, iterations=1)
+    benchmark = file_benchmark.FileWriteBenchmark()
+    [(result, output)] = benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name, "write", "input_type")
     assert output is None
 
 
-@pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
+@pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read_one(case):
-    [(result, output)] = read_benchmark.run(nyctaxi, case, iterations=1)
+    benchmark = file_benchmark.FileReadBenchmark()
+    [(result, output)] = benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name, "read", "output_type")
     assert "pyarrow.Table" in str(output) or "[998 rows x 18 columns]" in str(output)
 
 
-@pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
+@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
 def test_write_all(case):
-    run = list(write_benchmark.run("TEST", case, iterations=1))
+    benchmark = file_benchmark.FileWriteBenchmark()
+    run = list(benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
     assert_run_write(run, 0, case, fanniemae)
     assert_run_write(run, 1, case, nyctaxi)
 
 
-@pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
+@pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read_all(case):
-    run = list(read_benchmark.run("TEST", case, iterations=1))
+    benchmark = file_benchmark.FileReadBenchmark()
+    run = list(benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
     assert_run_read(run, 0, case, fanniemae)
     assert_run_read(run, 1, case, nyctaxi)
 
 
-@pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
+@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
 def test_write_one_r(case):
     name = nyctaxi.name
-    [(result, output)] = write_benchmark.run(nyctaxi, case, language="R")
+    benchmark = file_benchmark.FileWriteBenchmark()
+    [(result, output)] = benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "write", "input_type", language="R")
     assert R_CLI in str(output)
 
 
-@pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
+@pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read_one_r(case):
     name = nyctaxi.name
-    [(result, output)] = read_benchmark.run(nyctaxi, case, language="R")
+    benchmark = file_benchmark.FileReadBenchmark()
+    [(result, output)] = benchmark.run(nyctaxi, case, language="R")
     assert_benchmark(result, case, name, "read", "output_type", language="R")
     assert R_CLI in str(output)
 
 
-@pytest.mark.parametrize("case", write_benchmark.cases, ids=write_benchmark.case_ids)
+@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
 def test_write_all_r(case):
-    run = list(write_benchmark.run("TEST", case, language="R"))
+    benchmark = file_benchmark.FileWriteBenchmark()
+    run = list(benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
     assert_run_write_r(run, 0, case, fanniemae)
     assert_run_write_r(run, 1, case, nyctaxi)
 
 
-@pytest.mark.parametrize("case", read_benchmark.cases, ids=read_benchmark.case_ids)
+@pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read_all_r(case):
-    run = list(read_benchmark.run("TEST", case, language="R"))
+    benchmark = file_benchmark.FileReadBenchmark()
+    run = list(benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
     assert_run_read_r(run, 0, case, fanniemae)
     assert_run_read_r(run, 1, case, nyctaxi)
