@@ -49,14 +49,13 @@ def assert_benchmark(result, source, name, case, language="Python"):
     assert_context(munged, language=language)
 
 
-_benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
-cases, case_ids = _benchmark.cases, _benchmark.case_ids
+benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
+cases, case_ids = benchmark.cases, benchmark.case_ids
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
-def test_partitioned_dataset_filter_one(case):
+def test_partitioned_dataset_filter(case):
     pytest.skip("needs a test partitioned dataset")
-    benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
     [(result, output)] = benchmark.run(case, iterations=1)
     assert_benchmark(result, "dataset-taxi-parquet", benchmark.name, case, language="R")
     assert R_CLI in str(output)

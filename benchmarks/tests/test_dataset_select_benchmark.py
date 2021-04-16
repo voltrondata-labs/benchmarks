@@ -23,7 +23,6 @@ Options:
 
 
 nyctaxi = _sources.Source("nyctaxi_multi_parquet_s3_repartitioned")
-benchmark = dataset_select_benchmark.DatasetSelectBenchmark()
 
 
 def assert_run(run, index, benchmark, source):
@@ -32,13 +31,8 @@ def assert_run(run, index, benchmark, source):
     assert "pyarrow.Table" in str(output)
 
 
-def test_dataset_read_one():
-    [(result, output)] = benchmark.run(nyctaxi, iterations=1)
-    assert_benchmark(result, nyctaxi.name, benchmark.name)
-    assert "pyarrow.Table" in str(output)
-
-
-def test_dataset_read_all():
+def test_dataset_read():
+    benchmark = dataset_select_benchmark.DatasetSelectBenchmark()
     run = list(benchmark.run("TEST", iterations=1))
     assert len(run) == 1
     assert_run(run, 0, benchmark, nyctaxi)

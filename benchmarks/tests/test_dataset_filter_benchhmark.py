@@ -31,14 +31,7 @@ def assert_run(run, index, benchmark, source):
     assert "pyarrow.Table" in str(output)
 
 
-def test_dataset_filter_one():
-    benchmark = dataset_filter_benchmark.DatasetFilterBenchmark()
-    [(result, output)] = benchmark.run(nyctaxi, iterations=1)
-    assert_benchmark(result, nyctaxi.name, benchmark.name)
-    assert "pyarrow.Table" in str(output)
-
-
-def test_dataset_filter_all():
+def test_dataset_filter():
     benchmark = dataset_filter_benchmark.DatasetFilterBenchmark()
     run = list(benchmark.run("TEST", iterations=1))
     assert len(run) == 1

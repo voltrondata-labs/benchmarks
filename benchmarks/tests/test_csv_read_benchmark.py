@@ -32,14 +32,7 @@ def assert_run(run, index, benchmark, source):
     assert "pyarrow.Table" in str(output)
 
 
-def test_csv_read_one():
-    benchmark = csv_read_benchmark.CsvReadBenchmark()
-    [(result, output)] = benchmark.run(fanniemae, iterations=1)
-    assert_benchmark(result, fanniemae.name, benchmark.name)
-    assert "pyarrow.Table" in str(output)
-
-
-def test_csv_read_all():
+def test_csv_read():
     benchmark = csv_read_benchmark.CsvReadBenchmark()
     run = list(benchmark.run("TEST", iterations=1))
     assert len(run) == 2

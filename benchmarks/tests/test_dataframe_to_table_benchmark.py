@@ -48,15 +48,8 @@ def assert_run_r(run, index, benchmark, source):
     assert R_CLI in str(output)
 
 
-def test_dataframe_to_table_one():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(chi_traffic, iterations=1)
-    assert_benchmark(result, chi_traffic.name, benchmark.name)
-    assert "pyarrow.Table" in str(output)
-
-
 @pytest.mark.slow
-def test_dataframe_to_table_all():
+def test_dataframe_to_table():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     run = list(benchmark.run("TEST", iterations=1))
     assert len(run) == 7
@@ -69,15 +62,8 @@ def test_dataframe_to_table_all():
     assert_run(run, 6, benchmark, simple_features_big)
 
 
-def test_dataframe_to_table_one_r():
-    benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
-    [(result, output)] = benchmark.run(chi_traffic, language="R")
-    assert_benchmark(result, chi_traffic.name, benchmark.name, language="R")
-    assert R_CLI in str(output)
-
-
 @pytest.mark.slow
-def test_dataframe_to_table_all_r():
+def test_dataframe_to_table_r():
     benchmark = dataframe_to_table_benchmark.DataframeToTableBenchmark()
     run = list(benchmark.run("TEST", language="R"))
     assert len(run) == 7
