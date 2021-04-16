@@ -36,7 +36,8 @@ Options:
 """
 
 
-benchmark = wide_dataframe_benchmark.WideDataframeBenchmark()
+_benchmark = wide_dataframe_benchmark.WideDataframeBenchmark()
+cases, case_ids = _benchmark.cases, _benchmark.case_ids
 
 
 def assert_benchmark(result, case):
@@ -49,8 +50,9 @@ def assert_benchmark(result, case):
     assert_context(munged)
 
 
-@pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
+@pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_wide_dataframe(case):
+    benchmark = wide_dataframe_benchmark.WideDataframeBenchmark()
     [(result, output)] = benchmark.run(case, iterations=1)
     assert_benchmark(result, case)
     assert "100 rows x 10000 columns" in str(output)

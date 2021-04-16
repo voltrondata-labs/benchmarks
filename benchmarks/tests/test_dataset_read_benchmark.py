@@ -38,7 +38,8 @@ Options:
 
 
 nyctaxi = _sources.Source("nyctaxi_multi_parquet_s3_sample")
-benchmark = dataset_read_benchmark.DatasetReadBenchmark()
+_benchmark = dataset_read_benchmark.DatasetReadBenchmark()
+cases, case_ids = _benchmark.cases, _benchmark.case_ids
 
 
 def assert_benchmark(result, case, source):
@@ -71,15 +72,17 @@ def assert_run(run, index, case, source):
     assert "pyarrow.Table" in str(output)
 
 
-@pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
+@pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_dataset_read_one(case):
+    benchmark = dataset_read_benchmark.DatasetReadBenchmark()
     [(result, output)] = benchmark.run(nyctaxi, case, iterations=1)
     assert_benchmark(result, case, nyctaxi.name)
     assert "pyarrow.Table" in str(output)
 
 
-@pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
+@pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_dataset_read_all(case):
+    benchmark = dataset_read_benchmark.DatasetReadBenchmark()
     run = list(benchmark.run("TEST", case, iterations=1))
     assert len(run) == 1
     assert_run(run, 0, case, nyctaxi)

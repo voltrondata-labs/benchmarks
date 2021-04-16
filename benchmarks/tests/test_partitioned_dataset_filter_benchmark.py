@@ -49,10 +49,11 @@ def assert_benchmark(result, source, name, case, language="Python"):
     assert_context(munged, language=language)
 
 
-benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
+_benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
+cases, case_ids = _benchmark.cases, _benchmark.case_ids
 
 
-@pytest.mark.parametrize("case", benchmark.cases, ids=benchmark.case_ids)
+@pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_partitioned_dataset_filter_one(case):
     pytest.skip("needs a test partitioned dataset")
     benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
