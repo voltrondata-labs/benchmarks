@@ -45,7 +45,6 @@ def assert_context(munged, language="Python"):
 
 
 def get_cli_output(command):
-    os.chdir(benchmarks_dir)
     result = subprocess.run(command, capture_output=True, check=True)
     return result.stdout.decode("utf-8").strip().replace("\x08", "")
 
