@@ -99,10 +99,10 @@ Options:
 fanniemae = _sources.Source("fanniemae_sample")
 nyctaxi = _sources.Source("nyctaxi_sample")
 
-_read = file_benchmark.FileReadBenchmark()
-_write = file_benchmark.FileWriteBenchmark()
-read_cases, read_case_ids = _read.cases, _read.case_ids
-write_cases, write_case_ids = _write.cases, _write.case_ids
+read_benchmark = file_benchmark.FileReadBenchmark()
+write_benchmark = file_benchmark.FileWriteBenchmark()
+read_cases, read_case_ids = read_benchmark.cases, read_benchmark.case_ids
+write_cases, write_case_ids = write_benchmark.cases, write_benchmark.case_ids
 
 
 def assert_run_write(run, index, case, source):
@@ -151,80 +151,42 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
 
 
 @pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write_one(case):
-    benchmark = file_benchmark.FileWriteBenchmark()
-    [(result, output)] = benchmark.run(nyctaxi, case, iterations=1)
-    assert_benchmark(result, case, nyctaxi.name, "write", "input_type")
-    assert output is None
-
-
-@pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
-def test_read_one(case):
-    benchmark = file_benchmark.FileReadBenchmark()
-    [(result, output)] = benchmark.run(nyctaxi, case, iterations=1)
-    assert_benchmark(result, case, nyctaxi.name, "read", "output_type")
-    assert "pyarrow.Table" in str(output) or "[998 rows x 18 columns]" in str(output)
-
-
-@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write_all(case):
-    benchmark = file_benchmark.FileWriteBenchmark()
-    run = list(benchmark.run("TEST", case, iterations=1))
+def test_write(case):
+    run = list(write_benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
     assert_run_write(run, 0, case, fanniemae)
     assert_run_write(run, 1, case, nyctaxi)
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
-def test_read_all(case):
-    benchmark = file_benchmark.FileReadBenchmark()
-    run = list(benchmark.run("TEST", case, iterations=1))
+def test_read(case):
+    run = list(read_benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
     assert_run_read(run, 0, case, fanniemae)
     assert_run_read(run, 1, case, nyctaxi)
 
 
 @pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write_one_r(case):
-    name = nyctaxi.name
-    benchmark = file_benchmark.FileWriteBenchmark()
-    [(result, output)] = benchmark.run(nyctaxi, case, language="R")
-    assert_benchmark(result, case, name, "write", "input_type", language="R")
-    assert R_CLI in str(output)
-
-
-@pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
-def test_read_one_r(case):
-    name = nyctaxi.name
-    benchmark = file_benchmark.FileReadBenchmark()
-    [(result, output)] = benchmark.run(nyctaxi, case, language="R")
-    assert_benchmark(result, case, name, "read", "output_type", language="R")
-    assert R_CLI in str(output)
-
-
-@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write_all_r(case):
-    benchmark = file_benchmark.FileWriteBenchmark()
-    run = list(benchmark.run("TEST", case, language="R"))
+def test_write_r(case):
+    run = list(write_benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
     assert_run_write_r(run, 0, case, fanniemae)
     assert_run_write_r(run, 1, case, nyctaxi)
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
-def test_read_all_r(case):
-    benchmark = file_benchmark.FileReadBenchmark()
-    run = list(benchmark.run("TEST", case, language="R"))
+def test_read_r(case):
+    run = list(read_benchmark.run("TEST", case, language="R"))
     assert len(run) == 2
     assert_run_read_r(run, 0, case, fanniemae)
     assert_run_read_r(run, 1, case, nyctaxi)
 
 
-def test_read_cli():
-    command = ["conbench", "file-read", "--help"]
-    assert_cli(command, FILE_READ_HELP)
-
-
 def test_write_cli():
     command = ["conbench", "file-write", "--help"]
     assert_cli(command, FILE_WRITE_HELP)
+
+
+def test_read_cli():
+    command = ["conbench", "file-read", "--help"]
+    assert_cli(command, FILE_READ_HELP)
