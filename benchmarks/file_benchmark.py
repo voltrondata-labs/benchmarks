@@ -33,6 +33,10 @@ CHOICES = {
 
 class FileBenchmark(_benchmark.BenchmarkPythonR):
     def run(self, source, case=None, **kwargs):
+        print('here')
+        print(source)
+        print(case)
+        print(kwargs)
         cases = self.get_cases(case, kwargs)
         language = kwargs.get("language", "Python").lower()
 
