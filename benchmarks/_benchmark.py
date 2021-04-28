@@ -129,6 +129,7 @@ class Benchmark(conbench.runner.Benchmark):
 
     def _get_tags_and_context(self, case, extra_tags):
         context = {**self.arrow_info}
+        context.pop("arrow_git_revision")
         tags = {**extra_tags}
         if case:
             tags.update(dict(zip(self.fields, case)))

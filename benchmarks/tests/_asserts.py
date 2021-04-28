@@ -21,6 +21,7 @@ def assert_benchmark(result, source, name, language="Python"):
 def assert_context(munged, language="Python"):
     context = list(munged["context"].keys())
     assert "arrow_version" in context
+    assert "arrow_git_revision" not in context
     if language == "R":
         assert "arrow_version_r" in munged["context"]
     for c in context:
