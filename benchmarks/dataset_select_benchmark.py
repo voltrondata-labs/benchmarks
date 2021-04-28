@@ -6,7 +6,7 @@ from benchmarks import _benchmark
 
 @conbench.runner.register_benchmark
 class DatasetSelectBenchmark(_benchmark.Benchmark):
-    """ Read and filter a dataset on partition expressions."""
+    """Read and filter a dataset on partition expressions."""
 
     name = "dataset-select"
     sources = ["nyctaxi_multi_parquet_s3_repartitioned"]
