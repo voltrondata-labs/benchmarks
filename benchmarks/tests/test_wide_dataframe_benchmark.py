@@ -22,14 +22,14 @@ Usage: conbench wide-dataframe [OPTIONS]
 
 Options:
   --use-legacy-dataset [false|true]
-  --all BOOLEAN                   [default: false]
+  --all BOOLEAN                   [default: False]
   --cpu-count INTEGER
   --iterations INTEGER            [default: 1]
-  --drop-caches BOOLEAN           [default: false]
-  --gc-collect BOOLEAN            [default: true]
-  --gc-disable BOOLEAN            [default: true]
-  --show-result BOOLEAN           [default: true]
-  --show-output BOOLEAN           [default: false]
+  --drop-caches BOOLEAN           [default: False]
+  --gc-collect BOOLEAN            [default: True]
+  --gc-disable BOOLEAN            [default: True]
+  --show-result BOOLEAN           [default: True]
+  --show-output BOOLEAN           [default: False]
   --run-id TEXT                   Group executions together with a run id.
   --run-name TEXT                 Name of run (commit, pull request, etc).
   --help                          Show this message and exit.

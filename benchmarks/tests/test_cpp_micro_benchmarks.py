@@ -21,10 +21,9 @@ Options:
   --cxx-flags TEXT           C++ compiler flags.
   --cpp-package-prefix TEXT  Value to pass for ARROW_PACKAGE_PREFIX and use
                              ARROW_DEPENDENCY_SOURCE=SYSTEM.
-
   --iterations INTEGER       Number of iterations of each benchmark.
-  --show-result BOOLEAN      [default: true]
-  --show-output BOOLEAN      [default: false]
+  --show-result BOOLEAN      [default: True]
+  --show-output BOOLEAN      [default: False]
   --run-id TEXT              Group executions together with a run id.
   --run-name TEXT            Name of run (commit, pull request, etc).
   --help                     Show this message and exit.
