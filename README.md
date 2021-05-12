@@ -270,7 +270,7 @@ Example benchmark execution.
             "os_name": "macOS",
             "os_version": "10.15.7"
         },
-        "run": {
+        "github": {
             "commit": "d613aa68789288d3503dfbd8376a41f2d28b6c9d",
             "repository": "https://github.com/apache/arrow"
         },
@@ -355,7 +355,7 @@ Example benchmark execution.
             "os_name": "macOS",
             "os_version": "10.15.7"
         },
-        "run": {
+        "github": {
             "commit": "d613aa68789288d3503dfbd8376a41f2d28b6c9d",
             "repository": "https://github.com/apache/arrow"
         },
