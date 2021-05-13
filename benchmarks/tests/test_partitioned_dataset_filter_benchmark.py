@@ -24,12 +24,12 @@ Usage: conbench partitioned-dataset-filter [OPTIONS]
 
 Options:
   --query [count_rows|payment_type_3|small_no_files|vignette]
-  --all BOOLEAN                   [default: false]
+  --all BOOLEAN                   [default: False]
   --iterations INTEGER            [default: 1]
-  --drop-caches BOOLEAN           [default: false]
+  --drop-caches BOOLEAN           [default: False]
   --cpu-count INTEGER
-  --show-result BOOLEAN           [default: true]
-  --show-output BOOLEAN           [default: false]
+  --show-result BOOLEAN           [default: True]
+  --show-output BOOLEAN           [default: False]
   --run-id TEXT                   Group executions together with a run id.
   --run-name TEXT                 Name of run (commit, pull request, etc).
   --help                          Show this message and exit.

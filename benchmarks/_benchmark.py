@@ -74,7 +74,7 @@ class Benchmark(conbench.runner.Benchmark):
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
         self.arrow_info = self._arrow_info()
-        self.run_info = self._run_info(self.arrow_info)
+        self.github_info = self._github_info(self.arrow_info)
         self.r_info = None
 
     def benchmark(self, f, extra_tags, options, case=None):
@@ -84,7 +84,7 @@ class Benchmark(conbench.runner.Benchmark):
         tags, context = self._get_tags_and_context(case, extra_tags)
         try:
             benchmark, output = self.conbench.benchmark(
-                f, self.name, tags, context, self.run_info, options
+                f, self.name, tags, context, self.github_info, options
             )
             self.conbench.publish(benchmark)
         except Exception as e:
@@ -106,7 +106,7 @@ class Benchmark(conbench.runner.Benchmark):
         tags, context = self._get_tags_and_context(case, extra_tags)
         context.update(**extra_context)
         benchmark, output = self.conbench.record(
-            result, name, tags, context, self.run_info, options, output
+            result, name, tags, context, self.github_info, options, output
         )
         self.conbench.publish(benchmark)
         return benchmark, output
@@ -135,7 +135,7 @@ class Benchmark(conbench.runner.Benchmark):
             tags.update(dict(zip(self.fields, case)))
         return tags, context
 
-    def _run_info(self, arrow_info):
+    def _github_info(self, arrow_info):
         return {
             "repository": "https://github.com/apache/arrow",
             "commit": arrow_info["arrow_git_revision"],
@@ -267,18 +267,8 @@ class BenchmarkR(Benchmark):
         }
 
     def _record_result(self, data, tags, context, case, options, output):
-        # The benchmark measurement and execution time happen to be
-        # the same in this case: both are execution time in seconds.
-        # (since data == times, just record an empty list for times)
-        values = {
-            "data": data,
-            "unit": "s",
-            "times": [],
-            "time_unit": "s",
-        }
-
         return self.record(
-            values,
+            {"data": data, "unit": "s"},
             tags,
             context,
             options,
