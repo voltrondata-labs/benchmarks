@@ -13,6 +13,8 @@ class DataframeToTableBenchmark(_benchmark.BenchmarkPythonR):
     name, r_name = "dataframe-to-table", "df_to_table"
     sources = [
         "chi_traffic_2020_Q1",
+        "fanniemae_2016Q4",
+        "nyctaxi_2010-01",
         "type_strings",
         "type_dict",
         "type_integers",
