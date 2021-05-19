@@ -23,14 +23,14 @@ Usage: conbench dataset-read [OPTIONS] SOURCE
 
 Options:
   --pre-buffer [false|true]
-  --all BOOLEAN              [default: False]
+  --all BOOLEAN              [default: false]
   --cpu-count INTEGER
   --iterations INTEGER       [default: 1]
-  --drop-caches BOOLEAN      [default: False]
-  --gc-collect BOOLEAN       [default: True]
-  --gc-disable BOOLEAN       [default: True]
-  --show-result BOOLEAN      [default: True]
-  --show-output BOOLEAN      [default: False]
+  --drop-caches BOOLEAN      [default: false]
+  --gc-collect BOOLEAN       [default: true]
+  --gc-disable BOOLEAN       [default: true]
+  --show-result BOOLEAN      [default: true]
+  --show-output BOOLEAN      [default: false]
   --run-id TEXT              Group executions together with a run id.
   --run-name TEXT            Name of run (commit, pull request, etc).
   --help                     Show this message and exit.
@@ -38,6 +38,7 @@ Options:
 
 
 nyctaxi = _sources.Source("nyctaxi_multi_parquet_s3_sample")
+nyctaxi_ipc = _sources.Source("nyctaxi_multi_ipc_s3_sample")
 benchmark = dataset_read_benchmark.DatasetReadBenchmark()
 cases, case_ids = benchmark.cases, benchmark.case_ids
 
@@ -45,17 +46,23 @@ cases, case_ids = benchmark.cases, benchmark.case_ids
 def assert_benchmark(result, case, source):
     munged = copy.deepcopy(result)
 
+    # The async tag can be True or False, we just ensure it exists
+    assert "async" in munged["tags"]
+    use_async = munged["tags"]["async"]
+
     legacy = {
         "name": "dataset-read",
         "dataset": source,
         "cpu_count": None,
         "pre_buffer": None,
+        "async": use_async,
     }
     pre_buffer = {
         "name": "dataset-read",
         "dataset": source,
         "cpu_count": None,
         "pre_buffer": case[0],
+        "async": use_async,
     }
 
     try:
@@ -75,8 +82,9 @@ def assert_run(run, index, case, source):
 @pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_dataset_read(case):
     run = list(benchmark.run("TEST", case, iterations=1))
-    assert len(run) == 1
+    assert len(run) == 2
     assert_run(run, 0, case, nyctaxi)
+    assert_run(run, 1, case, nyctaxi_ipc)
 
 
 def test_dataset_read_cli():
