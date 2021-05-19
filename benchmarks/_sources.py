@@ -100,11 +100,29 @@ STORE = {
         ],
         "region": "us-east-2",
     },
+    "nyctaxi_multi_ipc_s3": {
+        "download": False,
+        "paths": [
+            "ursa-labs-taxi-data-ipc/2013/01/data.feather",
+            "ursa-labs-taxi-data-ipc/2013/02/data.feather",
+            "ursa-labs-taxi-data-ipc/2013/03/data.feather",
+            "ursa-labs-taxi-data-ipc/2013/04/data.feather",
+        ],
+        "region": "us-east-2",
+    },
     "nyctaxi_multi_parquet_s3_sample": {
         "download": False,
         "paths": [
             "ursa-labs-taxi-data-sample/2009/02/data.parquet",
             "ursa-labs-taxi-data-sample/2009/01/data.parquet",
+        ],
+        "region": "us-east-2",
+    },
+    "nyctaxi_multi_ipc_s3_sample": {
+        "download": False,
+        "paths": [
+            "ursa-labs-taxi-data-sample-ipc/2009/02/data.feather",
+            "ursa-labs-taxi-data-sample-ipc/2009/01/data.feather",
         ],
         "region": "us-east-2",
     },
