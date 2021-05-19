@@ -129,18 +129,14 @@ def assert_r_only_benchmark_exception(result):
     assert_context(munged, language="R")
     del munged["context"]
     del munged["timestamp"]
-    assert munged == {
-        "tags": {
-            "name": "example-R-only-exception",
-            "year": "2020",
-            "language": "R",
-        },
-        "command": "library(arrowbench); run_one(arrowbench:::foo)",
-        "error": "Error in get(name, envir = asNamespace(pkg), inherits = FALSE) : \n"
-        "  object 'foo' not found\n"
-        "Calls: run_one -> modifyList -> stopifnot -> ::: -> get\n"
-        "Execution halted",
+    assert munged["tags"] == {
+        "name": "example-R-only-exception",
+        "year": "2020",
+        "language": "R",
     }
+    command = "run_one(arrowbench:::foo)"
+    assert munged["command"] == f"library(arrowbench); {command}"
+    assert "object 'foo' not found" in munged["error"]
 
 
 def assert_r_only_benchmark_exception_no_result(result):
@@ -148,17 +144,14 @@ def assert_r_only_benchmark_exception_no_result(result):
     assert_context(munged, language="R")
     del munged["context"]
     del munged["timestamp"]
-    assert munged == {
-        "tags": {
-            "name": "example-R-only-no-result",
-            "year": "2020",
-            "language": "R",
-        },
-        "command": "library(arrowbench); run_one(arrowbench:::placebo, error_type=1)",
-        "error": "Error: Error in placebo_func() : something went wrong (but I knew that)\n"
-        "Calls: run_bm ... eval.parent -> eval -> eval -> eval -> placebo_func\n"
-        "Execution halted",
+    assert munged["tags"] == {
+        "name": "example-R-only-no-result",
+        "year": "2020",
+        "language": "R",
     }
+    command = "run_one(arrowbench:::placebo, error_type=1)"
+    assert munged["command"] == f"library(arrowbench); {command}"
+    assert "Error in placebo_func" in munged["error"]
 
 
 def assert_external_benchmark(result):
