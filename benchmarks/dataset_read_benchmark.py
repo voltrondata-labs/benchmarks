@@ -41,7 +41,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
                     filesystem=s3,
                 )
                 supports_async = self._get_supports_async(dataset, format_str)
-                tags['async'] = supports_async
+                tags["async"] = supports_async
                 f = self._get_benchmark_function(dataset, supports_async)
                 yield self.benchmark(f, tags, kwargs, case)
                 if legacy:
@@ -49,7 +49,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
 
     def _get_supports_async(self, dataset, format_str):
         # TODO (ARROW-11843): Remove this check, parquet will support async
-        if format_str == 'parquet':
+        if format_str == "parquet":
             return False
         try:
             dataset.scanner(use_async=True)
@@ -71,13 +71,13 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         return pyarrow.dataset.dataset(path, format=format_str).schema
 
     def _get_format_str(self, source):
-        if 'ipc' in source.name:
-            return 'ipc'
+        if "ipc" in source.name:
+            return "ipc"
         else:
-            return 'parquet'
+            return "parquet"
 
     def _get_format(self, pre_buffer, format_str):
-        if format_str == 'ipc':
+        if format_str == "ipc":
             return False, pyarrow.dataset.IpcFileFormat()
         # not using actual booleans... see hacks.py in conbench
         pre_buffer = True if pre_buffer == "true" else False
