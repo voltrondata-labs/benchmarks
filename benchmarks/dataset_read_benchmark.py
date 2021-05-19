@@ -54,7 +54,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         try:
             dataset.scanner(use_async=True)
             return True
-        except:
+        except TypeError:
             return False
 
     def _get_benchmark_function(self, dataset, supports_async):
