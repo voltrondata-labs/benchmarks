@@ -47,4 +47,4 @@ def get_cli_output(command):
 
 def assert_cli(command, expected):
     actual = get_cli_output(command)
-    assert actual == expected.strip(), actual
+    assert actual == expected.strip()

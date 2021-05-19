@@ -1,5 +1,7 @@
 import pytest
 
+pytest.register_assert_rewrite("benchmarks.tests._asserts")
+
 
 def pytest_addoption(parser):
     parser.addoption(

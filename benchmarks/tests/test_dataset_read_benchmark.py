@@ -38,12 +38,17 @@ Options:
 
 
 nyctaxi = _sources.Source("nyctaxi_multi_parquet_s3_sample")
+nyctaxi_ipc = _sources.Source("nyctaxi_multi_ipc_s3_sample")
 benchmark = dataset_read_benchmark.DatasetReadBenchmark()
 cases, case_ids = benchmark.cases, benchmark.case_ids
 
 
 def assert_benchmark(result, case, source):
     munged = copy.deepcopy(result)
+
+    # The async tag may or may not be included.  If it is included
+    # the value is always true
+    has_async_tag = "async" in munged["tags"]
 
     legacy = {
         "name": "dataset-read",
@@ -57,6 +62,10 @@ def assert_benchmark(result, case, source):
         "cpu_count": None,
         "pre_buffer": case[0],
     }
+
+    if has_async_tag:
+        legacy["async"] = True
+        pre_buffer["async"] = True
 
     try:
         assert munged["tags"] == pre_buffer
@@ -75,8 +84,9 @@ def assert_run(run, index, case, source):
 @pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_dataset_read(case):
     run = list(benchmark.run("TEST", case, iterations=1))
-    assert len(run) == 1
+    assert len(run) == 2
     assert_run(run, 0, case, nyctaxi)
+    assert_run(run, 1, case, nyctaxi_ipc)
 
 
 def test_dataset_read_cli():
