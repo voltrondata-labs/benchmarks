@@ -30,7 +30,7 @@
     }
   },
   {
-    "command": "dataset-read ALL --iterations=1 --all=true --drop-caches=true",
+    "command": "dataset-read ALL --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "cloud": true,
       "language": "Python"

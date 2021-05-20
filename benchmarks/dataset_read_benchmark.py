@@ -19,8 +19,6 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
     sources = ["nyctaxi_multi_parquet_s3", "nyctaxi_multi_ipc_s3"]
     sources_test = ["nyctaxi_multi_parquet_s3_sample", "nyctaxi_multi_ipc_s3_sample"]
 
-    # TODO: set --iterations=1 for now to avoid OOM in EC2
-    iterations = 1
     flags = {"cloud": True}
 
     def run(self, source, case=None, **kwargs):
