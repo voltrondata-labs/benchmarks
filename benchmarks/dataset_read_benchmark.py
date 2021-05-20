@@ -41,8 +41,6 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
                     filesystem=s3,
                 )
                 supports_async = self._get_supports_async(dataset, format_str)
-                if supports_async:
-                    tags["async"] = supports_async
                 f = self._get_benchmark_function(dataset, supports_async)
                 yield self.benchmark(f, tags, kwargs, case)
                 if legacy:
