@@ -37,7 +37,7 @@ class DatasetSelectivityBenchmark(_benchmark.Benchmark):
 
     def run(self, source, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)
-        for source in self._get_sources(source):
+        for source in self.get_sources(source):
             source.download_source_if_not_exists()
             tags = self.get_tags(kwargs, source)
             format_str = "parquet"
@@ -54,10 +54,3 @@ class DatasetSelectivityBenchmark(_benchmark.Benchmark):
         return lambda: dataset.to_table(
             filter=self.filters[source][selectivity]
         ).num_rows
-
-    def _get_sources(self, source):
-        available_sources = ["ALL", "TEST", *self.sources, *self.sources_test]
-        if source not in available_sources:
-            raise Exception("SOURCE can only be one of {}".format(available_sources))
-
-        return self.get_sources(source)

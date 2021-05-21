@@ -153,6 +153,15 @@ class Source:
         ├── fanniemae_sample.zstd.feather
         ├── nyctaxi_2010-01.snappy.parquet
         └── nyctaxi_sample.snappy.parquet
+    └── ursa-labs-taxi-data-sample
+        └── 2009
+            ├── 01
+            │   └── data.parquet
+            └── 02
+                └── data.parquet
+    ├── type_dict.parquet
+    ├── type_floats.parquet
+    └── type_integers.parquet
 
     Files in the "data/" folder are canonical source files used for
     benchmarking.
@@ -195,8 +204,6 @@ class Source:
 
         For example:
             data/nyctaxi_2010-01.csv.gz
-
-        If the file does not exist, it will be downloaded from the store.
         """
         return self.store.get("path")
 
@@ -281,8 +288,7 @@ class Source:
                 + os.path.join(*s3_url.parts[1:])
             )
 
-        source = self.store.get("source")
-        return source if source else None
+        return self.store.get("source")
 
     def download_source_if_not_exists(self):
         for idx, path in enumerate(self.source_paths):

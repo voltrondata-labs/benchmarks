@@ -112,13 +112,24 @@ class Benchmark(conbench.runner.Benchmark):
         return benchmark, output
 
     def get_sources(self, source):
-        if not isinstance(source, _sources.Source):
-            if source == "ALL":
-                return [_sources.Source(s) for s in self.sources]
-            if source == "TEST":
-                return [_sources.Source(s) for s in self.sources_test]
-            return [_sources.Source(source)]
-        return [source]
+        if isinstance(source, _sources.Source):
+            return [source]
+        if source == "ALL":
+            return [_sources.Source(s) for s in self.sources]
+        if source == "TEST":
+            return [_sources.Source(s) for s in self.sources_test]
+
+        available_sources = [
+            "ALL",
+            "TEST",
+            *self.sources,
+            *self.sources_test,
+        ]
+        if source not in available_sources:
+            msg = f"Source can only be one of {available_sources}."
+            raise Exception(msg)
+
+        return [_sources.Source(source)]
 
     def get_tags(self, options, source=None):
         info = {"cpu_count": options.get("cpu_count", None)}
