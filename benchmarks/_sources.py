@@ -171,7 +171,7 @@ class Source:
         self._dataframe = None
         self._table = None
         if self.store.get("download", True):
-            self._download_source_if_not_exists()
+            self.download_source_if_not_exists()
 
     @property
     def tags(self):
@@ -198,7 +198,16 @@ class Source:
 
         If the file does not exist, it will be downloaded from the store.
         """
-        return self.store["path"]
+        return self.store.get("path")
+
+    @property
+    def source_paths(self):
+        if self.paths:
+            return [_source(path) for path in self.paths]
+        elif self.source_path:
+            return [self.source_path]
+        else:
+            return []
 
     def temp_path(self, file_type, compression):
         """A path in the benchmarks data/temp/ folder.
@@ -260,11 +269,31 @@ class Source:
                 ).replace_schema_metadata(None)
         return self._table
 
-    def _download_source_if_not_exists(self):
-        path = pathlib.Path(self.store["path"])
-        if not path.exists() and "source" in self.store:
-            r = requests.get(self.store["source"])
-            open(path, "wb").write(r.content)
+    def _get_object_url(self, idx=0):
+        if self.paths:
+            s3_url = pathlib.Path(self.paths[idx])
+            return (
+                "https://"
+                + s3_url.parts[0]
+                + ".s3."
+                + self.region
+                + ".amazonaws.com/"
+                + os.path.join(*s3_url.parts[1:])
+            )
+
+        source = self.store.get("source")
+        return source if source else None
+
+    def download_source_if_not_exists(self):
+        for idx, path in enumerate(self.source_paths):
+            source_path = pathlib.Path(path)
+            if not source_path.exists():
+                source_path.parent.mkdir(parents=True, exist_ok=True)
+                source = self.store.get("source")
+                if not source:
+                    source = self._get_object_url(idx)
+                r = requests.get(source)
+                open(source_path, "wb").write(r.content)
 
     def _feather_write(self, table, path, compression):
         compression = munge_compression(compression, "feather")
