@@ -80,12 +80,14 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
             return "parquet"
 
     def _get_format(self, pre_buffer, format_str):
-        if format_str == "ipc":
-            return False, pyarrow.dataset.IpcFileFormat()
         # not using actual booleans... see hacks.py in conbench
         pre_buffer = True if pre_buffer == "true" else False
-        parquet_format = pyarrow.dataset.ParquetFileFormat
+        if format_str == "ipc":
+            file_format = pyarrow.dataset.IpcFileFormat
+        else:
+            file_format = pyarrow.dataset.ParquetFileFormat
+
         try:
-            return False, parquet_format(pre_buffer=pre_buffer)
+            return False, file_format(pre_buffer=pre_buffer)
         except TypeError:
-            return True, parquet_format()
+            return True, file_format()
