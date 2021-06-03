@@ -9,8 +9,16 @@ class DatasetSelectivityBenchmark(_benchmark.Benchmark):
     """Read and filter a dataset with different selectivity."""
 
     name = "dataset-selectivity"
-    sources = ["nyctaxi_multi_parquet_s3", "chi_traffic_2020_Q1"]
-    sources_test = ["nyctaxi_multi_parquet_s3_sample", "chi_traffic_sample"]
+    sources = [
+        "nyctaxi_multi_parquet_s3",
+        "nyctaxi_multi_ipc_s3",
+        "chi_traffic_2020_Q1",
+    ]
+    sources_test = [
+        "nyctaxi_multi_parquet_s3_sample",
+        "nyctaxi_multi_ipc_s3_sample",
+        "chi_traffic_sample",
+    ]
     valid_cases = (["selectivity"], ["1%"], ["10%"], ["100%"])
     filters = {
         "nyctaxi_multi_parquet_s3": {
@@ -18,16 +26,24 @@ class DatasetSelectivityBenchmark(_benchmark.Benchmark):
             "10%": ds.field("pickup_longitude") < -74.002055,  # 5615432
             "100%": None,  # 56154689
         },
+        "nyctaxi_multi_ipc_s3": {
+            "1%": ds.field("pickup_longitude") < -74.014053,  # 596165
+            "10%": ds.field("pickup_longitude") < -74.002708,  # 5962204
+            "100%": None,  # 59616487
+        },
         "chi_traffic_2020_Q1": {
             "1%": ds.field("END_LONGITUDE") < -87.807262,  # 124530
             "10%": ds.field("END_LONGITUDE") < -87.7624,  # 1307565
             "100%": None,  # 13038291
         },
-        "nyctaxi_multi_parquet_s3_sample": {
-            "1%": ds.field("pickup_longitude") < -74.0124,  # 20
-            "10%": ds.field("pickup_longitude") < -74.00172,  # 200
-            "100%": None,  # 2000
-        },
+        **dict.fromkeys(
+            ["nyctaxi_multi_parquet_s3_sample", "nyctaxi_multi_ipc_s3_sample"],
+            {
+                "1%": ds.field("pickup_longitude") < -74.0124,  # 20
+                "10%": ds.field("pickup_longitude") < -74.00172,  # 200
+                "100%": None,  # 2000
+            },
+        ),
         "chi_traffic_sample": {
             "1%": ds.field("END_LONGITUDE") < -87.80726,  # 10
             "10%": ds.field("END_LONGITUDE") < -87.76148,  # 100
@@ -40,7 +56,7 @@ class DatasetSelectivityBenchmark(_benchmark.Benchmark):
         for source in self.get_sources(source):
             source.download_source_if_not_exists()
             tags = self.get_tags(kwargs, source)
-            format_str = "parquet"
+            format_str = source.format_str
             schema = ds.dataset(source.source_paths[0], format=format_str).schema
             for case in cases:
                 (selectivity,) = case
