@@ -8,6 +8,8 @@ import pyarrow.feather as feather
 import pyarrow.parquet as parquet
 import requests
 
+from enum import Enum
+
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 local_data_dir = os.path.join(this_dir, "data")
@@ -36,59 +38,77 @@ def munge_compression(c, file_type):
     return c.lower() if file_type == "feather" else c.upper()
 
 
+class SourceFormat(Enum):
+    CSV = "csv"
+    PARQUET = "parquet"
+    FEATHER = "feather"
+
+
 STORE = {
     "fanniemae_sample": {
         "path": _local("fanniemae_sample.csv"),
         "sep": "|",
         "header": None,
+        "format": SourceFormat.CSV,
     },
     "nyctaxi_sample": {
         "path": _local("nyctaxi_sample.csv"),
         "sep": ",",
         "header": 0,
+        "format": SourceFormat.CSV,
     },
     "chi_traffic_sample": {
         "path": _local("chi_traffic_sample.parquet"),
+        "format": SourceFormat.PARQUET,
     },
     "fanniemae_2016Q4": {
         "path": _source("fanniemae_2016Q4.csv.gz"),
         "source": "https://ursa-qa.s3.amazonaws.com/fanniemae_loanperf/2016Q4.csv.gz",
         "sep": "|",
         "header": None,
+        "format": SourceFormat.CSV,
     },
     "nyctaxi_2010-01": {
         "path": _source("nyctaxi_2010-01.csv.gz"),
         "source": "https://ursa-qa.s3.amazonaws.com/nyctaxi/yellow_tripdata_2010-01.csv.gz",
         "sep": ",",
         "header": 0,
+        "format": SourceFormat.CSV,
     },
     "chi_traffic_2020_Q1": {
         "path": _source("chi_traffic_2020_Q1.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/chitraffic/chi_traffic_2020_Q1.parquet",
+        "format": SourceFormat.PARQUET,
     },
     "type_strings": {
         "path": _source("type_strings.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_strings.parquet",
+        "format": SourceFormat.PARQUET,
     },
     "type_dict": {
         "path": _source("type_dict.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_dict.parquet",
+        "format": SourceFormat.PARQUET,
     },
     "type_integers": {
         "path": _source("type_integers.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_integers.parquet",
+        "format": SourceFormat.PARQUET,
     },
     "type_floats": {
         "path": _source("type_floats.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_floats.parquet",
+        "format": SourceFormat.PARQUET,
     },
     "type_nested": {
         "path": _source("type_nested.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_nested.parquet",
+        "format": SourceFormat.PARQUET,
     },
     "type_simple_features": {
         "path": _source("type_simple_features.parquet"),
         "source": "https://ursa-qa.s3.amazonaws.com/single_types/type_simple_features.parquet",
+        "format": SourceFormat.PARQUET,
     },
     "nyctaxi_multi_parquet_s3": {
         "download": False,
@@ -99,6 +119,7 @@ STORE = {
             "ursa-labs-taxi-data/2009/04/data.parquet",
         ],
         "region": "us-east-2",
+        "format": SourceFormat.PARQUET,
     },
     "nyctaxi_multi_ipc_s3": {
         "download": False,
@@ -109,6 +130,7 @@ STORE = {
             "ursa-labs-taxi-data-ipc/2013/04/data.feather",
         ],
         "region": "us-east-2",
+        "format": SourceFormat.FEATHER,
     },
     "nyctaxi_multi_parquet_s3_sample": {
         "download": False,
@@ -117,6 +139,7 @@ STORE = {
             "ursa-labs-taxi-data-sample/2009/01/data.parquet",
         ],
         "region": "us-east-2",
+        "format": SourceFormat.PARQUET,
     },
     "nyctaxi_multi_ipc_s3_sample": {
         "download": False,
@@ -125,6 +148,7 @@ STORE = {
             "ursa-labs-taxi-data-sample-ipc/2009/01/data.feather",
         ],
         "region": "us-east-2",
+        "format": SourceFormat.FEATHER,
     },
     "nyctaxi_multi_parquet_s3_repartitioned": {
         "download": False,
@@ -137,6 +161,7 @@ STORE = {
             and not (year == 2010 and month == 3)  # Data is missing in 2010/03
         ],
         "region": "us-east-2",
+        "format": SourceFormat.PARQUET,
     },
 }
 
@@ -215,6 +240,10 @@ class Source:
             return [self.source_path]
         else:
             return []
+
+    @property
+    def format_str(self):
+        return self.store.get("format").value
 
     def temp_path(self, file_type, compression):
         """A path in the benchmarks data/temp/ folder.

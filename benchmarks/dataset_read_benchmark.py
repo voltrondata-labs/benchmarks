@@ -27,8 +27,8 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         cases = self.get_cases(case, kwargs)
         for source in self.get_sources(source):
             tags = self.get_tags(kwargs, source)
-            format_str = self._get_format_str(source)
-            schema = self._get_schema(source, format_str)
+            format_str = source.format_str
+            schema = self._get_schema(source)
             s3 = pyarrow.fs.S3FileSystem(region=source.region)
             for case in cases:
                 (pre_buffer,) = case
@@ -66,23 +66,17 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         else:
             return lambda: dataset.to_table()
 
-    def _get_schema(self, source, format_str):
+    def _get_schema(self, source):
         # TODO: FileSystemDataset.from_paths() can't currently discover
         # the schema, but pyarrow.dataset.dataset() can. Ideally, we
         # would just be able to omit the schema in FileSystemDataset.
         path = "s3://" + source.paths[0]
-        return pyarrow.dataset.dataset(path, format=format_str).schema
-
-    def _get_format_str(self, source):
-        if "ipc" in source.name:
-            return "ipc"
-        else:
-            return "parquet"
+        return pyarrow.dataset.dataset(path, format=source.format_str).schema
 
     def _get_format(self, pre_buffer, format_str):
         # not using actual booleans... see hacks.py in conbench
         pre_buffer = True if pre_buffer == "true" else False
-        if format_str == "ipc":
+        if format_str == "feather":
             file_format = pyarrow.dataset.IpcFileFormat
         else:
             file_format = pyarrow.dataset.ParquetFileFormat
