@@ -13,7 +13,7 @@
 
 This package contains Python macro benchmarks for Apache Arrow, as well
 as benchmarks that execute and record the results for both the Arrow
-C++ micro benchmarks and the Arrow R macro benchmarks (which are found
+C++ & Java micro benchmarks and the Arrow R macro benchmarks (which are found
 in the [arrowbench](https://github.com/ursacomputing/arrowbench)
 repository). These benchmarks use the
 [Conbench runner](https://github.com/ursacomputing/conbench) for
@@ -21,7 +21,7 @@ benchmark execution, and the results are published to Arrow's public
 [Conbench server](https://conbench.ursa.dev/).
 
 On each commit to the main [Arrow](https://github.com/apache/arrow)
-branch, the C++, Python, and R benchmarks are run on a variety of
+branch, the C++, Python, Java, and R benchmarks are run on a variety of
 physical benchmarking machines & EC2 instances of different sizes, and
 the results are published to Conbench. Additionally, benchmarks can
 also be run on an Arrow pull request by adding a GitHub comment with
@@ -39,6 +39,7 @@ ursabot benchmark commands.
 @ursabot please benchmark
 @ursabot please benchmark lang=Python
 @ursabot please benchmark lang=C++
+@ursabot please benchmark lang=Java
 @ursabot please benchmark lang=R
 @ursabot please benchmark name=file-write
 @ursabot please benchmark name=file-write lang=Python
@@ -101,7 +102,7 @@ defaults or to disable a particular benchmark.
     > remotes::install_github("ursacomputing/arrowbench")
 
 
-### Install archery (to run C++ micro benchmarks)
+### Install archery (to run C++ & Java micro benchmarks)
     (qa) $ cd ~/workspace/
     (qa) $ pip install -e arrow/dev/archery
 
@@ -202,6 +203,7 @@ Commands:
   example-simple-exception    Run example-simple-exception benchmark.
   file-read                   Run file-read benchmark(s).
   file-write                  Run file-write benchmark(s).
+  java-micro                  Run the Arrow Java micro benchmarks.
   list                        List of benchmarks (for orchestration).
   partitioned-dataset-filter  Run partitioned-dataset-filter benchmark(s).
   wide-dataframe              Run wide-dataframe benchmark(s).
@@ -494,11 +496,12 @@ Options:
   --help                 Show this message and exit.
 ```
 
-More external benchmark examples that record C++ and R benchmark results:
+More external benchmark examples that record C++, Java, and R benchmark results:
 
 * [cpp_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
 * [dataframe_to_table_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataframe_to_table_benchmark.py)
 * [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [java_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/java_micro_benchmarks.py)
 * [partitioned_dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
 
 
