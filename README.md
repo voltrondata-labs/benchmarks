@@ -451,7 +451,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
     arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = self.get_tags(kwargs)
+        tags = {"year": "2020"}
         f = self._get_benchmark_function()
         yield self.benchmark(f, tags, kwargs)
 
