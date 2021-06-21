@@ -20,7 +20,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
 
 
 @conbench.runner.register_benchmark
-class RecordExternalBenchmark(_benchmark.Benchmark):
+class ExternalBenchmark(_benchmark.Benchmark):
     """Example benchmark that just records external results."""
 
     external = True
@@ -72,40 +72,7 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
 
 @conbench.runner.register_benchmark
 class CasesBenchmark(_benchmark.Benchmark):
-    """Example benchmark with a source, cases, and an option (count).
-
-    $ conbench example-cases --help
-    Usage: conbench example-cases [OPTIONS] SOURCE
-
-      Run example-cases benchmark(s).
-
-      For each benchmark option, the first option value is the default.
-
-      Valid benchmark combinations:
-      --color=pink --fruit=apple
-      --color=yellow --fruit=apple
-      --color=green --fruit=apple
-      --color=yellow --fruit=orange
-      --color=pink --fruit=orange
-
-      To run all combinations:
-      $ conbench example-cases --all=true
-
-    Options:
-      --all BOOLEAN                [default: False]
-      --color [pink|yellow|green]
-      --fruit [apple|orange]
-      --count INTEGER              [default: 1]
-      --iterations INTEGER         [default: 1]
-      --drop-caches BOOLEAN        [default: False]
-      --gc-collect BOOLEAN         [default: True]
-      --gc-disable BOOLEAN         [default: True]
-      --show-result BOOLEAN        [default: True]
-      --show-output BOOLEAN        [default: False]
-      --run-id TEXT                Group executions together with a run id.
-      --run-name TEXT              Name of run (commit, pull request, etc).
-      --help                       Show this message and exit.
-    """
+    """Example benchmark with a source, cases, and an option (count)."""
 
     name = "example-cases"
     valid_cases = (
@@ -176,7 +143,6 @@ class BenchmarkExceptionNoResultR(_benchmark.BenchmarkR):
 
 @conbench.runner.register_benchmark
 class CasesBenchmarkException(_benchmark.Benchmark):
-
     name = "example-cases-exception"
     valid_cases = (
         ("color", "fruit"),

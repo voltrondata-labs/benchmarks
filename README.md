@@ -125,12 +125,12 @@ defaults or to disable a particular benchmark.
     password: conbench
 
 
-### Running tests
+### Run tests
     (qa) $ cd ~/workspace/benchmarks/
     (qa) $ pytest -vv benchmarks/tests/
 
 
-### Formatting code (before committing)
+### Format code (before committing)
     (qa) $ cd ~/workspace/benchmarks/
     (qa) $ git status
         modified: foo.py
@@ -139,7 +139,13 @@ defaults or to disable a particular benchmark.
     (qa) $ git add foo.py
 
 
-### Generating a coverage report
+### Lint code (before committing)
+    (qa) $ cd ~/workspace/benchmarks/
+    (qa) $ flake8
+    ./foo/bar/__init__.py:1:1: F401 'FooBar' imported but unused
+
+
+### Generate coverage report
     (qa) $ cd ~/workspace/benchmarks/
     (qa) $ coverage run --source benchmarks -m pytest benchmarks/tests/
     (qa) $ coverage report -m
@@ -400,8 +406,7 @@ Example benchmark execution.
 There are three main types of benchmarks: "simple benchmarks" that time
 the execution of a unit of work, "external benchmarks" that just record
 benchmark results that were obtained from some other benchmarking tool,
-and "case benchmarks" which time the execution of a unit of work under
-different scenarios.
+and "case benchmarks" which benchmark a unit of work under different scenarios.
 
 Included in this repository are contrived, minimal examples of these
 different kinds of benchmarks to be used as templates for benchmark
@@ -413,9 +418,12 @@ authoring. These example benchmarks and their tests can be found here:
 
 ### Example simple benchmarks
 
-Note that this benchmark extends `benchmarks._benchmark.Benchmark`,
-implements the minimum required `run()` method, and registers itself
-with the `@conbench.runner.register_benchmark` decorator.
+A "simple benchmark" runs and records the execution time of a unit of work.
+
+Implementation details: Note that this benchmark extends
+`benchmarks._benchmark.Benchmark`, implements the minimum required `run()`
+method, and registers itself with the `@conbench.runner.register_benchmark`
+decorator.
 
 ```python
 @conbench.runner.register_benchmark
@@ -460,12 +468,17 @@ More simple benchmark examples that have minimal scaffolding:
 
 ### Example external benchmarks
 
-Note that the following benchmark sets `external = True`, and calls
-`record()` rather than `benchmark()` as the example above does.
+An "external benchmark" records results that were obtained from some other
+benchmarking tool (like executing the Arrow C++ micro benchmarks from command
+line, parsing the resulting JSON, and recording those results).
+
+Implementation details: Note that the following benchmark sets
+`external = True`, and calls `record()` rather than `benchmark()` as the
+example above does.
 
 ```python
 @conbench.runner.register_benchmark
-class RecordExternalBenchmark(_benchmark.Benchmark):
+class ExternalBenchmark(_benchmark.Benchmark):
     """Example benchmark that just records external results.
 
     $ conbench example-external --help
@@ -506,10 +519,10 @@ class RecordExternalBenchmark(_benchmark.Benchmark):
         )
 ```
 
-Note that the following benchmark extends `BenchmarkR`, sets both
-`external` and `r_only` to `True`, defines `r_name`,
-implements `_get_r_command()`, and calls `r_benchmark()` rather than
-`benchmark()` or `record()`.
+Implementation details: Note that the following benchmark extends `BenchmarkR`,
+sets both `external` and `r_only` to `True`, defines `r_name`, implements
+`_get_r_command()`, and calls `r_benchmark()` rather than `benchmark()` or
+`record()`.
 
 ```python
 @conbench.runner.register_benchmark
@@ -558,11 +571,14 @@ More external benchmark examples that record C++ and R benchmark results:
 
 ### Example case benchmarks
 
-Note that the following benchmark declares the valid combinations
-in `valid_cases`, which reads like a CSV (the first row contains the
-cases names). This benchmark example also accepts a data source
-argument (see `arguments`), and additional `options` that are reflected
-in the resulting command line interface.
+A "case benchmark" is a either a "simple benchmark" or an "external benchmark"
+executed under various predefined scenarios (cases).
+
+Implementation details: Note that the following benchmark declares the valid
+combinations in `valid_cases`, which reads like a CSV (the first row contains
+the cases names). This benchmark example also accepts a data source argument
+(see `arguments`), and additional `options` that are reflected in the resulting
+command line interface.
 
 
 ```python

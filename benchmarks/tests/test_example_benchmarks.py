@@ -233,7 +233,7 @@ def test_simple_cli():
 
 
 def test_external():
-    benchmark = _example_benchmarks.RecordExternalBenchmark()
+    benchmark = _example_benchmarks.ExternalBenchmark()
     [(result, output)] = benchmark.run()
     assert_external_benchmark(result)
     assert output == [100, 200, 300]
