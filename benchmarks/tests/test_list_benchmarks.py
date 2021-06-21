@@ -11,7 +11,7 @@ benchmarks_file = os.path.join(this_dir, "..", "..", "benchmarks.json")
 
 def test_list():
     simple = _example_benchmarks.SimpleBenchmark
-    external = _example_benchmarks.RecordExternalBenchmark
+    external = _example_benchmarks.ExternalBenchmark
     r_only = _example_benchmarks.WithoutPythonBenchmark
     cases = _example_benchmarks.CasesBenchmark
     classes = {
