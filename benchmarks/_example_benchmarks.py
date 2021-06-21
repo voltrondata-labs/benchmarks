@@ -11,7 +11,8 @@ class SimpleBenchmark(_benchmark.Benchmark):
     arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
+        tags = self.get_tags(kwargs)
+        tags["year"] = "2020"
         f = self._get_benchmark_function()
         yield self.benchmark(f, tags, kwargs)
 
@@ -32,6 +33,7 @@ class ExternalBenchmark(_benchmark.Benchmark):
         context = {"benchmark_language": "C++"}
 
         # external results from somewhere
+        # (an API call, command line execution, etc)
         result = {
             "data": [100, 200, 300],
             "unit": "i/s",

@@ -127,8 +127,6 @@ def assert_r_only_benchmark(result):
 def assert_r_only_benchmark_exception(result):
     munged = copy.deepcopy(result)
     assert_context(munged, language="R")
-    del munged["context"]
-    del munged["timestamp"]
     assert munged["tags"] == {
         "name": "example-R-only-exception",
         "year": "2020",
@@ -142,8 +140,6 @@ def assert_r_only_benchmark_exception(result):
 def assert_r_only_benchmark_exception_no_result(result):
     munged = copy.deepcopy(result)
     assert_context(munged, language="R")
-    del munged["context"]
-    del munged["timestamp"]
     assert munged["tags"] == {
         "name": "example-R-only-no-result",
         "year": "2020",
