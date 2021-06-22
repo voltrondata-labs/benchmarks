@@ -526,8 +526,7 @@ class CasesBenchmark(_benchmark.Benchmark):
 
     def run(self, case=None, **kwargs):
         tags = self.get_tags(kwargs)
-        cases = self.get_cases(case, kwargs)
-        for case in cases:
+        for case in self.get_cases(case, kwargs):
             rows, columns = case
             f = self._get_benchmark_function(rows, columns)
             yield self.benchmark(f, tags, kwargs, case)

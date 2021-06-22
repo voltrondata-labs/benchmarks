@@ -27,9 +27,8 @@ class WideDataframeBenchmark(_benchmark.Benchmark):
     def run(self, case=None, **kwargs):
         path = os.path.join(_sources.temp_dir, "wide.parquet")
         self._create_if_not_exists(path)
-        cases = self.get_cases(case, kwargs)
 
-        for case in cases:
+        for case in self.get_cases(case, kwargs):
             (legacy,) = case
             # not using actual booleans... see hacks.py in conbench
             legacy = True if legacy == "true" else False
