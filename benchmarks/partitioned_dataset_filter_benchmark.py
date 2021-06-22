@@ -16,11 +16,9 @@ class PartitionedDatasetFilterBenchmark(_benchmark.BenchmarkR):
         ["small_no_files"],
         ["count_rows"],
     )
-    arguments = []
 
     def run(self, case=None, **kwargs):
-        cases = self.get_cases(case, kwargs)
-        for case in cases:
+        for case in self.get_cases(case, kwargs):
             tags = self.get_tags(kwargs)
             tags["dataset"] = "dataset-taxi-parquet"
             command = self._get_r_command(kwargs, case)

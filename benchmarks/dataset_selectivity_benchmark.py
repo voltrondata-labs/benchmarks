@@ -9,6 +9,7 @@ class DatasetSelectivityBenchmark(_benchmark.Benchmark):
     """Read and filter a dataset with different selectivity."""
 
     name = "dataset-selectivity"
+    arguments = ["source"]
     sources = [
         "nyctaxi_multi_parquet_s3",
         "nyctaxi_multi_ipc_s3",

@@ -67,6 +67,7 @@ class FileReadBenchmark(FileBenchmark):
 
     name, r_name = "file-read", "read_file"
     valid_cases = [("file_type", "compression", "output_type")] + CASES
+    arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources_test = ["fanniemae_sample", "nyctaxi_sample"]
 
@@ -92,6 +93,7 @@ class FileWriteBenchmark(FileBenchmark):
 
     name, r_name = "file-write", "write_file"
     valid_cases = [("file_type", "compression", "input_type")] + CASES
+    arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources_test = ["fanniemae_sample", "nyctaxi_sample"]
 

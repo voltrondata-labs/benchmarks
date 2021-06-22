@@ -28,7 +28,7 @@ def test_list():
             "flags": {"language": "R"},
         },
         {
-            "command": "cases ALL --iterations=3 --all=true --drop-caches=true",
+            "command": "cases --iterations=3 --all=true --drop-caches=true",
             "flags": {"language": "Python"},
         },
         {

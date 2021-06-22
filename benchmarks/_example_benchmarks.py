@@ -5,18 +5,17 @@ from benchmarks import _benchmark
 
 @conbench.runner.register_benchmark
 class SimpleBenchmark(_benchmark.Benchmark):
-    """Example benchmark with no source, cases, or options."""
+    """Example benchmark without cases."""
 
     name = "example-simple"
-    arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
+        tags = self.get_tags(kwargs)
         f = self._get_benchmark_function()
         yield self.benchmark(f, tags, kwargs)
 
     def _get_benchmark_function(self):
-        return lambda: "hello!"
+        return lambda: 1 + 1
 
 
 @conbench.runner.register_benchmark
@@ -25,13 +24,10 @@ class ExternalBenchmark(_benchmark.Benchmark):
 
     external = True
     name = "example-external"
-    arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
-        context = {"benchmark_language": "C++"}
-
         # external results from somewhere
+        # (an API call, command line execution, etc)
         result = {
             "data": [100, 200, 300],
             "unit": "i/s",
@@ -39,6 +35,8 @@ class ExternalBenchmark(_benchmark.Benchmark):
             "time_unit": "s",
         }
 
+        tags = self.get_tags(kwargs)
+        context = {"benchmark_language": "C++"}
         yield self.record(
             result,
             tags,
@@ -54,11 +52,9 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
 
     external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
-    arguments = []
 
     def run(self, **kwargs):
         tags = self.get_tags(kwargs)
-        tags["year"] = "2020"
         command = self._get_r_command(kwargs)
         yield self.r_benchmark(command, tags, kwargs)
 
@@ -72,34 +68,25 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
 
 @conbench.runner.register_benchmark
 class CasesBenchmark(_benchmark.Benchmark):
-    """Example benchmark with a source, cases, and an option (count)."""
+    """Example benchmark with cases."""
 
     name = "example-cases"
     valid_cases = (
-        ("color", "fruit"),
-        ("pink", "apple"),
-        ("yellow", "apple"),
-        ("green", "apple"),
-        ("yellow", "orange"),
-        ("pink", "orange"),
+        ("rows", "columns"),
+        ("10", "10"),
+        ("2", "10"),
+        ("10", "2"),
     )
-    arguments = ["source"]
-    options = {"count": {"default": 1, "type": int}}
 
-    def run(self, source, case=None, count=1, **kwargs):
-        cases = self.get_cases(case, kwargs)
-        for source in self.get_sources(source):
-            tags = self._get_tags(source, count)
-            for case in cases:
-                f = self._get_benchmark_function(source, count, case)
-                yield self.benchmark(f, tags, kwargs, case)
+    def run(self, case=None, **kwargs):
+        tags = self.get_tags(kwargs)
+        for case in self.get_cases(case, kwargs):
+            rows, columns = case
+            f = self._get_benchmark_function(rows, columns)
+            yield self.benchmark(f, tags, kwargs, case)
 
-    def _get_benchmark_function(self, source, count, case):
-        return lambda: count * f"{source.name}, {case}"
-
-    def _get_tags(self, source, count):
-        info = {"count": count}
-        return {**source.tags, **info}
+    def _get_benchmark_function(self, rows, columns):
+        return lambda: int(rows) * [int(columns) * [0]]
 
 
 @conbench.runner.register_benchmark
@@ -107,7 +94,7 @@ class SimpleBenchmarkException(_benchmark.Benchmark):
     name = "example-simple-exception"
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
+        tags = self.get_tags(kwargs)
         f = self._get_benchmark_function()
         yield self.benchmark(f, tags, kwargs)
 
@@ -120,7 +107,7 @@ class BenchmarkExceptionR(_benchmark.BenchmarkR):
     name, r_name = "example-R-only-exception", "foo"
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
+        tags = self.get_tags(kwargs)
         command = self._get_r_command()
         yield self.r_benchmark(command, tags, kwargs)
 
@@ -133,7 +120,7 @@ class BenchmarkExceptionNoResultR(_benchmark.BenchmarkR):
     name, r_name = "example-R-only-no-result", "placebo"
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
+        tags = self.get_tags(kwargs)
         command = self._get_r_command()
         yield self.r_benchmark(command, tags, kwargs)
 
@@ -145,15 +132,15 @@ class BenchmarkExceptionNoResultR(_benchmark.BenchmarkR):
 class CasesBenchmarkException(_benchmark.Benchmark):
     name = "example-cases-exception"
     valid_cases = (
-        ("color", "fruit"),
-        ("pink", "apple"),
-        ("yellow", "orange"),
+        ("rows", "columns"),
+        ("10", "10"),
+        ("2", "10"),
+        ("10", "2"),
     )
 
     def run(self, case=None, **kwargs):
-        tags = {"year": "2020"}
-        cases = self.get_cases(case, kwargs)
-        for case in cases:
+        tags = self.get_tags(kwargs)
+        for case in self.get_cases(case, kwargs):
             f = self._get_benchmark_function()
             yield self.benchmark(f, tags, kwargs, case)
 

@@ -111,7 +111,6 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
 
     external = True
     name = "cpp-micro"
-    arguments = []
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
     description = "Run the Arrow C++ micro benchmarks."

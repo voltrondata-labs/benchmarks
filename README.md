@@ -174,231 +174,159 @@ Conbench can be run from either of the following directories.
 
 Use the `conbench --help` command to see the available benchmarks.
 
-    (qa) $ conbench --help
-    Usage: conbench [OPTIONS] COMMAND [ARGS]...
+```
+(qa) $ conbench --help
+Usage: conbench [OPTIONS] COMMAND [ARGS]...
 
-      Conbench: Language-independent Continuous Benchmarking (CB) Framework
+  Conbench: Language-independent Continuous Benchmarking (CB) Framework
 
-    Options:
-      --help  Show this message and exit.
+Options:
+  --help  Show this message and exit.
 
-    Commands:
-      cpp-micro                 Run the Arrow C++ micro benchmarks.
-      csv-read                  Run csv-read benchmark.
-      dataframe-to-table        Run dataframe-to-table benchmark.
-      dataset-filter            Run dataset-filter benchmark.
-      dataset-read              Run dataset-read benchmark(s).
-      dataset-select            Run dataset-select benchmark.
-      example-R-only            Run example-R-only benchmark.
-      example-R-only-exception  Run example-R-only-exception benchmark.
-      example-R-only-no-result  Run example-R-only-no-result benchmark.
-      example-cases             Run example-cases benchmark(s).
-      example-cases-exception   Run example-cases-exception benchmark(s).
-      example-external          Run example-external benchmark.
-      example-simple            Run example-simple benchmark.
-      example-simple-exception  Run example-simple-exception benchmark.
-      file-read                 Run file-read benchmark(s).
-      file-write                Run file-write benchmark(s).
-      list                      List of benchmarks (for orchestration).
-      wide-dataframe            Run wide-dataframe benchmark(s).
-
+Commands:
+  cpp-micro                   Run the Arrow C++ micro benchmarks.
+  csv-read                    Run csv-read benchmark.
+  dataframe-to-table          Run dataframe-to-table benchmark.
+  dataset-filter              Run dataset-filter benchmark.
+  dataset-read                Run dataset-read benchmark(s).
+  dataset-select              Run dataset-select benchmark.
+  dataset-selectivity         Run dataset-selectivity benchmark(s).
+  example-R-only              Run example-R-only benchmark.
+  example-R-only-exception    Run example-R-only-exception benchmark.
+  example-R-only-no-result    Run example-R-only-no-result benchmark.
+  example-cases               Run example-cases benchmark(s).
+  example-cases-exception     Run example-cases-exception benchmark(s).
+  example-external            Run example-external benchmark.
+  example-simple              Run example-simple benchmark.
+  example-simple-exception    Run example-simple-exception benchmark.
+  file-read                   Run file-read benchmark(s).
+  file-write                  Run file-write benchmark(s).
+  list                        List of benchmarks (for orchestration).
+  partitioned-dataset-filter  Run partitioned-dataset-filter benchmark(s).
+  wide-dataframe              Run wide-dataframe benchmark(s).
+```
 
 Help is also available for individual benchmark commands.
 
-    (qa) $ conbench file-write --help
-    Usage: conbench file-write [OPTIONS] SOURCE
+```
+(qa) $ conbench file-write --help
+Usage: conbench file-write [OPTIONS] SOURCE
 
-      Run file-write benchmark(s).
+  Run file-write benchmark(s).
 
-      For each benchmark option, the first option value is the default.
+  For each benchmark option, the first option value is the default.
 
-      Valid benchmark combinations:
-      --file-type=parquet --compression=uncompressed --input-type=table
-      --file-type=parquet --compression=uncompressed --input-type=dataframe
-      --file-type=parquet --compression=lz4 --input-type=table
-      --file-type=parquet --compression=lz4 --input-type=dataframe
-      --file-type=parquet --compression=zstd --input-type=table
-      --file-type=parquet --compression=zstd --input-type=dataframe
-      --file-type=parquet --compression=snappy --input-type=table
-      --file-type=parquet --compression=snappy --input-type=dataframe
-      --file-type=feather --compression=uncompressed --input-type=table
-      --file-type=feather --compression=uncompressed --input-type=dataframe
-      --file-type=feather --compression=lz4 --input-type=table
-      --file-type=feather --compression=lz4 --input-type=dataframe
-      --file-type=feather --compression=zstd --input-type=table
-      --file-type=feather --compression=zstd --input-type=dataframe
+  Valid benchmark combinations:
+  --file-type=parquet --compression=uncompressed --input-type=table
+  --file-type=parquet --compression=uncompressed --input-type=dataframe
+  --file-type=parquet --compression=lz4 --input-type=table
+  --file-type=parquet --compression=lz4 --input-type=dataframe
+  --file-type=parquet --compression=zstd --input-type=table
+  --file-type=parquet --compression=zstd --input-type=dataframe
+  --file-type=parquet --compression=snappy --input-type=table
+  --file-type=parquet --compression=snappy --input-type=dataframe
+  --file-type=feather --compression=uncompressed --input-type=table
+  --file-type=feather --compression=uncompressed --input-type=dataframe
+  --file-type=feather --compression=lz4 --input-type=table
+  --file-type=feather --compression=lz4 --input-type=dataframe
+  --file-type=feather --compression=zstd --input-type=table
+  --file-type=feather --compression=zstd --input-type=dataframe
 
-      To run all combinations:
-      $ conbench file-write --all=true
+  To run all combinations:
+  $ conbench file-write --all=true
 
-    Options:
-      --file-type [feather|parquet]
-      --compression [lz4|snappy|uncompressed|zstd]
-      --input-type [dataframe|table]
-      --all BOOLEAN                   [default: False]
-      --language [Python|R]
-      --cpu-count INTEGER
-      --iterations INTEGER            [default: 1]
-      --drop-caches BOOLEAN           [default: False]
-      --gc-collect BOOLEAN            [default: True]
-      --gc-disable BOOLEAN            [default: True]
-      --show-result BOOLEAN           [default: True]
-      --show-output BOOLEAN           [default: False]
-      --run-id TEXT                   Group executions together with a run id.
-      --run-name TEXT                 Name of run (commit, pull request, etc).
-      --help                          Show this message and exit.
+Options:
+  --file-type [feather|parquet]
+  --compression [lz4|snappy|uncompressed|zstd]
+  --input-type [dataframe|table]
+  --all BOOLEAN                   [default: False]
+  --language [Python|R]
+  --cpu-count INTEGER
+  --iterations INTEGER            [default: 1]
+  --drop-caches BOOLEAN           [default: False]
+  --gc-collect BOOLEAN            [default: True]
+  --gc-disable BOOLEAN            [default: True]
+  --show-result BOOLEAN           [default: True]
+  --show-output BOOLEAN           [default: False]
+  --run-id TEXT                   Group executions together with a run id.
+  --run-name TEXT                 Name of run (commit, pull request, etc).
+  --help                          Show this message and exit.
+```
 
 Example benchmark execution.
 
-    (qa) $ conbench file-read nyctaxi_sample --file-type=parquet --iterations=10 --gc-disable=false
-    {
-        "context": {
-            "arrow_compiler_flags": "-fPIC -arch x86_64 -arch x86_64 -std=c++11 -Qunused-arguments -fcolor-diagnostics -O3 -DNDEBUG",
-            "arrow_compiler_id": "AppleClang",
-            "arrow_compiler_version": "12.0.0.12000032",
-            "arrow_version": "3.0.0",
-            "benchmark_language": "Python",
-            "benchmark_language_version": "Python 3.9.2"
-        },
-        "machine_info": {
-            "architecture_name": "x86_64",
-            "cpu_core_count": "2",
-            "cpu_frequency_max_hz": "3500000000",
-            "cpu_l1d_cache_bytes": "32768",
-            "cpu_l1i_cache_bytes": "32768",
-            "cpu_l2_cache_bytes": "262144",
-            "cpu_l3_cache_bytes": "4194304",
-            "cpu_model_name": "Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz",
-            "cpu_thread_count": "4",
-            "kernel_name": "19.6.0",
-            "memory_bytes": "17179869184",
-            "name": "machine-abc",
-            "os_name": "macOS",
-            "os_version": "10.15.7"
-        },
-        "github": {
-            "commit": "d613aa68789288d3503dfbd8376a41f2d28b6c9d",
-            "repository": "https://github.com/apache/arrow"
-        },
-        "stats": {
-            "batch_id": "02cefea96d4a49a89f2811e2bffe62e4",
-            "data": [
-                "0.009295",
-                "0.003656",
-                "0.004177",
-                "0.003861",
-                "0.003739",
-                "0.003731",
-                "0.004225",
-                "0.004265",
-                "0.004166",
-                "0.003727"
-            ],
-            "iqr": "0.000480",
-            "iterations": 10,
-            "max": "0.009295",
-            "mean": "0.004484",
-            "median": "0.004014",
-            "min": "0.003656",
-            "q1": "0.003733",
-            "q3": "0.004213",
-            "run_id": "02cefea96d4a49a89f2811e2bffe62e4",
-            "stdev": "0.001707",
-            "time_unit": "s",
-            "times": [],
-            "timestamp": "2021-04-28T00:54:38.886074+00:00",
-            "unit": "s"
-        },
-        "tags": {
-            "compression": "lz4",
-            "cpu_count": null,
-            "dataset": "nyctaxi_sample",
-            "file_type": "parquet",
-            "name": "file-read",
-            "output_type": "dataframe"
-        }
-    }
+```
+(qa) $ conbench file-read nyctaxi_sample --file-type=parquet --iterations=10 --gc-disable=false
 
-### Manually run benchmarks
-    (qa) $ cd ~/workspace/benchmarks/benchmarks/
-    (qa) $ python
-    >>> import json
-    >>> from benchmarks import file_benchmark
-    >>> from benchmarks import _sources
-    >>> source = _sources.Source("nyctaxi_sample")
-    >>> benchmark = file_benchmark.FileWriteBenchmark()
-    >>> [(result, output)] = benchmark.run(
-    ...     source,
-    ...     file_type="parquet",
-    ...     compression="snappy",
-    ...     input_type="table",
-    ...     iterations=5,
-    ...     cpu_count=2
-    ... )
-    >>> print(json.dumps(result, indent=4, sort_keys=True))
-    {
-        "context": {
-            "arrow_compiler_flags": "-fPIC -arch x86_64 -arch x86_64 -std=c++11 -Qunused-arguments -fcolor-diagnostics -O3 -DNDEBUG",
-            "arrow_compiler_id": "AppleClang",
-            "arrow_compiler_version": "12.0.0.12000032",
-            "arrow_version": "3.0.0",
-            "benchmark_language": "Python",
-            "benchmark_language_version": "Python 3.9.2"
-        },
-        "machine_info": {
-            "architecture_name": "x86_64",
-            "cpu_core_count": "2",
-            "cpu_frequency_max_hz": "3500000000",
-            "cpu_l1d_cache_bytes": "32768",
-            "cpu_l1i_cache_bytes": "32768",
-            "cpu_l2_cache_bytes": "262144",
-            "cpu_l3_cache_bytes": "4194304",
-            "cpu_model_name": "Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz",
-            "cpu_thread_count": "4",
-            "kernel_name": "19.6.0",
-            "memory_bytes": "17179869184",
-            "name": "machine-abc",
-            "os_name": "macOS",
-            "os_version": "10.15.7"
-        },
-        "github": {
-            "commit": "d613aa68789288d3503dfbd8376a41f2d28b6c9d",
-            "repository": "https://github.com/apache/arrow"
-        },
-        "stats": {
-            "batch_id": "77f793ed5e8d4fe1817ceadab2e08593",
-            "data": [
-                "0.006240",
-                "0.005427",
-                "0.004735",
-                "0.004718",
-                "0.005053"
-            ],
-            "iqr": "0.000692",
-            "iterations": 5,
-            "max": "0.006240",
-            "mean": "0.005235",
-            "median": "0.005053",
-            "min": "0.004718",
-            "q1": "0.004735",
-            "q3": "0.005427",
-            "run_id": "77f793ed5e8d4fe1817ceadab2e08593",
-            "stdev": "0.000632",
-            "time_unit": "s",
-            "times": [],
-            "timestamp": "2021-04-28T00:52:10.746032+00:00",
-            "unit": "s"
-        },
-        "tags": {
-            "compression": "snappy",
-            "cpu_count": 2,
-            "dataset": "nyctaxi_sample",
-            "file_type": "parquet",
-            "input_type": "table",
-            "name": "file-write"
-        }
+Benchmark result:
+{
+    "context": {
+        "arrow_compiler_flags": "-fPIC -arch x86_64 -arch x86_64 -std=c++11 -Qunused-arguments -fcolor-diagnostics -O3 -DNDEBUG",
+        "arrow_compiler_id": "AppleClang",
+        "arrow_compiler_version": "12.0.0.12000032",
+        "arrow_version": "4.0.0",
+        "benchmark_language": "Python",
+        "benchmark_language_version": "Python 3.9.2"
+    },
+    "github": {
+        "commit": "f959141ece4d660bce5f7fa545befc0116a7db79",
+        "repository": "https://github.com/apache/arrow"
+    },
+    "machine_info": {
+        "architecture_name": "x86_64",
+        "cpu_core_count": "2",
+        "cpu_frequency_max_hz": "3500000000",
+        "cpu_l1d_cache_bytes": "32768",
+        "cpu_l1i_cache_bytes": "32768",
+        "cpu_l2_cache_bytes": "262144",
+        "cpu_l3_cache_bytes": "4194304",
+        "cpu_model_name": "Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz",
+        "cpu_thread_count": "4",
+        "kernel_name": "20.5.0",
+        "memory_bytes": "17179869184",
+        "name": "machine-abc",
+        "os_name": "macOS",
+        "os_version": "10.16"
+    },
+    "stats": {
+        "batch_id": "ccb3a04d20ce49ed8be620671129c3ce",
+        "data": [
+            "0.011945",
+            "0.005703",
+            "0.003593",
+            "0.003556",
+            "0.003648",
+            "0.003815",
+            "0.003887",
+            "0.003463",
+            "0.003822",
+            "0.003223"
+        ],
+        "iqr": "0.000305",
+        "iterations": 10,
+        "max": "0.011945",
+        "mean": "0.004665",
+        "median": "0.003731",
+        "min": "0.003223",
+        "q1": "0.003565",
+        "q3": "0.003871",
+        "run_id": "ccb3a04d20ce49ed8be620671129c3ce",
+        "stdev": "0.002647",
+        "time_unit": "s",
+        "times": [],
+        "timestamp": "2021-06-22T20:48:09.761129+00:00",
+        "unit": "s"
+    },
+    "tags": {
+        "compression": "lz4",
+        "cpu_count": null,
+        "dataset": "nyctaxi_sample",
+        "file_type": "parquet",
+        "name": "file-read",
+        "output_type": "dataframe"
     }
-    >>>
+}
+```
 
 
 ## Authoring benchmarks
@@ -428,35 +356,37 @@ decorator.
 ```python
 @conbench.runner.register_benchmark
 class SimpleBenchmark(_benchmark.Benchmark):
-    """Example benchmark with no source, cases, or options.
-
-    $ conbench example-simple --help
-    Usage: conbench example-simple [OPTIONS]
-
-      Run example-simple benchmark.
-
-    Options:
-      --iterations INTEGER   [default: 1]
-      --drop-caches BOOLEAN  [default: False]
-      --gc-collect BOOLEAN   [default: True]
-      --gc-disable BOOLEAN   [default: True]
-      --show-result BOOLEAN  [default: True]
-      --show-output BOOLEAN  [default: False]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example benchmark without cases."""
 
     name = "example-simple"
-    arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
+        tags = self.get_tags(kwargs)
         f = self._get_benchmark_function()
         yield self.benchmark(f, tags, kwargs)
 
     def _get_benchmark_function(self):
-        return lambda: "hello!"
+        return lambda: 1 + 1
+```
+
+```
+$ conbench example-simple --help
+
+Usage: conbench example-simple [OPTIONS]
+
+  Run example-simple benchmark.
+
+Options:
+  --cpu-count INTEGER
+  --iterations INTEGER   [default: 1]
+  --drop-caches BOOLEAN  [default: False]
+  --gc-collect BOOLEAN   [default: True]
+  --gc-disable BOOLEAN   [default: True]
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
 ```
 
 
@@ -464,6 +394,7 @@ More simple benchmark examples that have minimal scaffolding:
 
 * [csv_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
 * [dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
+* [dataset_select_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_select_benchmark.py)
 
 
 ### Example external benchmarks
@@ -479,30 +410,14 @@ example above does.
 ```python
 @conbench.runner.register_benchmark
 class ExternalBenchmark(_benchmark.Benchmark):
-    """Example benchmark that just records external results.
-
-    $ conbench example-external --help
-    Usage: conbench example-external [OPTIONS]
-
-      Run example-external benchmark.
-
-    Options:
-      --show-result BOOLEAN  [default: True]
-      --show-output BOOLEAN  [default: False]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example benchmark that just records external results."""
 
     external = True
     name = "example-external"
-    arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
-        context = {"benchmark_language": "C++"}
-
         # external results from somewhere
+        # (an API call, command line execution, etc)
         result = {
             "data": [100, 200, 300],
             "unit": "i/s",
@@ -510,6 +425,8 @@ class ExternalBenchmark(_benchmark.Benchmark):
             "time_unit": "s",
         }
 
+        tags = self.get_tags(kwargs)
+        context = {"benchmark_language": "C++"}
         yield self.record(
             result,
             tags,
@@ -517,6 +434,22 @@ class ExternalBenchmark(_benchmark.Benchmark):
             kwargs,
             output=result["data"],
         )
+```
+
+```
+$ conbench example-external --help
+
+Usage: conbench example-external [OPTIONS]
+
+  Run example-external benchmark.
+
+Options:
+  --cpu-count INTEGER
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
 ```
 
 Implementation details: Note that the following benchmark extends `BenchmarkR`,
@@ -527,30 +460,13 @@ sets both `external` and `r_only` to `True`, defines `r_name`, implements
 ```python
 @conbench.runner.register_benchmark
 class WithoutPythonBenchmark(_benchmark.BenchmarkR):
-    """Example R benchmark that doesn't have a Python equivalent.
-
-    $ conbench example-R-only --help
-    Usage: conbench example-R-only [OPTIONS]
-
-      Run example-R-only benchmark.
-
-    Options:
-      --iterations INTEGER   [default: 1]
-      --cpu-count INTEGER
-      --show-result BOOLEAN  [default: True]
-      --show-output BOOLEAN  [default: False]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example R benchmark that doesn't have a Python equivalent."""
 
     external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
-    arguments = []
 
     def run(self, **kwargs):
         tags = self.get_tags(kwargs)
-        tags["year"] = "2020"
         command = self._get_r_command(kwargs)
         yield self.r_benchmark(command, tags, kwargs)
 
@@ -562,11 +478,30 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
         )
 ```
 
+```
+$ conbench example-R-only --help
+
+Usage: conbench example-R-only [OPTIONS]
+
+  Run example-R-only benchmark.
+
+Options:
+  --iterations INTEGER   [default: 1]
+  --drop-caches BOOLEAN  [default: False]
+  --cpu-count INTEGER
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
+```
 
 More external benchmark examples that record C++ and R benchmark results:
 
 * [cpp_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
 * [dataframe_to_table_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataframe_to_table_benchmark.py)
+* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [partitioned_dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
 
 
 ### Example case benchmarks
@@ -576,79 +511,69 @@ executed under various predefined scenarios (cases).
 
 Implementation details: Note that the following benchmark declares the valid
 combinations in `valid_cases`, which reads like a CSV (the first row contains
-the cases names). This benchmark example also accepts a data source argument
-(see `arguments`), and additional `options` that are reflected in the resulting
-command line interface.
+the cases names).
 
 
 ```python
 @conbench.runner.register_benchmark
 class CasesBenchmark(_benchmark.Benchmark):
-    """Example benchmark with a source, cases, and an option (count).
-
-    $ conbench example-cases --help
-    Usage: conbench example-cases [OPTIONS] SOURCE
-
-      Run example-cases benchmark(s).
-
-      For each benchmark option, the first option value is the default.
-
-      Valid benchmark combinations:
-      --color=pink --fruit=apple
-      --color=yellow --fruit=apple
-      --color=green --fruit=apple
-      --color=yellow --fruit=orange
-      --color=pink --fruit=orange
-
-      To run all combinations:
-      $ conbench example-cases --all=true
-
-    Options:
-      --all BOOLEAN                [default: False]
-      --color [pink|yellow|green]
-      --fruit [apple|orange]
-      --count INTEGER              [default: 1]
-      --iterations INTEGER         [default: 1]
-      --drop-caches BOOLEAN        [default: False]
-      --gc-collect BOOLEAN         [default: True]
-      --gc-disable BOOLEAN         [default: True]
-      --show-result BOOLEAN        [default: True]
-      --show-output BOOLEAN        [default: False]
-      --run-id TEXT                Group executions together with a run id.
-      --run-name TEXT              Name of run (commit, pull request, etc).
-      --help                       Show this message and exit.
-    """
+    """Example benchmark with cases."""
 
     name = "example-cases"
     valid_cases = (
-        ("color", "fruit"),
-        ("pink", "apple"),
-        ("yellow", "apple"),
-        ("green", "apple"),
-        ("yellow", "orange"),
-        ("pink", "orange"),
+        ("rows", "columns"),
+        ("10", "10"),
+        ("2", "10"),
+        ("10", "2"),
     )
-    arguments = ["source"]
-    options = {"count": {"default": 1, "type": int}}
 
-    def run(self, source, case=None, count=1, **kwargs):
-        cases = self.get_cases(case, kwargs)
-        for source in self.get_sources(source):
-            tags = self._get_tags(source, count)
-            for case in cases:
-                f = self._get_benchmark_function(source, count, case)
-                yield self.benchmark(f, tags, kwargs, case)
+    def run(self, case=None, **kwargs):
+        tags = self.get_tags(kwargs)
+        for case in self.get_cases(case, kwargs):
+            rows, columns = case
+            f = self._get_benchmark_function(rows, columns)
+            yield self.benchmark(f, tags, kwargs, case)
 
-    def _get_benchmark_function(self, source, count, case):
-        return lambda: count * f"{source.name}, {case}"
+    def _get_benchmark_function(self, rows, columns):
+        return lambda: int(rows) * [int(columns) * [0]]
+```
 
-    def _get_tags(self, source, count):
-        info = {"count": count}
-        return {**source.tags, **info}
+```
+$ conbench example-cases --help
+Usage: conbench example-cases [OPTIONS]
+
+  Run example-cases benchmark(s).
+
+  For each benchmark option, the first option value is the default.
+
+  Valid benchmark combinations:
+  --rows=10 --columns=10
+  --rows=2 --columns=10
+  --rows=10 --columns=2
+
+  To run all combinations:
+  $ conbench example-cases --all=true
+
+Options:
+  --rows [10|2]
+  --columns [10|2]
+  --all BOOLEAN          [default: False]
+  --cpu-count INTEGER
+  --iterations INTEGER   [default: 1]
+  --drop-caches BOOLEAN  [default: False]
+  --gc-collect BOOLEAN   [default: True]
+  --gc-disable BOOLEAN   [default: True]
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
 ```
 
 More case benchmark examples:
 
-* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
-* [wide_dataframe_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/wide_dataframe_benchmark.py)
 * [dataset_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_read_benchmark.py)
+* [dataset_selectivity_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_selectivity_benchmark.py)
+* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [partitioned_dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
+* [wide_dataframe_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/wide_dataframe_benchmark.py)
