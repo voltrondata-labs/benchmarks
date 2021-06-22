@@ -84,7 +84,12 @@ class Benchmark(conbench.runner.Benchmark):
         tags, context = self._get_tags_and_context(case, extra_tags)
         try:
             benchmark, output = self.conbench.benchmark(
-                f, self.name, tags, context, self.github_info, options
+                f,
+                self.name,
+                tags=tags,
+                context=context,
+                github=self.github_info,
+                options=options,
             )
             self.conbench.publish(benchmark)
         except Exception as e:
@@ -106,7 +111,13 @@ class Benchmark(conbench.runner.Benchmark):
         tags, context = self._get_tags_and_context(case, extra_tags)
         context.update(**extra_context)
         benchmark, output = self.conbench.record(
-            result, name, tags, context, self.github_info, options, output
+            result,
+            name,
+            tags=tags,
+            context=context,
+            github=self.github_info,
+            options=options,
+            output=output,
         )
         self.conbench.publish(benchmark)
         return benchmark, output
