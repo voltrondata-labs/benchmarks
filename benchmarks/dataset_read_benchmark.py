@@ -16,6 +16,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         ["true"],
         ["false"],
     )
+    arguments = ["source"]
     sources = ["nyctaxi_multi_parquet_s3", "nyctaxi_multi_ipc_s3"]
     sources_test = ["nyctaxi_multi_parquet_s3_sample", "nyctaxi_multi_ipc_s3_sample"]
 

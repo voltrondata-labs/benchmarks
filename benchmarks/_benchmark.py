@@ -68,7 +68,7 @@ class BenchmarkList(conbench.runner.BenchmarkList):
 
 
 class Benchmark(conbench.runner.Benchmark):
-    arguments = ["source"]
+    arguments = []
     options = {"cpu_count": {"type": int}}
 
     def __init__(self):
@@ -200,7 +200,7 @@ class Benchmark(conbench.runner.Benchmark):
 
 
 class BenchmarkR(Benchmark):
-    arguments = ["source"]
+    arguments = []
     options = {
         "iterations": {"default": 1, "type": int},
         "drop_caches": {"type": bool, "default": "false"},

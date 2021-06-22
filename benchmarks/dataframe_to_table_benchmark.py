@@ -11,6 +11,7 @@ class DataframeToTableBenchmark(_benchmark.BenchmarkPythonR):
     """Convert a pandas dataframe to an arrow table."""
 
     name, r_name = "dataframe-to-table", "df_to_table"
+    arguments = ["source"]
     sources = [
         "chi_traffic_2020_Q1",
         "type_strings",

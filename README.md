@@ -428,35 +428,37 @@ decorator.
 ```python
 @conbench.runner.register_benchmark
 class SimpleBenchmark(_benchmark.Benchmark):
-    """Example benchmark with no source, cases, or options.
-
-    $ conbench example-simple --help
-    Usage: conbench example-simple [OPTIONS]
-
-      Run example-simple benchmark.
-
-    Options:
-      --iterations INTEGER   [default: 1]
-      --drop-caches BOOLEAN  [default: False]
-      --gc-collect BOOLEAN   [default: True]
-      --gc-disable BOOLEAN   [default: True]
-      --show-result BOOLEAN  [default: True]
-      --show-output BOOLEAN  [default: False]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example benchmark without cases."""
 
     name = "example-simple"
-    arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
+        tags = self.get_tags(kwargs)
         f = self._get_benchmark_function()
         yield self.benchmark(f, tags, kwargs)
 
     def _get_benchmark_function(self):
-        return lambda: "hello!"
+        return lambda: 1 + 1
+```
+
+```
+$ conbench example-simple --help
+
+Usage: conbench example-simple [OPTIONS]
+
+  Run example-simple benchmark.
+
+Options:
+  --cpu-count INTEGER
+  --iterations INTEGER   [default: 1]
+  --drop-caches BOOLEAN  [default: False]
+  --gc-collect BOOLEAN   [default: True]
+  --gc-disable BOOLEAN   [default: True]
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
 ```
 
 
@@ -479,29 +481,12 @@ example above does.
 ```python
 @conbench.runner.register_benchmark
 class ExternalBenchmark(_benchmark.Benchmark):
-    """Example benchmark that just records external results.
-
-    $ conbench example-external --help
-    Usage: conbench example-external [OPTIONS]
-
-      Run example-external benchmark.
-
-    Options:
-      --show-result BOOLEAN  [default: True]
-      --show-output BOOLEAN  [default: False]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example benchmark that just records external results."""
 
     external = True
     name = "example-external"
-    arguments, options = [], {}
 
     def run(self, **kwargs):
-        tags = {"year": "2020"}
-        context = {"benchmark_language": "C++"}
-
         # external results from somewhere
         # (an API call, command line execution, etc)
         result = {
@@ -511,6 +496,8 @@ class ExternalBenchmark(_benchmark.Benchmark):
             "time_unit": "s",
         }
 
+        tags = self.get_tags(kwargs)
+        context = {"benchmark_language": "C++"}
         yield self.record(
             result,
             tags,
@@ -518,6 +505,22 @@ class ExternalBenchmark(_benchmark.Benchmark):
             kwargs,
             output=result["data"],
         )
+```
+
+```
+$ conbench example-external --help
+
+Usage: conbench example-external [OPTIONS]
+
+  Run example-external benchmark.
+
+Options:
+  --cpu-count INTEGER
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
 ```
 
 Implementation details: Note that the following benchmark extends `BenchmarkR`,
@@ -528,26 +531,10 @@ sets both `external` and `r_only` to `True`, defines `r_name`, implements
 ```python
 @conbench.runner.register_benchmark
 class WithoutPythonBenchmark(_benchmark.BenchmarkR):
-    """Example R benchmark that doesn't have a Python equivalent.
-
-    $ conbench example-R-only --help
-    Usage: conbench example-R-only [OPTIONS]
-
-      Run example-R-only benchmark.
-
-    Options:
-      --iterations INTEGER   [default: 1]
-      --cpu-count INTEGER
-      --show-result BOOLEAN  [default: True]
-      --show-output BOOLEAN  [default: False]
-      --run-id TEXT          Group executions together with a run id.
-      --run-name TEXT        Name of run (commit, pull request, etc).
-      --help                 Show this message and exit.
-    """
+    """Example R benchmark that doesn't have a Python equivalent."""
 
     external, r_only = True, True
     name, r_name = "example-R-only", "placebo"
-    arguments = []
 
     def run(self, **kwargs):
         tags = self.get_tags(kwargs)
@@ -562,6 +549,23 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
         )
 ```
 
+```
+$ conbench example-R-only --help
+
+Usage: conbench example-R-only [OPTIONS]
+
+  Run example-R-only benchmark.
+
+Options:
+  --iterations INTEGER   [default: 1]
+  --drop-caches BOOLEAN  [default: False]
+  --cpu-count INTEGER
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
+```
 
 More external benchmark examples that record C++ and R benchmark results:
 
@@ -576,75 +580,64 @@ executed under various predefined scenarios (cases).
 
 Implementation details: Note that the following benchmark declares the valid
 combinations in `valid_cases`, which reads like a CSV (the first row contains
-the cases names). This benchmark example also accepts a data source argument
-(see `arguments`), and additional `options` that are reflected in the resulting
-command line interface.
+the cases names).
 
 
 ```python
 @conbench.runner.register_benchmark
 class CasesBenchmark(_benchmark.Benchmark):
-    """Example benchmark with a source, cases, and an option (count).
-
-    $ conbench example-cases --help
-    Usage: conbench example-cases [OPTIONS] SOURCE
-
-      Run example-cases benchmark(s).
-
-      For each benchmark option, the first option value is the default.
-
-      Valid benchmark combinations:
-      --color=pink --fruit=apple
-      --color=yellow --fruit=apple
-      --color=green --fruit=apple
-      --color=yellow --fruit=orange
-      --color=pink --fruit=orange
-
-      To run all combinations:
-      $ conbench example-cases --all=true
-
-    Options:
-      --all BOOLEAN                [default: False]
-      --color [pink|yellow|green]
-      --fruit [apple|orange]
-      --count INTEGER              [default: 1]
-      --iterations INTEGER         [default: 1]
-      --drop-caches BOOLEAN        [default: False]
-      --gc-collect BOOLEAN         [default: True]
-      --gc-disable BOOLEAN         [default: True]
-      --show-result BOOLEAN        [default: True]
-      --show-output BOOLEAN        [default: False]
-      --run-id TEXT                Group executions together with a run id.
-      --run-name TEXT              Name of run (commit, pull request, etc).
-      --help                       Show this message and exit.
-    """
+    """Example benchmark with cases."""
 
     name = "example-cases"
     valid_cases = (
-        ("color", "fruit"),
-        ("pink", "apple"),
-        ("yellow", "apple"),
-        ("green", "apple"),
-        ("yellow", "orange"),
-        ("pink", "orange"),
+        ("rows", "columns"),
+        ("10", "10"),
+        ("2", "10"),
+        ("10", "2"),
     )
-    arguments = ["source"]
-    options = {"count": {"default": 1, "type": int}}
 
-    def run(self, source, case=None, count=1, **kwargs):
+    def run(self, case=None, **kwargs):
+        tags = self.get_tags(kwargs)
         cases = self.get_cases(case, kwargs)
-        for source in self.get_sources(source):
-            tags = self._get_tags(source, count)
-            for case in cases:
-                f = self._get_benchmark_function(source, count, case)
-                yield self.benchmark(f, tags, kwargs, case)
+        for case in cases:
+            rows, columns = case
+            f = self._get_benchmark_function(rows, columns)
+            yield self.benchmark(f, tags, kwargs, case)
 
-    def _get_benchmark_function(self, source, count, case):
-        return lambda: count * f"{source.name}, {case}"
+    def _get_benchmark_function(self, rows, columns):
+        return lambda: int(rows) * [int(columns) * [0]]
+```
 
-    def _get_tags(self, source, count):
-        info = {"count": count}
-        return {**source.tags, **info}
+```
+$ conbench example-cases --help
+Usage: conbench example-cases [OPTIONS]
+
+  Run example-cases benchmark(s).
+
+  For each benchmark option, the first option value is the default.
+
+  Valid benchmark combinations:
+  --rows=10 --columns=10
+  --rows=2 --columns=10
+  --rows=10 --columns=2
+
+  To run all combinations:
+  $ conbench example-cases --all=true
+
+Options:
+  --rows [10|2]
+  --columns [10|2]
+  --all BOOLEAN          [default: False]
+  --cpu-count INTEGER
+  --iterations INTEGER   [default: 1]
+  --drop-caches BOOLEAN  [default: False]
+  --gc-collect BOOLEAN   [default: True]
+  --gc-disable BOOLEAN   [default: True]
+  --show-result BOOLEAN  [default: True]
+  --show-output BOOLEAN  [default: False]
+  --run-id TEXT          Group executions together with a run id.
+  --run-name TEXT        Name of run (commit, pull request, etc).
+  --help                 Show this message and exit.
 ```
 
 More case benchmark examples:

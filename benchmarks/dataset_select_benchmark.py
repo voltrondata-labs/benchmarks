@@ -9,6 +9,7 @@ class DatasetSelectBenchmark(_benchmark.Benchmark):
     """Read and filter a dataset on partition expressions."""
 
     name = "dataset-select"
+    arguments = ["source"]
     sources = ["nyctaxi_multi_parquet_s3_repartitioned"]
     # This does not load a large amount of data in tests because we
     # always pluck exactly one file from the dataset

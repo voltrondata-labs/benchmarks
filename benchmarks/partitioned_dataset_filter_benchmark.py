@@ -16,7 +16,6 @@ class PartitionedDatasetFilterBenchmark(_benchmark.BenchmarkR):
         ["small_no_files"],
         ["count_rows"],
     )
-    arguments = []
 
     def run(self, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)

@@ -9,6 +9,7 @@ class CsvReadBenchmark(_benchmark.Benchmark):
     """Read CSV file to arrow table."""
 
     name = "csv-read"
+    arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources_test = ["fanniemae_sample", "nyctaxi_sample"]
 

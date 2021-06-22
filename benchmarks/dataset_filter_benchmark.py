@@ -9,6 +9,7 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
     """Read and filter a dataset."""
 
     name = "dataset-filter"
+    arguments = ["source"]
     sources = ["nyctaxi_2010-01"]
     sources_test = ["nyctaxi_sample"]
 

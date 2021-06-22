@@ -23,7 +23,6 @@ class WideDataframeBenchmark(_benchmark.Benchmark):
         ["true"],
         ["false"],
     )
-    arguments = []
 
     def run(self, case=None, **kwargs):
         path = os.path.join(_sources.temp_dir, "wide.parquet")
