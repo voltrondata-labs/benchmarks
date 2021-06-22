@@ -394,6 +394,7 @@ More simple benchmark examples that have minimal scaffolding:
 
 * [csv_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
 * [dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
+* [dataset_select_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_select_benchmark.py)
 
 
 ### Example external benchmarks
@@ -499,6 +500,8 @@ More external benchmark examples that record C++ and R benchmark results:
 
 * [cpp_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
 * [dataframe_to_table_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataframe_to_table_benchmark.py)
+* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [partitioned_dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
 
 
 ### Example case benchmarks
@@ -569,6 +572,8 @@ Options:
 
 More case benchmark examples:
 
-* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
-* [wide_dataframe_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/wide_dataframe_benchmark.py)
 * [dataset_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_read_benchmark.py)
+* [dataset_selectivity_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_selectivity_benchmark.py)
+* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [partitioned_dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
+* [wide_dataframe_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/wide_dataframe_benchmark.py)
