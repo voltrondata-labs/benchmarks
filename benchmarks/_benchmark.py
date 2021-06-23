@@ -3,7 +3,6 @@ import json
 import logging
 import os
 import shutil
-import subprocess
 
 import conbench.runner
 import pyarrow
@@ -74,8 +73,8 @@ class Benchmark(conbench.runner.Benchmark):
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
         self.arrow_info = self._arrow_info()
+        self.arrow_info_r = None
         self.github_info = self._github_info(self.arrow_info)
-        self.r_info = None
 
     def benchmark(self, f, extra_tags, options, case=None):
         cpu_count = options.get("cpu_count", None)
@@ -194,7 +193,7 @@ class Benchmark(conbench.runner.Benchmark):
         if r_command is not None:
             error["command"] = r_command
         else:
-            context.update(self.conbench.language)
+            context.update(self.conbench.python_info)
         logging.exception(json.dumps(error))
         return error, output
 
@@ -236,12 +235,7 @@ class BenchmarkR(Benchmark):
 
     def _get_benchmark_result(self, command):
         shutil.rmtree("results", ignore_errors=True)
-        command = ["R", "-e", command]
-        result = subprocess.run(command, capture_output=True)
-        output = result.stdout.decode("utf-8").strip()
-        error = result.stderr.decode("utf-8").strip()
-        if result.returncode != 0:
-            raise Exception(error)
+        output, error = self.conbench.execute_r_command(command, quiet=False)
         try:
             result_path = self._get_results_path()
             with open(result_path) as json_file:
@@ -256,37 +250,20 @@ class BenchmarkR(Benchmark):
 
     def _add_r_tags_and_context(self, tags, context):
         tags["language"] = "R"
-        if self.r_info is None:
-            self.r_info = self._r_info()
+        if self.arrow_info_r is None:
+            self.arrow_info_r = self._arrow_info_r()
 
-        r_context = {
-            "benchmark_language": "R",
-            "benchmark_language_version": self.r_info["version"],
-            "arrow_version_r": self.r_info["arrow_version"],
-        }
+        r_context = self.conbench.r_info
+        r_context["arrow_version_r"] = self.arrow_info_r["arrow_version"]
+
         context.update(r_context)
         return tags, context
 
-    def _r_info(self):
-        version, arrow_version = None, None
-
-        r = "cat(version[['version.string']], '\n')"
-        command = ["R", "-s", "-q", "-e", r]
-        result = subprocess.run(command, capture_output=True)
-        if result.returncode == 0:
-            version = result.stdout.decode("utf-8").strip()
-
+    def _arrow_info_r(self):
         r = "packageVersion('arrow')"
-        command = ["R", "-s", "-q", "-e", r]
-        result = subprocess.run(command, capture_output=True)
-        if result.returncode == 0:
-            output = result.stdout.decode("utf-8").strip()
-            arrow_version = output.split("[1] ")[1].strip("‘").strip("’")
-
-        return {
-            "version": version,
-            "arrow_version": arrow_version,
-        }
+        output, _ = self.conbench.execute_r_command(r)
+        version = output.split("[1] ")[1].strip("‘").strip("’")
+        return {"arrow_version": version}
 
     def _record_result(self, data, tags, context, case, options, output):
         return self.record(
