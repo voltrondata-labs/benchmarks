@@ -277,7 +277,7 @@ class BenchmarkR(Benchmark):
 
 
 class BenchmarkPythonR(BenchmarkR):
-    arguments = ["source"]
+    arguments = []
     options = {
         "language": {"type": str, "choices": ["Python", "R"]},
         "cpu_count": {"type": int},
