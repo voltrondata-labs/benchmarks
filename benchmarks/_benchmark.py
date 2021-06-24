@@ -87,7 +87,6 @@ class Benchmark(conbench.runner.Benchmark):
                 github=self.github_info,
                 options=options,
             )
-            self.conbench.publish(benchmark)
         except Exception as e:
             benchmark, output = self._handle_error(e, self.name, tags, context)
         return benchmark, output
@@ -115,7 +114,6 @@ class Benchmark(conbench.runner.Benchmark):
             options=options,
             output=output,
         )
-        self.conbench.publish(benchmark)
         return benchmark, output
 
     def get_sources(self, source):
