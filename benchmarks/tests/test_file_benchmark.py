@@ -138,14 +138,6 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
     assert_context(munged, language=language)
 
 
-@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write(case):
-    run = list(write_benchmark.run("TEST", case, iterations=1))
-    assert len(run) == 2
-    assert_run_write(run, 0, case, fanniemae)
-    assert_run_write(run, 1, case, nyctaxi)
-
-
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read(case):
     run = list(read_benchmark.run("TEST", case, iterations=1))
@@ -155,11 +147,11 @@ def test_read(case):
 
 
 @pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write_r(case):
-    run = list(write_benchmark.run("TEST", case, language="R"))
+def test_write(case):
+    run = list(write_benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
-    assert_run_write_r(run, 0, case, fanniemae)
-    assert_run_write_r(run, 1, case, nyctaxi)
+    assert_run_write(run, 0, case, fanniemae)
+    assert_run_write(run, 1, case, nyctaxi)
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
@@ -168,6 +160,14 @@ def test_read_r(case):
     assert len(run) == 2
     assert_run_read_r(run, 0, case, fanniemae)
     assert_run_read_r(run, 1, case, nyctaxi)
+
+
+@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
+def test_write_r(case):
+    run = list(write_benchmark.run("TEST", case, language="R"))
+    assert len(run) == 2
+    assert_run_write_r(run, 0, case, fanniemae)
+    assert_run_write_r(run, 1, case, nyctaxi)
 
 
 def test_write_cli():
