@@ -18,54 +18,6 @@ def _now_formatted():
     return now.isoformat()
 
 
-@conbench.runner.register_list
-class BenchmarkList(conbench.runner.BenchmarkList):
-    def list(self, classes):
-        """List of benchmarks to run for all cases & all sources."""
-
-        def add(benchmarks, parts, flags, exclude):
-            if flags["language"] != "C++" and "--drop-caches=true" not in parts:
-                parts.append("--drop-caches=true")
-            command = " ".join(parts)
-            if command not in exclude:
-                benchmarks.append({"command": command, "flags": flags})
-
-        benchmarks = []
-        for name, benchmark in classes.items():
-            if name.startswith("example"):
-                continue
-
-            instance, parts = benchmark(), [name]
-
-            exclude = getattr(benchmark, "exclude", [])
-            if "source" in getattr(benchmark, "arguments", []):
-                parts.append("ALL")
-
-            iterations = getattr(instance, "iterations", 3)
-            parts.append(f"--iterations={iterations}")
-
-            if instance.cases:
-                parts.append("--all=true")
-
-            flags = getattr(instance, "flags", {})
-
-            if getattr(instance, "r_only", False):
-                flags["language"] = "R"
-                add(benchmarks, parts, flags, exclude)
-            else:
-                if "language" not in flags:
-                    flags["language"] = "Python"
-                add(benchmarks, parts, flags, exclude)
-
-                if hasattr(instance, "r_name"):
-                    flags_ = flags.copy()
-                    flags_["language"] = "R"
-                    parts.append("--language=R")
-                    add(benchmarks, parts, flags_, exclude)
-
-        return sorted(benchmarks, key=lambda k: k["command"])
-
-
 def github_info(arrow_info):
     return {
         "repository": "https://github.com/apache/arrow",
@@ -298,3 +250,51 @@ class BenchmarkPythonR(BenchmarkR):
         "language": {"type": str, "choices": ["Python", "R"]},
         "cpu_count": {"type": int},
     }
+
+
+@conbench.runner.register_list
+class BenchmarkList(conbench.runner.BenchmarkList):
+    def list(self, classes):
+        """List of benchmarks to run for all cases & all sources."""
+
+        def add(benchmarks, parts, flags, exclude):
+            if flags["language"] != "C++" and "--drop-caches=true" not in parts:
+                parts.append("--drop-caches=true")
+            command = " ".join(parts)
+            if command not in exclude:
+                benchmarks.append({"command": command, "flags": flags})
+
+        benchmarks = []
+        for name, benchmark in classes.items():
+            if name.startswith("example"):
+                continue
+
+            instance, parts = benchmark(), [name]
+
+            exclude = getattr(benchmark, "exclude", [])
+            if "source" in getattr(benchmark, "arguments", []):
+                parts.append("ALL")
+
+            iterations = getattr(instance, "iterations", 3)
+            parts.append(f"--iterations={iterations}")
+
+            if instance.cases:
+                parts.append("--all=true")
+
+            flags = getattr(instance, "flags", {})
+
+            if getattr(instance, "r_only", False):
+                flags["language"] = "R"
+                add(benchmarks, parts, flags, exclude)
+            else:
+                if "language" not in flags:
+                    flags["language"] = "Python"
+                add(benchmarks, parts, flags, exclude)
+
+                if hasattr(instance, "r_name"):
+                    flags_ = flags.copy()
+                    flags_["language"] = "R"
+                    parts.append("--language=R")
+                    add(benchmarks, parts, flags_, exclude)
+
+        return sorted(benchmarks, key=lambda k: k["command"])
