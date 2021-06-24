@@ -66,15 +66,60 @@ class BenchmarkList(conbench.runner.BenchmarkList):
         return sorted(benchmarks, key=lambda k: k["command"])
 
 
+def github_info(arrow_info):
+    return {
+        "repository": "https://github.com/apache/arrow",
+        "commit": arrow_info["arrow_git_revision"],
+    }
+
+
+def arrow_info():
+    if pyarrow.__version__ > "0.17.1":
+        build_info = pyarrow.cpp_build_info
+        return {
+            "arrow_version": build_info.version,
+            "arrow_compiler_id": build_info.compiler_id,
+            "arrow_compiler_version": build_info.compiler_version,
+            "arrow_compiler_flags": build_info.compiler_flags,
+            "arrow_git_revision": build_info.git_id,
+        }
+
+    return {
+        "arrow_version": pyarrow.__version__,
+        "arrow_compiler_id": None,
+        "arrow_compiler_version": None,
+        "arrow_compiler_flags": None,
+        "arrow_git_revision": None,
+    }
+
+
 class Benchmark(conbench.runner.Benchmark):
     arguments = []
     options = {"cpu_count": {"type": int}}
 
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
-        self.arrow_info = self._arrow_info()
-        self.arrow_info_r = None
-        self.github_info = self._github_info(self.arrow_info)
+        self._github_info = None
+        self._arrow_info = None
+        self._arrow_info_r = None
+
+    @property
+    def arrow_info(self):
+        if self._arrow_info is None:
+            self._arrow_info = arrow_info()
+        return self._arrow_info
+
+    @property
+    def arrow_info_r(self):
+        if self._arrow_info_r is None:
+            self._arrow_info_r = self._get_arrow_info_r()
+        return self._arrow_info_r
+
+    @property
+    def github_info(self):
+        if self._github_info is None:
+            self._github_info = github_info(self.arrow_info)
+        return self._github_info
 
     def benchmark(self, f, extra_tags, options, case=None):
         cpu_count = options.get("cpu_count", None)
@@ -156,31 +201,6 @@ class Benchmark(conbench.runner.Benchmark):
             tags.update(dict(zip(self.fields, case)))
         return tags, context
 
-    def _github_info(self, arrow_info):
-        return {
-            "repository": "https://github.com/apache/arrow",
-            "commit": arrow_info["arrow_git_revision"],
-        }
-
-    def _arrow_info(self):
-        if pyarrow.__version__ > "0.17.1":
-            build_info = pyarrow.cpp_build_info
-            return {
-                "arrow_version": build_info.version,
-                "arrow_compiler_id": build_info.compiler_id,
-                "arrow_compiler_version": build_info.compiler_version,
-                "arrow_compiler_flags": build_info.compiler_flags,
-                "arrow_git_revision": build_info.git_id,
-            }
-
-        return {
-            "arrow_version": pyarrow.__version__,
-            "arrow_compiler_id": None,
-            "arrow_compiler_version": None,
-            "arrow_compiler_flags": None,
-            "arrow_git_revision": None,
-        }
-
     def _handle_error(self, e, name, tags, context, r_command=None):
         output = None
         tags["name"] = name
@@ -248,23 +268,6 @@ class BenchmarkR(Benchmark):
         for file in os.listdir(f"results/{self.r_name}"):
             return os.path.join(f"results/{self.r_name}", file)
 
-    def _add_r_tags_and_context(self, tags, context):
-        tags["language"] = "R"
-        if self.arrow_info_r is None:
-            self.arrow_info_r = self._arrow_info_r()
-
-        r_context = self.conbench.r_info
-        r_context["arrow_version_r"] = self.arrow_info_r["arrow_version"]
-
-        context.update(r_context)
-        return tags, context
-
-    def _arrow_info_r(self):
-        r = "packageVersion('arrow')"
-        output, _ = self.conbench.execute_r_command(r)
-        version = output.split("[1] ")[1].strip("‘").strip("’")
-        return {"arrow_version": version}
-
     def _record_result(self, data, tags, context, case, options, output):
         return self.record(
             {"data": data, "unit": "s"},
@@ -274,6 +277,19 @@ class BenchmarkR(Benchmark):
             case=case,
             output=output,
         )
+
+    def _add_r_tags_and_context(self, tags, context):
+        tags["language"] = "R"
+        r_context = self.conbench.r_info
+        r_context["arrow_version_r"] = self.arrow_info_r["arrow_version"]
+        context.update(r_context)
+        return tags, context
+
+    def _get_arrow_info_r(self):
+        r = "packageVersion('arrow')"
+        output, _ = self.conbench.execute_r_command(r)
+        version = output.split("[1] ")[1].strip("‘").strip("’")
+        return {"arrow_version": version}
 
 
 class BenchmarkPythonR(BenchmarkR):
