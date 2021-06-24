@@ -11,22 +11,16 @@ from benchmarks import _benchmark, _sources
 CASES = [
     ("parquet", "uncompressed", "table"),
     ("parquet", "uncompressed", "dataframe"),
-    ("parquet", "lz4", "table"),
-    ("parquet", "lz4", "dataframe"),
-    ("parquet", "zstd", "table"),
-    ("parquet", "zstd", "dataframe"),
     ("parquet", "snappy", "table"),
     ("parquet", "snappy", "dataframe"),
     ("feather", "uncompressed", "table"),
     ("feather", "uncompressed", "dataframe"),
     ("feather", "lz4", "table"),
     ("feather", "lz4", "dataframe"),
-    ("feather", "zstd", "table"),
-    ("feather", "zstd", "dataframe"),
 ]
 CHOICES = {
     "file_type": ("feather", "parquet"),
-    "compression": ("uncompressed", "snappy", "lz4", "zstd"),
+    "compression": ("uncompressed", "snappy", "lz4"),
     "type": ("table", "dataframe"),
 }
 

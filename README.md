@@ -157,10 +157,10 @@ defaults or to disable a particular benchmark.
 ### Run benchmarks as tests
     (qa) $ cd ~/workspace/benchmarks/
     (qa) $ pytest -vv --capture=no benchmarks/tests/test_file_benchmark.py
-    test_file_benchmark.py::test_read_taxi[feather, zstd, table] PASSED
-    test_file_benchmark.py::test_read_taxi[feather, zstd, dataframe] PASSED
-    test_file_benchmark.py::test_write_fanniemae[parquet, uncompressed, table] PASSED
-    test_file_benchmark.py::test_write_fanniemae[parquet, uncompressed, dataframe] PASSED
+    test_file_benchmark.py::test_read[parquet, uncompressed, table] PASSED
+    test_file_benchmark.py::test_read[parquet, uncompressed, dataframe] PASSED
+    test_file_benchmark.py::test_read[parquet, snappy, table] PASSED
+    test_file_benchmark.py::test_read[parquet, snappy, dataframe] PASSED
     ...
 
 
@@ -176,6 +176,7 @@ Use the `conbench --help` command to see the available benchmarks.
 
 ```
 (qa) $ conbench --help
+
 Usage: conbench [OPTIONS] COMMAND [ARGS]...
 
   Conbench: Language-independent Continuous Benchmarking (CB) Framework
@@ -210,6 +211,7 @@ Help is also available for individual benchmark commands.
 
 ```
 (qa) $ conbench file-write --help
+
 Usage: conbench file-write [OPTIONS] SOURCE
 
   Run file-write benchmark(s).
@@ -219,25 +221,19 @@ Usage: conbench file-write [OPTIONS] SOURCE
   Valid benchmark combinations:
   --file-type=parquet --compression=uncompressed --input-type=table
   --file-type=parquet --compression=uncompressed --input-type=dataframe
-  --file-type=parquet --compression=lz4 --input-type=table
-  --file-type=parquet --compression=lz4 --input-type=dataframe
-  --file-type=parquet --compression=zstd --input-type=table
-  --file-type=parquet --compression=zstd --input-type=dataframe
   --file-type=parquet --compression=snappy --input-type=table
   --file-type=parquet --compression=snappy --input-type=dataframe
   --file-type=feather --compression=uncompressed --input-type=table
   --file-type=feather --compression=uncompressed --input-type=dataframe
   --file-type=feather --compression=lz4 --input-type=table
   --file-type=feather --compression=lz4 --input-type=dataframe
-  --file-type=feather --compression=zstd --input-type=table
-  --file-type=feather --compression=zstd --input-type=dataframe
 
   To run all combinations:
   $ conbench file-write --all=true
 
 Options:
   --file-type [feather|parquet]
-  --compression [lz4|snappy|uncompressed|zstd]
+  --compression [lz4|snappy|uncompressed]
   --input-type [dataframe|table]
   --all BOOLEAN                   [default: False]
   --language [Python|R]
@@ -370,7 +366,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
 ```
 
 ```
-$ conbench example-simple --help
+(qa) $ conbench example-simple --help
 
 Usage: conbench example-simple [OPTIONS]
 
@@ -437,7 +433,7 @@ class ExternalBenchmark(_benchmark.Benchmark):
 ```
 
 ```
-$ conbench example-external --help
+(qa) $ conbench example-external --help
 
 Usage: conbench example-external [OPTIONS]
 
@@ -451,6 +447,8 @@ Options:
   --run-name TEXT        Name of run (commit, pull request, etc).
   --help                 Show this message and exit.
 ```
+
+And here's another external benchmark, one that runs an external R benchmark.
 
 Implementation details: Note that the following benchmark extends `BenchmarkR`,
 sets both `external` and `r_only` to `True`, defines `r_name`, implements
@@ -479,7 +477,7 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
 ```
 
 ```
-$ conbench example-R-only --help
+(qa) $ conbench example-R-only --help
 
 Usage: conbench example-R-only [OPTIONS]
 
@@ -539,7 +537,8 @@ class CasesBenchmark(_benchmark.Benchmark):
 ```
 
 ```
-$ conbench example-cases --help
+(qa) $ conbench example-cases --help
+
 Usage: conbench example-cases [OPTIONS]
 
   Run example-cases benchmark(s).

@@ -17,25 +17,19 @@ Usage: conbench file-read [OPTIONS] SOURCE
   Valid benchmark combinations:
   --file-type=parquet --compression=uncompressed --output-type=table
   --file-type=parquet --compression=uncompressed --output-type=dataframe
-  --file-type=parquet --compression=lz4 --output-type=table
-  --file-type=parquet --compression=lz4 --output-type=dataframe
-  --file-type=parquet --compression=zstd --output-type=table
-  --file-type=parquet --compression=zstd --output-type=dataframe
   --file-type=parquet --compression=snappy --output-type=table
   --file-type=parquet --compression=snappy --output-type=dataframe
   --file-type=feather --compression=uncompressed --output-type=table
   --file-type=feather --compression=uncompressed --output-type=dataframe
   --file-type=feather --compression=lz4 --output-type=table
   --file-type=feather --compression=lz4 --output-type=dataframe
-  --file-type=feather --compression=zstd --output-type=table
-  --file-type=feather --compression=zstd --output-type=dataframe
 
   To run all combinations:
   $ conbench file-read --all=true
 
 Options:
   --file-type [feather|parquet]
-  --compression [lz4|snappy|uncompressed|zstd]
+  --compression [lz4|snappy|uncompressed]
   --output-type [dataframe|table]
   --all BOOLEAN                   [default: False]
   --language [Python|R]
@@ -61,25 +55,19 @@ Usage: conbench file-write [OPTIONS] SOURCE
   Valid benchmark combinations:
   --file-type=parquet --compression=uncompressed --input-type=table
   --file-type=parquet --compression=uncompressed --input-type=dataframe
-  --file-type=parquet --compression=lz4 --input-type=table
-  --file-type=parquet --compression=lz4 --input-type=dataframe
-  --file-type=parquet --compression=zstd --input-type=table
-  --file-type=parquet --compression=zstd --input-type=dataframe
   --file-type=parquet --compression=snappy --input-type=table
   --file-type=parquet --compression=snappy --input-type=dataframe
   --file-type=feather --compression=uncompressed --input-type=table
   --file-type=feather --compression=uncompressed --input-type=dataframe
   --file-type=feather --compression=lz4 --input-type=table
   --file-type=feather --compression=lz4 --input-type=dataframe
-  --file-type=feather --compression=zstd --input-type=table
-  --file-type=feather --compression=zstd --input-type=dataframe
 
   To run all combinations:
   $ conbench file-write --all=true
 
 Options:
   --file-type [feather|parquet]
-  --compression [lz4|snappy|uncompressed|zstd]
+  --compression [lz4|snappy|uncompressed]
   --input-type [dataframe|table]
   --all BOOLEAN                   [default: False]
   --language [Python|R]
@@ -150,14 +138,6 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
     assert_context(munged, language=language)
 
 
-@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write(case):
-    run = list(write_benchmark.run("TEST", case, iterations=1))
-    assert len(run) == 2
-    assert_run_write(run, 0, case, fanniemae)
-    assert_run_write(run, 1, case, nyctaxi)
-
-
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read(case):
     run = list(read_benchmark.run("TEST", case, iterations=1))
@@ -167,11 +147,11 @@ def test_read(case):
 
 
 @pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
-def test_write_r(case):
-    run = list(write_benchmark.run("TEST", case, language="R"))
+def test_write(case):
+    run = list(write_benchmark.run("TEST", case, iterations=1))
     assert len(run) == 2
-    assert_run_write_r(run, 0, case, fanniemae)
-    assert_run_write_r(run, 1, case, nyctaxi)
+    assert_run_write(run, 0, case, fanniemae)
+    assert_run_write(run, 1, case, nyctaxi)
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
@@ -180,6 +160,14 @@ def test_read_r(case):
     assert len(run) == 2
     assert_run_read_r(run, 0, case, fanniemae)
     assert_run_read_r(run, 1, case, nyctaxi)
+
+
+@pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
+def test_write_r(case):
+    run = list(write_benchmark.run("TEST", case, language="R"))
+    assert len(run) == 2
+    assert_run_write_r(run, 0, case, fanniemae)
+    assert_run_write_r(run, 1, case, nyctaxi)
 
 
 def test_write_cli():
