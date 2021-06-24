@@ -87,7 +87,6 @@ class Benchmark(conbench.runner.Benchmark):
                 github=self.github_info,
                 options=options,
             )
-            self.conbench.publish(benchmark)
         except Exception as e:
             benchmark, output = self._handle_error(e, self.name, tags, context)
         return benchmark, output
@@ -115,7 +114,6 @@ class Benchmark(conbench.runner.Benchmark):
             options=options,
             output=output,
         )
-        self.conbench.publish(benchmark)
         return benchmark, output
 
     def get_sources(self, source):
@@ -192,13 +190,13 @@ class BenchmarkR(Benchmark):
             except Exception as e:
                 return self._handle_error(e, self.name, tags, context, command)
 
-        return self._record_result(
-            data,
+        return self.record(
+            {"data": data, "unit": "s"},
             tags,
             context,
-            case,
             options,
-            output,
+            case=case,
+            output=output,
         )
 
     def r_cpu_count(self, options):
@@ -219,16 +217,6 @@ class BenchmarkR(Benchmark):
     def _get_results_path(self):
         for file in os.listdir(f"results/{self.r_name}"):
             return os.path.join(f"results/{self.r_name}", file)
-
-    def _record_result(self, data, tags, context, case, options, output):
-        return self.record(
-            {"data": data, "unit": "s"},
-            tags,
-            context,
-            options,
-            case=case,
-            output=output,
-        )
 
     def _add_r_tags_and_context(self, tags, context):
         tags["language"] = "R"
