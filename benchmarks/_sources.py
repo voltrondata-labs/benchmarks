@@ -1,3 +1,4 @@
+import functools
 import os
 import pathlib
 
@@ -202,7 +203,6 @@ class Source:
     def __init__(self, name):
         self.name = name
         self.store = STORE[self.name]
-        self._dataframe = None
         self._table = None
         if self.store.get("download", True):
             self.download_source_if_not_exists()
@@ -278,31 +278,32 @@ class Source:
                 self._parquet_write(self.table, path, compression)
         return path
 
-    @property
+    @functools.cached_property
     def dataframe(self):
-        if self._dataframe is None:
-            if self._table is not None:
-                self._dataframe = self.table.to_pandas()
-            else:
-                self._dataframe = pandas.read_csv(
-                    self.store["path"],
-                    sep=self.store["sep"],
-                    header=self.store["header"],
-                    low_memory=False,
-                )
-        return self._dataframe
+        if self._table is not None:
+            # this takes ~ 7 seconds for fanniemae_2016Q4
+            return self.table.to_pandas()
+        else:
+            # this takes ~ 199 seconds for fanniemae_2016Q4
+            return pandas.read_csv(
+                self.store["path"],
+                sep=self.store["sep"],
+                header=self.store["header"],
+                low_memory=False,
+            )
 
-    @property
+    @functools.cached_property
     def table(self):
-        if self._table is None:
-            path = self.temp_path("feather", "lz4")
-            if path.exists():
-                self._table = feather.read_table(path, memory_map=False)
-            else:
-                self._table = pyarrow.Table.from_pandas(
-                    self.dataframe,
-                    preserve_index=False,
-                ).replace_schema_metadata(None)
+        path = self.temp_path("feather", "lz4")
+        if path.exists():
+            # this takes ~ 3 seconds for fanniemae_2016Q4
+            self._table = feather.read_table(path, memory_map=False)
+        else:
+            # this takes ~ 205 seconds for fanniemae_2016Q4
+            self._table = pyarrow.Table.from_pandas(
+                self.dataframe,
+                preserve_index=False,
+            ).replace_schema_metadata(None)
         return self._table
 
     def _get_object_url(self, idx=0):
