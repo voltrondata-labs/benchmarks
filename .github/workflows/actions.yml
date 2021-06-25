@@ -41,7 +41,7 @@ jobs:
           LIBARROW_BINARY: TRUE
       - name: Run tests
         run: |
-          coverage run --source benchmarks -m pytest -v benchmarks/tests/
+          coverage run --source benchmarks -m pytest -v --durations=20 benchmarks/tests/
       - name: Publish coverage
         run: |
           coveralls --service=github
