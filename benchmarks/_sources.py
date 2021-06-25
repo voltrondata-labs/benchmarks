@@ -281,8 +281,10 @@ class Source:
     @functools.cached_property
     def dataframe(self):
         if self._table is not None:
+            # this takes ~ 7 seconds for fanniemae_2016Q4
             return self.table.to_pandas()
         else:
+            # this takes ~ 199 seconds for fanniemae_2016Q4
             return pandas.read_csv(
                 self.store["path"],
                 sep=self.store["sep"],
@@ -294,8 +296,10 @@ class Source:
     def table(self):
         path = self.temp_path("feather", "lz4")
         if path.exists():
+            # this takes ~ 3 seconds for fanniemae_2016Q4
             self._table = feather.read_table(path, memory_map=False)
         else:
+            # this takes ~ 205 seconds for fanniemae_2016Q4
             self._table = pyarrow.Table.from_pandas(
                 self.dataframe,
                 preserve_index=False,
