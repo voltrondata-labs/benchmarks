@@ -22,9 +22,6 @@ Options:
 """
 
 
-nyctaxi = _sources.Source("nyctaxi_multi_parquet_s3_repartitioned")
-
-
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
     assert_benchmark(result, source.name, benchmark.name)
@@ -33,9 +30,11 @@ def assert_run(run, index, benchmark, source):
 
 def test_dataset_read():
     benchmark = dataset_select_benchmark.DatasetSelectBenchmark()
-    run = list(benchmark.run("TEST", iterations=1))
+    sources = [_sources.Source(s) for s in benchmark.sources_test]
+    run = list(benchmark.run(sources, iterations=1))
     assert len(run) == 1
-    assert_run(run, 0, benchmark, nyctaxi)
+    for x in range(len(run)):
+        assert_run(run, x, benchmark, sources[x])
 
 
 def test_dataset_read_cli():

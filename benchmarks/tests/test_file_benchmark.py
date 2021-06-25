@@ -84,13 +84,11 @@ Options:
 """
 
 
-fanniemae = _sources.Source("fanniemae_sample")
-nyctaxi = _sources.Source("nyctaxi_sample")
-
 read_benchmark = file_benchmark.FileReadBenchmark()
 write_benchmark = file_benchmark.FileWriteBenchmark()
 read_cases, read_case_ids = read_benchmark.cases, read_benchmark.case_ids
 write_cases, write_case_ids = write_benchmark.cases, write_benchmark.case_ids
+sources = [_sources.Source(s) for s in read_benchmark.sources_test]
 
 
 def assert_run_write(run, index, case, source):
@@ -140,34 +138,34 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read(case):
-    run = list(read_benchmark.run("TEST", case, iterations=1))
+    run = list(read_benchmark.run(sources, case, iterations=1))
     assert len(run) == 2
-    assert_run_read(run, 0, case, fanniemae)
-    assert_run_read(run, 1, case, nyctaxi)
+    for x in range(len(run)):
+        assert_run_read(run, x, case, sources[x])
 
 
 @pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
 def test_write(case):
-    run = list(write_benchmark.run("TEST", case, iterations=1))
+    run = list(write_benchmark.run(sources, case, iterations=1))
     assert len(run) == 2
-    assert_run_write(run, 0, case, fanniemae)
-    assert_run_write(run, 1, case, nyctaxi)
+    for x in range(len(run)):
+        assert_run_write(run, x, case, sources[x])
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
 def test_read_r(case):
-    run = list(read_benchmark.run("TEST", case, language="R"))
+    run = list(read_benchmark.run(sources, case, language="R"))
     assert len(run) == 2
-    assert_run_read_r(run, 0, case, fanniemae)
-    assert_run_read_r(run, 1, case, nyctaxi)
+    for x in range(len(run)):
+        assert_run_read_r(run, x, case, sources[x])
 
 
 @pytest.mark.parametrize("case", write_cases, ids=write_case_ids)
 def test_write_r(case):
-    run = list(write_benchmark.run("TEST", case, language="R"))
+    run = list(write_benchmark.run(sources, case, language="R"))
     assert len(run) == 2
-    assert_run_write_r(run, 0, case, fanniemae)
-    assert_run_write_r(run, 1, case, nyctaxi)
+    for x in range(len(run)):
+        assert_run_write_r(run, x, case, sources[x])
 
 
 def test_write_cli():

@@ -109,6 +109,8 @@ class Benchmark(conbench.runner.Benchmark):
         return benchmark, output
 
     def get_sources(self, source):
+        if isinstance(source, list):
+            return source
         if isinstance(source, _sources.Source):
             return [source]
         if source == "ALL":

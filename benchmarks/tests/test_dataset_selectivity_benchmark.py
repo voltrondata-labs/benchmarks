@@ -38,10 +38,8 @@ Options:
 """
 
 
-nyctaxi_parquet = _sources.Source("nyctaxi_multi_parquet_s3_sample")
-nyctaxi_ipc = _sources.Source("nyctaxi_multi_ipc_s3_sample")
-chi_traffic = _sources.Source("chi_traffic_sample")
 benchmark = dataset_selectivity_benchmark.DatasetSelectivityBenchmark()
+sources = [_sources.Source(s) for s in benchmark.sources_test]
 cases, case_ids = benchmark.cases, benchmark.case_ids
 
 
@@ -66,11 +64,10 @@ def assert_run(run, index, case, source):
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_dataset_selectivity(case):
-    run = list(benchmark.run("TEST", case, iterations=1))
+    run = list(benchmark.run(sources, case, iterations=1))
     assert len(run) == 3
-    assert_run(run, 0, case, nyctaxi_parquet)
-    assert_run(run, 1, case, nyctaxi_ipc)
-    assert_run(run, 2, case, chi_traffic)
+    for x in range(len(run)):
+        assert_run(run, x, case, sources[x])
 
 
 def test_dataset_selectivity_cli():

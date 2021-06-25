@@ -22,10 +22,6 @@ Options:
 """
 
 
-fanniemae = _sources.Source("fanniemae_sample")
-nyctaxi = _sources.Source("nyctaxi_sample")
-
-
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
     assert_benchmark(result, source.name, benchmark.name)
@@ -34,10 +30,11 @@ def assert_run(run, index, benchmark, source):
 
 def test_csv_read():
     benchmark = csv_read_benchmark.CsvReadBenchmark()
-    run = list(benchmark.run("TEST", iterations=1))
+    sources = [_sources.Source(s) for s in benchmark.sources_test]
+    run = list(benchmark.run(sources, iterations=1))
     assert len(run) == 2
-    assert_run(run, 0, benchmark, fanniemae)
-    assert_run(run, 1, benchmark, nyctaxi)
+    for x in range(len(run)):
+        assert_run(run, x, benchmark, sources[x])
 
 
 def test_csv_read_cli():
