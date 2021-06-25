@@ -37,9 +37,8 @@ Options:
 """
 
 
-nyctaxi = _sources.Source("nyctaxi_multi_parquet_s3_sample")
-nyctaxi_ipc = _sources.Source("nyctaxi_multi_ipc_s3_sample")
 benchmark = dataset_read_benchmark.DatasetReadBenchmark()
+sources = [_sources.Source(s) for s in benchmark.sources_test]
 cases, case_ids = benchmark.cases, benchmark.case_ids
 
 
@@ -83,10 +82,10 @@ def assert_run(run, index, case, source):
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_dataset_read(case):
-    run = list(benchmark.run("TEST", case, iterations=1))
+    run = list(benchmark.run(sources, case, iterations=1))
     assert len(run) == 2
-    assert_run(run, 0, case, nyctaxi)
-    assert_run(run, 1, case, nyctaxi_ipc)
+    for x in range(len(run)):
+        assert_run(run, x, case, sources[x])
 
 
 def test_dataset_read_cli():
