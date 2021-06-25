@@ -1,4 +1,5 @@
 import datetime
+import functools
 import json
 import logging
 import os
@@ -51,27 +52,18 @@ class Benchmark(conbench.runner.Benchmark):
 
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
-        self._github_info = None
-        self._arrow_info = None
-        self._arrow_info_r = None
 
-    @property
+    @functools.cached_property
     def arrow_info(self):
-        if self._arrow_info is None:
-            self._arrow_info = arrow_info()
-        return self._arrow_info
+        return arrow_info()
 
-    @property
+    @functools.cached_property
     def arrow_info_r(self):
-        if self._arrow_info_r is None:
-            self._arrow_info_r = self._get_arrow_info_r()
-        return self._arrow_info_r
+        return self._get_arrow_info_r()
 
-    @property
+    @functools.cached_property
     def github_info(self):
-        if self._github_info is None:
-            self._github_info = github_info(self.arrow_info)
-        return self._github_info
+        return github_info(self.arrow_info)
 
     def benchmark(self, f, extra_tags, options, case=None):
         cpu_count = options.get("cpu_count", None)
