@@ -42,11 +42,12 @@ COMMON_OPTIONS = {
 
 
 def get_run_command(filename, options):
+    commit = options.get("commit", "HEAD")
     command = [
         "archery",
         "benchmark",
         "run",
-        "HEAD",
+        commit,
         "--language",
         "java",
         "--output",
