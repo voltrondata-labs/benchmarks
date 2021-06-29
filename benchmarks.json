@@ -74,6 +74,12 @@
     }
   },
   {
+    "command": "java-micro --iterations=1",
+    "flags": {
+      "language": "Java"
+    }
+  },
+  {
     "command": "partitioned-dataset-filter --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "R"

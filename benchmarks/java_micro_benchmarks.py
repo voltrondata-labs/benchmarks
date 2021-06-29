@@ -14,6 +14,11 @@ RUN_OPTIONS = {
         "type": int,
         "help": "Number of iterations of each benchmark.",
     },
+    "commit": {
+        "default": None,
+        "type": str,
+        "help": "Arrow commit.",
+    },
 }
 
 
@@ -23,49 +28,33 @@ COMMON_OPTIONS = {
         "type": str,
         "help": "Specify Arrow source directory.",
     },
-    "suite-filter": {
-        "default": None,
-        "type": str,
-        "help": "Regex filtering benchmark suites.",
-    },
     "benchmark-filter": {
         "default": None,
         "type": str,
         "help": "Regex filtering benchmarks.",
     },
-    "cmake-extras": {
+    "java-home": {
         "default": None,
         "type": str,
-        "help": "Extra flags/options to pass to cmake invocation.",
+        "help": "Path to Java Developers Kit.",
     },
-    "cc": {
+    "java-options": {
         "default": None,
         "type": str,
-        "help": "C compiler.",
-    },
-    "cxx": {
-        "default": None,
-        "type": str,
-        "help": "C++ compiler.",
-    },
-    "cxx-flags": {
-        "default": None,
-        "type": str,
-        "help": "C++ compiler flags.",
-    },
-    "cpp-package-prefix": {
-        "default": None,
-        "type": str,
-        "help": "Value to pass for ARROW_PACKAGE_PREFIX and use ARROW_DEPENDENCY_SOURCE=SYSTEM.",
+        "help": "Java compiler options.",
     },
 }
 
 
 def get_run_command(filename, options):
+    commit = options.get("commit", "HEAD")
     command = [
         "archery",
         "benchmark",
         "run",
+        commit,
+        "--language",
+        "java",
         "--output",
         filename,
     ]
@@ -86,56 +75,48 @@ def _add_command_options(command, options):
 
 
 def _parse_benchmark_name(full_name):
-    parts = full_name.split("/", 1)
-    name, params = parts[0], ""
-    if len(parts) == 2:
-        params = parts[1]
-
-    parts = name.split("<", 1)
-    if len(parts) == 2:
-        if params:
-            name, params = parts[0], f"<{parts[1]}/{params}"
-        else:
-            name, params = parts[0], f"<{parts[1]}"
-
-    tags = {"name": name}
-    if params:
-        tags["params"] = params
-
-    return tags
+    suite, name = full_name.rsplit(".", 1)
+    suite = suite.split("org.apache.", 1)[1]
+    return suite, name
 
 
 @conbench.runner.register_benchmark
-class RecordCppMicroBenchmarks(_benchmark.Benchmark):
-    """Run the Arrow C++ micro benchmarks."""
+class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
+    """Run the Arrow Java micro benchmarks."""
 
     external = True
-    name = "cpp-micro"
+    name = "java-micro"
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
-    description = "Run the Arrow C++ micro benchmarks."
+    description = "Run the Arrow Java micro benchmarks."
     iterations = 1
-    flags = {"language": "C++"}
+    flags = {"language": "Java"}
 
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:
             run_command = get_run_command(result_file.name, kwargs)
             self._execute(run_command)
             results = json.load(result_file)
+
+            # the java micro benchmarks are not bucketed by suite, bucket them
+            suites = {}
             for suite in results["suites"]:
-                self.conbench.mark_new_batch()
                 for result in suite["benchmarks"]:
-                    yield self._record_result(suite, result, kwargs)
+                    name, _ = _parse_benchmark_name(result["name"])
+                    if name not in suites:
+                        suites[name] = []
+                    suites[name].append(result)
 
-    def _record_result(self, suite, result, options):
-        context = {"benchmark_language": "C++"}
-        tags = _parse_benchmark_name(result["name"])
-        name = tags.pop("name")
-        tags["suite"] = suite["name"]
-        tags["source"] = self.name
+            for name in suites:
+                self.conbench.mark_new_batch()
+                for result in suites[name]:
+                    yield self._record_result(result, kwargs)
 
+    def _record_result(self, result, options):
+        context = {"benchmark_language": "Java"}
+        suite, name = _parse_benchmark_name(result["name"])
+        tags = {"suite": suite, "source": self.name}
         values = self._get_values(result)
-
         return self.record(
             values,
             tags,
@@ -146,16 +127,15 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         )
 
     def _get_values(self, result):
+        # the java micro benchmarks do not contain the raw execution times
         return {
             "data": result["values"],
             "unit": self._format_unit(result["unit"]),
-            "times": result.get("times", []),
-            "time_unit": result.get("time_unit", "s"),
+            "times": [],
+            "time_unit": "s",
         }
 
     def _format_unit(self, x):
-        if x == "bytes_per_second":
-            return "B/s"
         if x == "items_per_second":
             return "i/s"
         return x

@@ -240,7 +240,11 @@ class BenchmarkList(conbench.runner.BenchmarkList):
         """List of benchmarks to run for all cases & all sources."""
 
         def add(benchmarks, parts, flags, exclude):
-            if flags["language"] != "C++" and "--drop-caches=true" not in parts:
+            if (
+                flags["language"] != "C++"
+                and flags["language"] != "Java"
+                and "--drop-caches=true" not in parts
+            ):
                 parts.append("--drop-caches=true")
             command = " ".join(parts)
             if command not in exclude:
