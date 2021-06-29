@@ -14,6 +14,11 @@ RUN_OPTIONS = {
         "type": int,
         "help": "Number of iterations of each benchmark.",
     },
+    "commit": {
+        "default": None,
+        "type": str,
+        "help": "Arrow commit.",
+    },
 }
 
 
