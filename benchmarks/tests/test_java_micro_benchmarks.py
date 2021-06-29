@@ -17,6 +17,7 @@ Options:
   --java-home TEXT         Path to Java Developers Kit.
   --java-options TEXT      Java compiler options.
   --iterations INTEGER     Number of iterations of each benchmark.
+  --commit TEXT            Arrow commit.
   --show-result BOOLEAN    [default: True]
   --show-output BOOLEAN    [default: False]
   --run-id TEXT            Group executions together with a run id.
