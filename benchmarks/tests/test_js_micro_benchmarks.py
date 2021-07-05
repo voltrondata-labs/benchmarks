@@ -40,8 +40,7 @@ def test_parse_benchmark_name_kind():
 
 
 def test_get_run_command():
-    options = {"src": "/workspace/arrow/"}
-    actual = js_micro_benchmarks.get_run_command("out.json", options)
+    actual = js_micro_benchmarks.get_run_command("out.json")
     assert actual == [
         "yarn",
         "perf",
