@@ -49,7 +49,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
             os.chdir(pathlib.Path(src).joinpath("js"))
 
         with tempfile.NamedTemporaryFile(delete=False) as result_file:
-            run_command = get_run_command(result_file.name, kwargs)
+            run_command = get_run_command(result_file.name)
             self.execute_command(run_command)
             results = json.load(result_file)
             for result in results:
