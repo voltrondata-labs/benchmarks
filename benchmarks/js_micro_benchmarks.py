@@ -1,19 +1,9 @@
-import copy
 import json
 import tempfile
 
 import conbench.runner
 
 from benchmarks import _benchmark
-
-
-COMMON_OPTIONS = {
-    "src": {
-        "default": None,
-        "type": str,
-        "help": "Specify Arrow source directory.",
-    },
-}
 
 
 def get_run_command(filename, options):
@@ -45,7 +35,13 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
 
     external = True
     name = "js-micro"
-    options = copy.deepcopy(COMMON_OPTIONS)
+    options = {
+        "src": {
+            "default": None,
+            "type": str,
+            "help": "Specify Arrow source directory.",
+        },
+    }
     description = "Run the Arrow JavaScript micro benchmarks."
     flags = {"language": "JavaScript"}
     iterations = None
