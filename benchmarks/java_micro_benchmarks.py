@@ -89,8 +89,8 @@ class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
     description = "Run the Arrow Java micro benchmarks."
-    iterations = 1
     flags = {"language": "Java"}
+    iterations = 1
 
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:

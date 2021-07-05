@@ -49,6 +49,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
     options = copy.deepcopy(COMMON_OPTIONS)
     description = "Run the Arrow JavaScript micro benchmarks."
     flags = {"language": "JavaScript"}
+    iterations = None
 
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:

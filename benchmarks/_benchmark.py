@@ -243,6 +243,7 @@ class BenchmarkList(conbench.runner.BenchmarkList):
             if (
                 flags["language"] != "C++"
                 and flags["language"] != "Java"
+                and flags["language"] != "JavaScript"
                 and "--drop-caches=true" not in parts
             ):
                 parts.append("--drop-caches=true")
@@ -262,7 +263,8 @@ class BenchmarkList(conbench.runner.BenchmarkList):
                 parts.append("ALL")
 
             iterations = getattr(instance, "iterations", 3)
-            parts.append(f"--iterations={iterations}")
+            if iterations:
+                parts.append(f"--iterations={iterations}")
 
             if instance.cases:
                 parts.append("--all=true")
