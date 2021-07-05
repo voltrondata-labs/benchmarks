@@ -1,4 +1,6 @@
 import json
+import os
+import pathlib
 import tempfile
 
 import conbench.runner
@@ -6,18 +8,13 @@ import conbench.runner
 from benchmarks import _benchmark
 
 
-def get_run_command(filename, options):
-    # TODO: cd into arrow src dir?
-    src = options.get("src")  # noqa
-
-    command = [
+def get_run_command(filename):
+    return [
         "yarn",
         "perf",
         "--json",
         filename,
     ]
-
-    return command
 
 
 def _parse_benchmark_name(full_name):
@@ -47,6 +44,10 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
     iterations = None
 
     def run(self, **kwargs):
+        src = kwargs.get("src")
+        if src:
+            os.chdir(pathlib.Path(src).joinpath("js"))
+
         with tempfile.NamedTemporaryFile(delete=False) as result_file:
             run_command = get_run_command(result_file.name, kwargs)
             self.execute_command(run_command)
