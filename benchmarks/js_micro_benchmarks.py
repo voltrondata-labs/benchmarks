@@ -45,6 +45,8 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
 
     def run(self, **kwargs):
         src = kwargs.get("src")
+        if not src:
+            src = os.environ.get("ARROW_SRC")
         if src:
             os.chdir(pathlib.Path(src).joinpath("js"))
 

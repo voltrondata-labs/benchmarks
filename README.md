@@ -89,6 +89,7 @@ defaults or to disable a particular benchmark.
     (qa) $ git clone https://github.com/ursacomputing/benchmarks.git
     (qa) $ git clone https://github.com/ursacomputing/conbench.git
     (qa) $ git clone https://github.com/apache/arrow.git
+    (qa) $ export ARROW_SRC=$(pwd)/arrow
 
 
 ### Install benchmarks dependencies
@@ -104,7 +105,7 @@ defaults or to disable a particular benchmark.
     > remotes::install_github("ursacomputing/arrowbench")
 
 
-### Install archery (to run C++ & Java & JavaScript micro benchmarks)
+### Install archery (to run C++ & Java micro benchmarks)
     (qa) $ cd ~/workspace/
     (qa) $ pip install -e arrow/dev/archery
 
