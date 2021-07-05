@@ -38,6 +38,10 @@ def assert_context(munged, language="Python"):
         assert munged["context"] == {"benchmark_language": "R"}
     elif language == "C++":
         assert munged["context"] == {"benchmark_language": "C++"}
+    elif language == "Java":
+        assert munged["context"] == {"benchmark_language": "Java"}
+    elif language == "JavaScript":
+        assert munged["context"] == {"benchmark_language": "JavaScript"}
 
 
 def get_cli_output(command):
