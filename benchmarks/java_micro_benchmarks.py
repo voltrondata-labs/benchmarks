@@ -1,6 +1,5 @@
 import copy
 import json
-import subprocess
 import tempfile
 
 import conbench.runner
@@ -95,7 +94,7 @@ class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:
             run_command = get_run_command(result_file.name, kwargs)
-            self._execute(run_command)
+            self.execute_command(run_command)
             results = json.load(result_file)
 
             # the java micro benchmarks are not bucketed by suite, bucket them
@@ -139,11 +138,3 @@ class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
         if x == "items_per_second":
             return "i/s"
         return x
-
-    def _execute(self, command):
-        try:
-            print(command)
-            subprocess.run(command, capture_output=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(e.stderr.decode("utf-8"))
-            raise e

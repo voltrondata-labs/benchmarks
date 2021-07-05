@@ -1,6 +1,5 @@
 import copy
 import json
-import subprocess
 import tempfile
 
 import conbench.runner
@@ -54,7 +53,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:
             run_command = get_run_command(result_file.name, kwargs)
-            self._execute(run_command)
+            self.execute_command(run_command)
             results = json.load(result_file)
             for result in results:
                 yield self._record_result(result, kwargs)
@@ -80,12 +79,3 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
             "times": [],  # TODO: execution times?
             "time_unit": "s",
         }
-
-    def _execute(self, command):
-        # TODO: move to base class?
-        try:
-            print(command)
-            subprocess.run(command, capture_output=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(e.stderr.decode("utf-8"))
-            raise e

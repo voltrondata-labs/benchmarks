@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import shutil
+import subprocess
 
 import conbench.runner
 import pyarrow
@@ -107,6 +108,14 @@ class Benchmark(conbench.runner.Benchmark):
             output=output,
         )
         return benchmark, output
+
+    def execute_command(self, command):
+        try:
+            print(command)
+            subprocess.run(command, capture_output=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(e.stderr.decode("utf-8"))
+            raise e
 
     def get_sources(self, source):
         if isinstance(source, list):
