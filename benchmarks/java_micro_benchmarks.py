@@ -97,7 +97,7 @@ class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
             self.execute_command(run_command)
             results = json.load(result_file)
 
-            # the java micro benchmarks are not bucketed by suite, bucket them
+            # bucket by suite
             suites = {}
             for suite in results["suites"]:
                 for result in suite["benchmarks"]:

@@ -55,8 +55,19 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
         run_command = get_run_command()
         _, err = self.execute_command(run_command)
         results = json.loads(err)
+
+        # bucket by suite
+        suites = {}
         for result in results:
-            yield self._record_result(result, kwargs)
+            name = result["suite"]
+            if name not in suites:
+                suites[name] = []
+            suites[name].append(result)
+
+        for name in suites:
+            self.conbench.mark_new_batch()
+            for result in suites[name]:
+                yield self._record_result(result, kwargs)
 
     def _record_result(self, result, options):
         context = {"benchmark_language": "JavaScript"}
@@ -75,7 +86,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
     def _get_values(self, result):
         return {
             "data": result["details"]["sampleResults"],
-            "unit": "s",  # TODO: confirm benchmark units
-            "times": [],  # TODO: execution times?
+            "unit": "s",
+            "times": [],
             "time_unit": "s",
         }
