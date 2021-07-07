@@ -13,17 +13,25 @@ def get_run_command(filename):
         "yarn",
         "perf",
         "--json",
+        "2>",
         filename,
     ]
 
 
-def _parse_benchmark_name(full_name):
-    # TODO: parse?
-    # Examples:
-    #   "name": "name: 'origin', length: 1,000,000, type: Dictionary<Int8, Utf8>, test: eq, value: Seattle",
-    #   "name": "Table.from",
-    #   "name": "length: 1,000,000",
-    return full_name
+def _parse_benchmark_tags(name):
+    keys, values, first = [], [], True
+    for p in name.split(":"):
+        parts = p.rsplit(",", 1)
+        if len(parts) == 1:
+            if first:
+                keys.append(parts[0].strip())
+                first = False
+            else:
+                values.append(parts[0].strip())
+        if len(parts) == 2:
+            keys.append(parts[1].strip())
+            values.append(parts[0].strip())
+    return dict(zip(keys, values))
 
 
 @conbench.runner.register_benchmark
@@ -59,8 +67,8 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
 
     def _record_result(self, result, options):
         context = {"benchmark_language": "JavaScript"}
-        name = _parse_benchmark_name(result["name"])
-        tags = {"source": self.name}
+        tags = _parse_benchmark_tags(result["name"])
+        tags["source"] = self.name
         values = self._get_values(result)
         return self.record(
             values,
@@ -68,7 +76,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
             context,
             options,
             output=result,
-            name=name,
+            name=result["suite"],
         )
 
     def _get_values(self, result):

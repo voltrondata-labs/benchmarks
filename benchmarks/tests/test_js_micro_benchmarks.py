@@ -31,12 +31,15 @@ def assert_benchmark(result):
     assert len(munged["stats"]["times"]) == 0
 
 
-def test_parse_benchmark_name_kind():
-    name = (
-        "name: 'origin', length: 1,000,000, type: Dictionary<Int8, Utf8>, test: eq, value: Seattle",
-    )
-    parsed = js_micro_benchmarks._parse_benchmark_name(name)
-    assert parsed == name
+def test_parse_benchmark_tags():
+    name = "dataset: tracks, column: lng, length: 1,000,000, type: Float32"
+    tags = js_micro_benchmarks._parse_benchmark_tags(name)
+    assert tags == {
+        "dataset": "tracks",
+        "column": "lng",
+        "length": "1,000,000",
+        "type": "Float32",
+    }
 
 
 def test_get_run_command():
@@ -45,6 +48,7 @@ def test_get_run_command():
         "yarn",
         "perf",
         "--json",
+        "2>",
         "out.json",
     ]
 

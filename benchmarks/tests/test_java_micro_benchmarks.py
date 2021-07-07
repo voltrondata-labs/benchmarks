@@ -40,7 +40,7 @@ def assert_benchmark(result):
     assert len(munged["stats"]["times"]) == 0
 
 
-def test_parse_benchmark_name_kind():
+def test_parse_benchmark_name():
     name = "org.apache.arrow.memory.ArrowBufBenchmarks.setZero"
     suite, name = java_micro_benchmarks._parse_benchmark_name(name)
     assert name == "setZero"
