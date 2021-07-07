@@ -13,15 +13,16 @@ def get_run_command():
 
 def _parse_benchmark_tags(name):
     keys, values, first = [], [], True
-    for p in name.split(":"):
-        parts = p.rsplit(",", 1)
-        if len(parts) == 1:
-            if first:
-                keys.append(parts[0].strip())
-                first = False
-            else:
-                values.append(parts[0].strip())
-        if len(parts) == 2:
+    colons = name.split(":")
+    num_colons = len(colons) - 1
+    for x in colons:
+        if first:
+            keys.append(x.strip())
+            first = False
+        elif len(keys) == num_colons:
+            values.append(x.strip())
+        else:
+            parts = x.rsplit(",", 1)
             keys.append(parts[1].strip())
             values.append(parts[0].strip())
     return dict(zip(keys, values))

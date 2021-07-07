@@ -41,6 +41,27 @@ def test_parse_benchmark_tags():
         "type": "Float32",
     }
 
+    name = "dataset: tracks, column: origin, length: 1,000,000, type: Dictionary<Int8, Utf8>, test: eq, value: Seattle"
+    tags = js_micro_benchmarks._parse_benchmark_tags(name)
+    assert tags == {
+        "dataset": "tracks",
+        "column": "origin",
+        "length": "1,000,000",
+        "test": "eq",
+        "type": "Dictionary<Int8, Utf8>",
+        "value": "Seattle",
+    }
+
+    # last value has a comma in it
+    name = "dataset: tracks, column: origin, length: 1,000,000, type: Dictionary<Int8, Utf8>"
+    tags = js_micro_benchmarks._parse_benchmark_tags(name)
+    assert tags == {
+        "dataset": "tracks",
+        "column": "origin",
+        "length": "1,000,000",
+        "type": "Dictionary<Int8, Utf8>",
+    }
+
 
 def test_get_run_command():
     actual = js_micro_benchmarks.get_run_command()
