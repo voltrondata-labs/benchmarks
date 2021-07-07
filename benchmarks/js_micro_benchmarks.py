@@ -1,21 +1,14 @@
 import json
 import os
 import pathlib
-import tempfile
 
 import conbench.runner
 
 from benchmarks import _benchmark
 
 
-def get_run_command(filename):
-    return [
-        "yarn",
-        "perf",
-        "--json",
-        "2>",
-        filename,
-    ]
+def get_run_command():
+    return ["yarn", "perf", "--json"]
 
 
 def _parse_benchmark_tags(name):
@@ -58,12 +51,11 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
         if src:
             os.chdir(pathlib.Path(src).joinpath("js"))
 
-        with tempfile.NamedTemporaryFile(delete=False) as result_file:
-            run_command = get_run_command(result_file.name)
-            self.execute_command(run_command)
-            results = json.load(result_file)
-            for result in results:
-                yield self._record_result(result, kwargs)
+        run_command = get_run_command()
+        _, err = self.execute_command(run_command)
+        results = json.loads(err)
+        for result in results:
+            yield self._record_result(result, kwargs)
 
     def _record_result(self, result, options):
         context = {"benchmark_language": "JavaScript"}

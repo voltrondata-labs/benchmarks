@@ -43,14 +43,8 @@ def test_parse_benchmark_tags():
 
 
 def test_get_run_command():
-    actual = js_micro_benchmarks.get_run_command("out.json")
-    assert actual == [
-        "yarn",
-        "perf",
-        "--json",
-        "2>",
-        "out.json",
-    ]
+    actual = js_micro_benchmarks.get_run_command()
+    assert actual == ["yarn", "perf", "--json"]
 
 
 @pytest.mark.slow

@@ -112,10 +112,11 @@ class Benchmark(conbench.runner.Benchmark):
     def execute_command(self, command):
         try:
             print(command)
-            subprocess.run(command, capture_output=True, check=True)
+            result = subprocess.run(command, capture_output=True, check=True)
         except subprocess.CalledProcessError as e:
             print(e.stderr.decode("utf-8"))
             raise e
+        return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
 
     def get_sources(self, source):
         if isinstance(source, list):
