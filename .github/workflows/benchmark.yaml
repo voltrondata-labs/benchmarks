@@ -1,0 +1,41 @@
+name: Run Benchmarks
+
+on:
+  push:
+    branches: [ skyhookdm-workflow ]
+  pull_request:
+    branches: [ skyhookdm-workflow ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: uccross/skyhookdm-arrow:v0.2.0
+    steps:
+      - uses: actions/checkout@v2
+ 
+      - name: Setup Python
+        uses: actions/setup-python@v2
+          
+      - name: Installing benchmark
+        run: |
+          git clone https://github.com/ursacomputing/benchmarks.git
+          cd benchmarks/
+          pip install -r requirements-test.txt
+          pip install -r requirements-build.txt
+          python setup.py develop
+          
+      - name: Installing conbench
+        run: |
+          git clone https://github.com/ursacomputing/conbench.git
+          cd conbench/
+          pip install -r requirements-test.txt
+          pip install -r requirements-build.txt
+          pip install -r requirements-cli.txt
+          python setup.py develop
+          
+      - name: Run Tests
+        run: |
+          cd benchmarks/
+          pytest -vv benchmarks/tests/
