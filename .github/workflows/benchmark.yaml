@@ -20,14 +20,13 @@ jobs:
           
       - name: Installing benchmark
         run: |
-          git clone https://github.com/ursacomputing/benchmarks.git
-          cd benchmarks/
           pip install -r requirements-test.txt
           pip install -r requirements-build.txt
           python setup.py develop
           
       - name: Installing conbench
         run: |
+          cd ..
           git clone https://github.com/ursacomputing/conbench.git
           cd conbench/
           pip install -r requirements-test.txt
@@ -37,5 +36,6 @@ jobs:
           
       - name: Run Tests
         run: |
+          ls
           cd benchmarks/
           pytest -vv benchmarks/tests/
