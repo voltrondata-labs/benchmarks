@@ -14,15 +14,6 @@ jobs:
       image: uccross/skyhookdm-arrow:v0.2.0
     steps:
       - uses: actions/checkout@v2
- 
-      - name: Setup Python
-        run: |
-          sudo apt update
-          python3 -V
-          sudo apt install software-properties-common
-          sudo add-apt-repository ppa:deadsnakes/ppa -y
-          sudo apt install python3.9
-          sudo apt install -y python3-pip
           
       - name: Install Python dependencies
         run: |
