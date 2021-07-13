@@ -18,24 +18,14 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
           
-      - name: Installing benchmark
+      - name: Install Python dependencies
         run: |
+          python setup.py develop
           pip install -r requirements-test.txt
           pip install -r requirements-build.txt
-          python setup.py develop
-          
-      - name: Installing conbench
-        run: |
-          cd ..
-          git clone https://github.com/ursacomputing/conbench.git
-          cd conbench/
-          pip install -r requirements-test.txt
-          pip install -r requirements-build.txt
-          pip install -r requirements-cli.txt
-          python setup.py develop
+          pip install https://github.com/ursacomputing/conbench/archive/main.zip
+          pip install coveralls
           
       - name: Run Tests
         run: |
-          ls
-          cd benchmarks/
           pytest -vv benchmarks/tests/
