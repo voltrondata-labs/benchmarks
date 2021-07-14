@@ -158,9 +158,6 @@ def assert_external_benchmark(result):
     }
 
     # assert stats
-    del munged["stats"]["run_id"]
-    del munged["stats"]["batch_id"]
-    del munged["stats"]["timestamp"]
     assert munged["stats"] == {
         "data": ["100.000000", "200.000000", "300.000000"],
         "unit": "i/s",
