@@ -258,6 +258,9 @@ Example benchmark execution.
 
 Benchmark result:
 {
+    "run_id": "ccb3a04d20ce49ed8be620671129c3ce",
+    "batch_id": "ccb3a04d20ce49ed8be620671129c3ce",
+    "timestamp": "2021-06-22T20:48:09.761129+00:00",
     "context": {
         "arrow_compiler_flags": "-fPIC -arch x86_64 -arch x86_64 -std=c++11 -Qunused-arguments -fcolor-diagnostics -O3 -DNDEBUG",
         "arrow_compiler_id": "AppleClang",
@@ -287,7 +290,6 @@ Benchmark result:
         "os_version": "10.16"
     },
     "stats": {
-        "batch_id": "ccb3a04d20ce49ed8be620671129c3ce",
         "data": [
             "0.011945",
             "0.005703",
@@ -308,11 +310,9 @@ Benchmark result:
         "min": "0.003223",
         "q1": "0.003565",
         "q3": "0.003871",
-        "run_id": "ccb3a04d20ce49ed8be620671129c3ce",
         "stdev": "0.002647",
         "time_unit": "s",
         "times": [],
-        "timestamp": "2021-06-22T20:48:09.761129+00:00",
         "unit": "s"
     },
     "tags": {
