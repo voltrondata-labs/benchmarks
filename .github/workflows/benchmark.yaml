@@ -18,24 +18,16 @@ jobs:
       - name: Upgrade Python Version to 3.9
         run: |
           sudo yum -y update
-          sudo yum groupinstall "Development Tools" -y
-          sudo yum install openssl-devel libffi-devel bzip2-devel -y
-          sudo yum install wget -y
-          wget https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tgz
-          tar xvf Python-3.9.5.tgz
-          cd Python-3.9*/
-          ./configure --enable-optimizations
-          sudo make altinstall
-          /usr/local/bin/python3.9 -m pip install --upgrade pip
+          sudo yum -y install python3 python3-devel python3-pip llvm-devel                   
           
       - name: Install Python dependencies
         run: |
-          python3.9 setup.py develop
-          pip install -r requirements-test.txt
-          pip install -r requirements-build.txt
-          pip install https://github.com/ursacomputing/conbench/archive/main.zip
-          pip install coveralls
+          python3 setup.py develop
+          pip3 install -r requirements-test.txt
+          pip3 install -r requirements-build.txt
+          pip3 install https://github.com/ursacomputing/conbench/archive/main.zip
+          pip3 install coveralls
           
       - name: Run Tests
         run: |
-          python3.9 -m pytest -vv benchmarks/tests/
+          python3 -m pytest -vv benchmarks/tests/
