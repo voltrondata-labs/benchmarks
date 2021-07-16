@@ -38,4 +38,4 @@ jobs:
           
       - name: Run Tests
         run: |
-          pytest -vv benchmarks/tests/
+          python3.9 -m pytest -vv benchmarks/tests/
