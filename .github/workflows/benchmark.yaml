@@ -15,19 +15,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Upgrade Python Version to 3.9
+      - name: Install Python
         run: |
           sudo yum -y update
-          sudo yum -y install python3 python3-devel python3-pip llvm-devel                   
+          sudo yum -y install python3 python3-devel python3-pip llvm-devel postgresql-devel                 
           
       - name: Install Python dependencies
         run: |
           python3 setup.py develop
           pip3 install -r requirements-test.txt
           pip3 install -r requirements-build.txt
-          pip3 install https://github.com/ursacomputing/conbench/archive/main.zip
           pip3 install coveralls
+          
+      - name: Setup Conbench
+        run: |
+          git clone https://github.com/ursacomputing/conbench.git
+          cd conbench
+          pip3 install -r requirements-test.txt
+          pip3 install -r requirements-build.txt
+          pip3 install -r requirements-cli.txt
+          python3 setup.py develop
           
       - name: Run Tests
         run: |
-          python3 -m pytest -vv benchmarks/tests/
+          pytest -vv benchmarks/tests/
