@@ -11,32 +11,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: uccross/skyhookdm-arrow:v0.2.0
+      image: uccross/skyhookdm-arrow-benchmark:v0.2.0
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: Install Python
-        run: |
-          sudo yum -y update
-          sudo yum -y install python3 python3-devel python3-pip llvm-devel postgresql-devel                 
+      - uses: actions/checkout@v2               
           
       - name: Install Python dependencies
         run: |
-          python3 setup.py develop
-          pip3 install -r requirements-test.txt
-          pip3 install -r requirements-build.txt
-          pip3 install coveralls
+          python3.9 setup.py develop
+          pip3.9 install -r requirements-test.txt
+          pip3.9 install -r requirements-build.txt
+          pip3.9 install coveralls
           
       - name: Setup Conbench
         run: |
           git clone https://github.com/ursacomputing/conbench.git
           cd conbench
-          pip3 install -r requirements-test.txt
-          pip3 install -r requirements-build.txt
-          pip3 install -r requirements-cli.txt
-          python3 setup.py develop
+          pip3.9 install -r requirements-test.txt
+          pip3.9 install -r requirements-build.txt
+          pip3.9 install -r requirements-cli.txt
+          python3.9 setup.py develop
           
       - name: Run Tests
         run: |
-          pytest -vv benchmarks/tests/test_dataset_filter_benchhmark.py
+          python3.9 -m pytest -vv benchmarks/tests/test_dataset_filter_benchhmark.py
 
