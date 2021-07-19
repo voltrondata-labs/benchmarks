@@ -38,4 +38,5 @@ jobs:
           
       - name: Run Tests
         run: |
-          pytest -vv benchmarks/tests/
+          pytest -vv benchmarks/tests/test_dataset_filter_benchhmark.py
+
