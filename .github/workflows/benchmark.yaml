@@ -24,6 +24,7 @@ jobs:
           
       - name: Setup Conbench
         run: |
+          yum install postgresql-devel
           git clone https://github.com/ursacomputing/conbench.git
           cd conbench
           pip3.9 install -r requirements-test.txt
