@@ -34,7 +34,6 @@ jobs:
           
       - name: Run Tests
         run: |
-          echo “alias python=/usr/local/bin/python3.9” >> ~/.bashrc
-          source ~/.bashrc
+          ln -s /usr/bin/python3.9 /usr/bin/python
           pytest -vv benchmarks/tests/test_dataset_filter_benchhmark.py
 
