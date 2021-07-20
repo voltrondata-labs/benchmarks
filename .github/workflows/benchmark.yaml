@@ -2,9 +2,9 @@ name: Run Benchmarks
 
 on:
   push:
-    branches: [ skyhookdm-workflow ]
+    branches: [ skyhookdm-workflow, debug ]
   pull_request:
-    branches: [ skyhookdm-workflow ]
+    branches: [ skyhookdm-workflow, debug ]
 
 jobs:
 
