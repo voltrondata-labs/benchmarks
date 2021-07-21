@@ -12,18 +12,19 @@
 
 
 This package contains Python macro benchmarks for Apache Arrow, as well
-as benchmarks that execute and record the results for both the Arrow
-C++ & Java micro benchmarks and the Arrow R macro benchmarks (which are found
-in the [arrowbench](https://github.com/ursacomputing/arrowbench)
-repository). These benchmarks use the
-[Conbench runner](https://github.com/ursacomputing/conbench) for
-benchmark execution, and the results are published to Arrow's public
+as external benchmark wrappers that execute and record the results for both the
+Arrow C++, Java, and JavaScript micro benchmarks (which are found in the
+[arrow](https://github.com/apache/arrow) repository), and the Arrow R macro
+benchmarks (which are found in the
+[arrowbench](https://github.com/ursacomputing/arrowbench) repository). These
+benchmarks use the [Conbench runner](https://github.com/ursacomputing/conbench)
+for benchmark execution, and the results are published to Arrow's public
 [Conbench server](https://conbench.ursa.dev/).
 
 On each commit to the main [Arrow](https://github.com/apache/arrow)
-branch, the C++, Python, Java, and R benchmarks are run on a variety of
-physical benchmarking machines & EC2 instances of different sizes, and
-the results are published to Conbench. Additionally, benchmarks can
+branch, the C++, Python, Java, JavaScript, and R benchmarks are run on a
+variety of physical benchmarking machines & EC2 instances of different sizes,
+and the results are published to Conbench. Additionally, benchmarks can
 also be run on an Arrow pull request by adding a GitHub comment with
 the text: **`@ursabot please benchmark`**. A baseline benchmarking run
 against the pull request's head with also be scheduled, and Conbench
@@ -40,6 +41,7 @@ ursabot benchmark commands.
 @ursabot please benchmark lang=Python
 @ursabot please benchmark lang=C++
 @ursabot please benchmark lang=Java
+@ursabot please benchmark lang=JavaScript
 @ursabot please benchmark lang=R
 @ursabot please benchmark name=file-write
 @ursabot please benchmark name=file-write lang=Python
@@ -87,6 +89,7 @@ defaults or to disable a particular benchmark.
     (qa) $ git clone https://github.com/ursacomputing/benchmarks.git
     (qa) $ git clone https://github.com/ursacomputing/conbench.git
     (qa) $ git clone https://github.com/apache/arrow.git
+    (qa) $ export ARROW_SRC=$(pwd)/arrow
 
 
 ### Install benchmarks dependencies
@@ -204,6 +207,7 @@ Commands:
   file-read                   Run file-read benchmark(s).
   file-write                  Run file-write benchmark(s).
   java-micro                  Run the Arrow Java micro benchmarks.
+  js-micro                    Run the Arrow JavaScript micro benchmarks.
   list                        List of benchmarks (for orchestration).
   partitioned-dataset-filter  Run partitioned-dataset-filter benchmark(s).
   wide-dataframe              Run wide-dataframe benchmark(s).

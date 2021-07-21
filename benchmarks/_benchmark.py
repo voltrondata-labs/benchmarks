@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import shutil
+import subprocess
 
 import conbench.runner
 import pyarrow
@@ -107,6 +108,15 @@ class Benchmark(conbench.runner.Benchmark):
             output=output,
         )
         return benchmark, output
+
+    def execute_command(self, command):
+        try:
+            print(command)
+            result = subprocess.run(command, capture_output=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(e.stderr.decode("utf-8"))
+            raise e
+        return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
 
     def get_sources(self, source):
         if isinstance(source, list):
@@ -243,6 +253,7 @@ class BenchmarkList(conbench.runner.BenchmarkList):
             if (
                 flags["language"] != "C++"
                 and flags["language"] != "Java"
+                and flags["language"] != "JavaScript"
                 and "--drop-caches=true" not in parts
             ):
                 parts.append("--drop-caches=true")
@@ -262,7 +273,8 @@ class BenchmarkList(conbench.runner.BenchmarkList):
                 parts.append("ALL")
 
             iterations = getattr(instance, "iterations", 3)
-            parts.append(f"--iterations={iterations}")
+            if iterations:
+                parts.append(f"--iterations={iterations}")
 
             if instance.cases:
                 parts.append("--all=true")

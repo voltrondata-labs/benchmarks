@@ -80,6 +80,12 @@
     }
   },
   {
+    "command": "js-micro",
+    "flags": {
+      "language": "JavaScript"
+    }
+  },
+  {
     "command": "partitioned-dataset-filter --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "R"
