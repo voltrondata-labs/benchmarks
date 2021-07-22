@@ -6,7 +6,7 @@
     }
   },
   {
-    "command": "csv-read ALL --iterations=3 --drop-caches=true",
+    "command": "csv-read ALL --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "Python"
     }
