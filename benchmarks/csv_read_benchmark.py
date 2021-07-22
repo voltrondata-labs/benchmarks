@@ -26,7 +26,7 @@ class CsvReadBenchmark(_benchmark.Benchmark):
                 schema = source.table.schema
                 f = self._get_benchmark_function(source, schema, *case)
                 tags = self.get_tags(kwargs, source)
-                yield self.benchmark(f, tags, kwargs)
+                yield self.benchmark(f, tags, kwargs, case)
 
     def _get_benchmark_function(self, source, schema, streaming, compression):
         path = source.create_if_not_exists("csv", compression)
