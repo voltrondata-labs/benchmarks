@@ -33,6 +33,10 @@ jobs:
           pip3.9 install -r requirements-cli.txt
           python3.9 setup.py develop
           
+      - name: Setup Pyarrow with Skyhook
+        run: |
+          pip3.9 install --upgrade /pyarrow-*.whl
+          
       - name: Run Tests
         run: |
           cp /usr/local/bin/python3.9 /usr/local/bin/python
