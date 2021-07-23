@@ -12,18 +12,44 @@ class CsvReadBenchmark(_benchmark.Benchmark):
     arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources_test = ["fanniemae_sample", "nyctaxi_sample"]
+    valid_cases = [("streaming", "compression")] + [
+        ("streaming", "uncompressed"),
+        ("file", "uncompressed"),
+        ("streaming", "gzip"),
+        ("file", "gzip"),
+    ]
 
-    def run(self, source, **kwargs):
+    def run(self, source, case=None, **kwargs):
+        cases = self.get_cases(case, kwargs)
         for source in self.get_sources(source):
-            f = self._get_benchmark_function(
-                source.source_path,
-                source.csv_parse_options,
-            )
-            tags = self.get_tags(kwargs, source)
-            yield self.benchmark(f, tags, kwargs)
+            for case in cases:
+                schema = source.table.schema
+                f = self._get_benchmark_function(source, schema, *case)
+                tags = self.get_tags(kwargs, source)
+                yield self.benchmark(f, tags, kwargs, case)
 
-    def _get_benchmark_function(self, source_path, parse_options):
-        return lambda: pyarrow.csv.read_csv(
-            source_path,
-            parse_options=parse_options,
-        )
+    def _get_benchmark_function(self, source, schema, streaming, compression):
+        path = source.create_if_not_exists("csv", compression)
+        munged_compression = compression if compression != "uncompressed" else None
+        parse_options = source.csv_parse_options
+        if streaming == "streaming":
+
+            def read_csv_streaming():
+                in_stream = pyarrow.input_stream(path, compression=munged_compression)
+                convert_options = pyarrow.csv.ConvertOptions(column_types=schema)
+                reader = pyarrow.csv.open_csv(
+                    in_stream,
+                    convert_options=convert_options,
+                    parse_options=parse_options,
+                )
+                return reader.read_all()
+
+            return read_csv_streaming
+        else:
+
+            def read_csv_file():
+                in_stream = pyarrow.input_stream(path, compression=munged_compression)
+                table = pyarrow.csv.read_csv(in_stream, parse_options=parse_options)
+                return table
+
+            return read_csv_file

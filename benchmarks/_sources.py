@@ -36,6 +36,8 @@ def _temp(name):
 def munge_compression(c, file_type):
     if file_type == "parquet":
         c = "NONE" if c == "uncompressed" else c
+    elif file_type == "csv" and c == "uncompressed":
+        return None
     return c.lower() if file_type == "feather" else c.upper()
 
 
@@ -276,6 +278,8 @@ class Source:
                 self._feather_write(self.table, path, compression)
             elif file_type == "parquet":
                 self._parquet_write(self.table, path, compression)
+            elif file_type == "csv":
+                self._csv_write(self.table, path, compression)
         return path
 
     @functools.cached_property
@@ -330,6 +334,11 @@ class Source:
                     source = self._get_object_url(idx)
                 r = requests.get(source)
                 open(source_path, "wb").write(r.content)
+
+    def _csv_write(self, table, path, compression):
+        compression = munge_compression(compression, "csv")
+        out_stream = pyarrow.output_stream(path, compression=compression)
+        pyarrow.csv.write_csv(table, out_stream)
 
     def _feather_write(self, table, path, compression):
         compression = munge_compression(compression, "feather")
