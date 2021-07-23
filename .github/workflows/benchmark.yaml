@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: uccross/skyhookdm-arrow-benchmark:v0.2.0
+      options: --privileged
     steps:
       - uses: actions/checkout@v2               
           
@@ -35,5 +36,6 @@ jobs:
       - name: Run Tests
         run: |
           cp /usr/local/bin/python3.9 /usr/local/bin/python
+          sh integration_ceph.sh
           pytest -vv benchmarks/tests/test_dataset_filter_benchhmark.py
 
