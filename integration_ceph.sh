@@ -103,15 +103,15 @@ ceph status
 yum -y update
 yum install -y ceph-fuse attr
 
-    # mount a ceph filesystem to /mnt/cephfs in the user-space using ceph-fuse
-    mkdir -p /mnt/cephfs
-    ceph-fuse /mnt/cephfs
-    sleep 5
+# mount a ceph filesystem to /mnt/cephfs in the user-space using ceph-fuse
+mkdir -p /mnt/cephfs
+ceph-fuse /mnt/cephfs
+sleep 5
 
-    # download an example dataset and copy into the mounted dir
-    rm -rf nyc*
-    wget https://raw.githubusercontent.com/JayjeetAtGithub/zips/main/nyc.zip
-    unzip nyc.zip
-    cp -r nyc /mnt/cephfs/
-    sleep 10
-popd
+# download an example dataset and copy into the mounted dir
+rm -rf nyc*
+wget https://raw.githubusercontent.com/JayjeetAtGithub/zips/main/nyc.zip
+unzip nyc.zip
+cp -r nyc /mnt/cephfs/
+sleep 10
+
