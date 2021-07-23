@@ -100,7 +100,7 @@ ceph-mgr --id ${MGR_NAME}
 ceph --version
 ceph status
 
-yum update
+yum -y update
 yum install -y ceph-fuse attr
 
     # mount a ceph filesystem to /mnt/cephfs in the user-space using ceph-fuse
