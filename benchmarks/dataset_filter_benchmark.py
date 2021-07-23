@@ -15,8 +15,9 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
 
     def run(self, source, **kwargs):
         for source in self.get_sources(source):
-            path = source.create_if_not_exists("parquet", "lz4")
-            dataset = pyarrow.dataset.dataset(path, format="parquet")
+            #path = source.create_if_not_exists("parquet", "lz4")
+            path = '/mnt/cephfs/nyc'
+            dataset = pyarrow.dataset.dataset(path, format="rados-parquet")
             f = self._get_benchmark_function(dataset)
             tags = self.get_tags(kwargs, source)
             yield self.benchmark(f, tags, kwargs)
@@ -26,4 +27,4 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
         #    nyctaxi_sample  --or--  nyctaxi_2010-01
         vendor = pyarrow.dataset.field("vendor_id")
         count = pyarrow.dataset.field("passenger_count")
-        return lambda: dataset.to_table(filter=(vendor == "DDS") & (count > 3))
+        return lambda: dataset.to_table()
