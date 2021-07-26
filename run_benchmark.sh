@@ -19,6 +19,7 @@
 
 # Cloning the benchmarks
 git clone https://github.com/rahul799/benchmarks.git 
+cd benchmarks
 git checkout skyhookdm-workflow
 
 # Installing conbench Dependencies
