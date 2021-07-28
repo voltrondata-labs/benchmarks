@@ -1,9 +1,9 @@
 name: build
 on:
   push:
-    branches: [ skyhookdm-workflow, debug ]
+    branches: [ debug ]
   pull_request:
-    branches: [ skyhookdm-workflow, debug ]
+    branches: [ debug ]
 jobs:
   build:
     runs-on: ubuntu-latest
