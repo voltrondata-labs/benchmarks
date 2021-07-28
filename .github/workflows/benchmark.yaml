@@ -60,12 +60,9 @@ jobs:
           git config --local user.name "rahul799"
           git add $(date '+%Y-%m-%d')/*
           git commit -m "JSONS added" -a
-        
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: 'main'
-          repository: 'uccross/skyhookdm-benchmarks'
+          git push https://$USERNAME:$REPO_KEY@github.com/uccross/skyhookdm-benchmarks.git
+        env:
+          REPO_KEY: ${{secrets.PAT_FOR_PUSH}}
+          USERNAME: rahul799
           
 
