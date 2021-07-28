@@ -46,11 +46,15 @@ jobs:
       - name: Save results as JSON
         run: |
           cd benchmarks/
-          mkdir artifacts
-          conbench dataset-filter ALL > artifacts/dataset-filter-output.json
-          
-      - uses: actions/upload-artifact@v2
-        with:
-          name: my-artifact
-          path: benchmarks/artifacts/dataset-filter-output.json
+          git clone https://github.com/uccross/skyhookdm-benchmarks.git
+          cd skyhookdm-benchmarks
+          mkdir $(date '+%Y-%m-%d')
+          mkdir $(date '+%Y-%m-%d')/${{ github.sha }} 
+          cd ..  
+          conbench dataset-filter ALL | awk 'NR>2' > skyhookdm-benchmarks/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-filter-output.json
+          ls
+          cd skyhookdm-benchmarks/$(date '+%Y-%m-%d')/${{ github.sha }}
+          ls
+          cat dataset-filter-output.json
+
 
