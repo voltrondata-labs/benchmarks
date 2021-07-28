@@ -48,17 +48,17 @@ jobs:
           cd benchmarks/
           git clone https://github.com/uccross/skyhookdm-benchmarks.git
           cd skyhookdm-benchmarks
-          mkdir $(date '+%Y-%m-%d')
-          mkdir $(date '+%Y-%m-%d')/${{ github.sha }} 
+          mkdir benchmarks-result/$(date '+%Y-%m-%d')
+          mkdir benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }} 
           cd ..  
-          conbench dataset-filter ALL | awk 'NR>2' > skyhookdm-benchmarks/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-filter-output.json
+          conbench dataset-filter ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-filter-output.json
           
       - name: Commit files
         run: |
           cd benchmarks/skyhookdm-benchmarks
           git config --local user.email "rahulagrawal799110@gmail.com"
           git config --local user.name "rahul799"
-          git add $(date '+%Y-%m-%d')/*
+          git add benchmarks-result/$(date '+%Y-%m-%d')/*
           git commit -m "JSONS added" -a
           git push https://$USERNAME:$REPO_KEY@github.com/uccross/skyhookdm-benchmarks.git
         env:
