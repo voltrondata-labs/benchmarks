@@ -48,7 +48,7 @@ jobs:
           cd benchmarks/
           git clone https://github.com/uccross/skyhookdm-benchmarks.git
           cd skyhookdm-benchmarks
-          mkdir benchmarks-result/$(date '+%Y-%m-%d')
+          mkdir -p benchmarks-result/$(date '+%Y-%m-%d')
           mkdir benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }} 
           cd ..  
           conbench dataset-selectivity-column-parquet ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-column-parquet.json
