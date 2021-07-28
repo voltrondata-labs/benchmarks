@@ -8,7 +8,7 @@ from benchmarks import _benchmark
 class DatasetColumnSelectivityParquetBenchmark(_benchmark.Benchmark):
     """Read and filter a dataset."""
 
-    name = "dataset-selectivity-column-rados"
+    name = "dataset-selectivity-column-parquet"
     arguments = ["source"]
     sources = ["nyctaxi_2010-01"]
     sources_test = ["nyctaxi_sample"]
