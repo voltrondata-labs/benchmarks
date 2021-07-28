@@ -25,7 +25,10 @@ class DatasetFilterBenchmark22(_benchmark.Benchmark):
             yield self.benchmark(f, tags, kwargs)
 
     def _get_benchmark_function(self, dataset, col_selectivity):
-        columns = ['tpep_pickup_datetime', 'tpep_dropoff_datetime', 'passenger_count', 'trip_distance', 'RatecodeID', 'store_and_fwd_flag', 'PULocationID', 'DOLocationID', 'fare_amount', 'extra', 'mta_tax', 'tip_amount', 'tolls_amount', 'improvement_surcharge', 'total_amount']
+        #columns = ['tpep_pickup_datetime', 'tpep_dropoff_datetime', 'passenger_count', 'trip_distance', 'RatecodeID', 'store_and_fwd_flag', 'PULocationID', 'DOLocationID', 'fare_amount', 'extra', 'mta_tax', 'tip_amount', 'tolls_amount', 'improvement_surcharge', 'total_amount']
+        columns = dataset.to_table().to_pandas().columns.values.tolist()
+        
+        # Default value for columns_
         columns_ = columns[:1]
         for per in col_selectivity:
             if per == "1":
