@@ -51,7 +51,10 @@ jobs:
           mkdir benchmarks-result/$(date '+%Y-%m-%d')
           mkdir benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }} 
           cd ..  
-          conbench dataset-filter ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-filter-output.json
+          conbench dataset-selectivity-column-parquet ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-column-parquet.json
+          conbench dataset-selectivity-column-rados ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-column-rados.json
+          conbench dataset-selectivity-row-parquet ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-row-parquet.json
+          conbench dataset-selectivity-row-rados ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-row-rados.json
           
       - name: Commit files
         run: |
