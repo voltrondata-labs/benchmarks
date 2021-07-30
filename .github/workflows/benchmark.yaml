@@ -51,10 +51,10 @@ jobs:
           mkdir -p benchmarks-result/$(date '+%Y-%m-%d')
           mkdir benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }} 
           cd ..  
-          conbench dataset-selectivity-column-parquet ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-column-parquet.json
-          conbench dataset-selectivity-column-rados ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-column-rados.json
-          conbench dataset-selectivity-row-parquet ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-row-parquet.json
-          conbench dataset-selectivity-row-rados ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-row-rados.json
+          for i in 1 2 5 10 14; do    conbench dataset-selectivity-column-parquet --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-column-parquet.json; done
+          for i in 1 2 5 10 14; do    conbench dataset-selectivity-column-rados --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-column-rados.json; done
+          for i in 1 10 25 50 75 90 99 100; do    conbench dataset-selectivity-row-parquet --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-row-parquet.json; done
+          for i in 1 10 25 50 75 90 99 100; do    conbench dataset-selectivity-row-rados --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-row-rados.json; done
           
       - name: Commit files
         run: |
