@@ -14,7 +14,8 @@ class DatasetColumnSelectivityRadosBenchmark(_benchmark.Benchmark):
     sources_test = ["nyctaxi_sample"]
     valid_cases = (["selectivity"], ["1"], ["2"], ["5"], ["10"], ["14"])
 
-    def run(self, source, **kwargs):
+    def run(self, source, case=None, **kwargs):
+        cases = self.get_cases(case, kwargs)
         for source in self.get_sources(source):
             tags = self.get_tags(kwargs, source)
             #path = source.create_if_not_exists("parquet", "lz4")
