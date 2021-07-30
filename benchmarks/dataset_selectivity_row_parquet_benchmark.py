@@ -45,7 +45,7 @@ class DatasetRowSelectivityParquetBenchmark(_benchmark.Benchmark):
             filter_ = (pyarrow.dataset.field("total_amount") > 19)
         elif selectivity == "10":
             filter_ = (pyarrow.dataset.field("total_amount") > 27)
-        else selectivity == "1":
+        elif selectivity == "1":
             filter_ = (pyarrow.dataset.field("total_amount") > 69)
 
         return lambda: dataset.to_table(filter=filter_)
