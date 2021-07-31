@@ -18,7 +18,7 @@ jobs:
           
       - name: Install Python dependencies
         run: |
-          python setup.py develop
+          python3.9 setup.py develop
           pip3.9 install -r requirements-test.txt
           pip3.9 install -r requirements-build.txt
           pip3.9 install coveralls
@@ -31,7 +31,7 @@ jobs:
           pip3.9 install -r requirements-test.txt
           pip3.9 install -r requirements-build.txt
           pip3.9 install -r requirements-cli.txt
-          python setup.py develop
+          python3.9 setup.py develop
           
       - name: Setup Pyarrow with Skyhook
         run: |
@@ -62,7 +62,7 @@ jobs:
           cd benchmarks/skyhookdm-benchmarks
           pip3.9 install -r requirements.txt
           cd scripts/
-          python generate_column_selectivity_plot.py
+          python3.9 generate_column_selectivity_plot.py
 
       - name: Commit files
         run: |
