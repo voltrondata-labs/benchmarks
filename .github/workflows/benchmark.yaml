@@ -41,6 +41,7 @@ jobs:
         run: |
           cp /usr/local/bin/python3.9 /usr/local/bin/python
           sh integration_ceph.sh
+          echo "CURRENT_DATE=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
           #pytest -vv benchmarks/tests/test_dataset_filter_benchhmark.py
           
       - name: Save results as JSON
@@ -48,24 +49,39 @@ jobs:
           cd benchmarks/
           git clone https://github.com/uccross/skyhookdm-benchmarks.git
           cd skyhookdm-benchmarks
-          mkdir -p benchmarks-result/$(date '+%Y-%m-%d')
-          mkdir benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }} 
+          mkdir -p benchmarks-result/${{ env.CURRENT_DATE }}
+          mkdir benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }} 
           cd ..  
-          for i in 1 2 5 10 14; do    conbench dataset-selectivity-column-parquet --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-column-parquet.json; done
-          for i in 1 2 5 10 14; do    conbench dataset-selectivity-column-rados --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-column-rados.json; done
-          for i in 1 10 25 50 75 90 99 100; do    conbench dataset-selectivity-row-parquet --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-row-parquet.json; done
-          for i in 1 10 25 50 75 90 99 100; do    conbench dataset-selectivity-row-rados --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/$(date '+%Y-%m-%d')/${{ github.sha }}/dataset-selectivity-${i}-row-rados.json; done
+          for i in 1 2 5 10 14; do    conbench dataset-selectivity-column-parquet --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/dataset-selectivity-${i}-column-parquet.json; done
+          for i in 1 2 5 10 14; do    conbench dataset-selectivity-column-rados --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/dataset-selectivity-${i}-column-rados.json; done
+          for i in 1 10 25 50 75 90 99 100; do    conbench dataset-selectivity-row-parquet --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/dataset-selectivity-${i}-row-parquet.json; done
+          for i in 1 10 25 50 75 90 99 100; do    conbench dataset-selectivity-row-rados --selectivity=$i ALL | awk 'NR>2' > skyhookdm-benchmarks/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/dataset-selectivity-${i}-row-rados.json; done
           
+      - name: Make Comparision plot
+        run: |
+          cd benchmarks/skyhookdm-benchmarks
+          pip3.9 install -r requirements.txt
+          cd scripts/
+          echo "github.sha=${{ github.sha }}" >> .env
+          python3.9 generate_column_selectivity_plot.py
+
       - name: Commit files
         run: |
           cd benchmarks/skyhookdm-benchmarks
           git config --local user.email "rahulagrawal799110@gmail.com"
           git config --local user.name "rahul799"
-          git add benchmarks-result/$(date '+%Y-%m-%d')/*
+          git add benchmarks-result/${{ env.CURRENT_DATE }}/*
           git commit -m "JSONS added" -a
           git push https://$USERNAME:$REPO_KEY@github.com/uccross/skyhookdm-benchmarks.git
         env:
           REPO_KEY: ${{secrets.PAT_FOR_PUSH}}
           USERNAME: rahul799
-          
 
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: | 
+            Build output of commit ${{ github.sha }}
+            Comparision Plot
+            ![Plot](https://github.com/uccross/skyhookdm-benchmarks/blob/main/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/result.png)
