@@ -1,3 +1,7 @@
 click
 pandas
 pyarrow
+python-decouple
+datetime
+seaborn
+matplotlib
