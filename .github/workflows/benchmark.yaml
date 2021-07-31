@@ -62,6 +62,7 @@ jobs:
           cd benchmarks/skyhookdm-benchmarks
           pip3.9 install -r requirements.txt
           cd scripts/
+          echo "github.sha=${{ github.sha }}" >> .env
           python3.9 generate_column_selectivity_plot.py
 
       - name: Commit files
