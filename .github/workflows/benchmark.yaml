@@ -83,5 +83,5 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: | 
             Build output of commit ${{ github.sha }}
-            #Comparision Plot
-            ![Plot](https://github.com/uccross/skyhookdm-benchmarks/blob/main/benchmarks-result/${{ env.DATE }}/${{ github.sha }}/result.png)
+            Comparision Plot
+            ![Plot](https://github.com/uccross/skyhookdm-benchmarks/blob/main/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/result.png)
