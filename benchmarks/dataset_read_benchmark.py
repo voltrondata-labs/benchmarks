@@ -28,7 +28,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
             tags = self.get_tags(kwargs, source)
             format_str = source.format_str
             schema = self._get_schema(source)
-            s3 = pyarrow.fs.S3FileSystem(region=source.region)
+            s3 = pyarrow.fs.S3FileSystem(region=source.region, anonymous=True)
             for case in cases:
                 (pre_buffer,) = case
                 legacy, format_ = self._get_format(pre_buffer, format_str)
