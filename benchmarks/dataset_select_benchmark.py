@@ -23,7 +23,7 @@ class DatasetSelectBenchmark(_benchmark.Benchmark):
             infer_dictionary=True,
         )
         for source in self.get_sources(source):
-            s3 = pyarrow.fs.S3FileSystem(region=source.region)
+            s3 = pyarrow.fs.S3FileSystem(region=source.region, anonymous=True)
             dataset = pyarrow.dataset.dataset(
                 source.paths,
                 format="parquet",
