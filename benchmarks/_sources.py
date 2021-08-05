@@ -226,6 +226,12 @@ class Source:
         return pyarrow.csv.ParseOptions(delimiter=self.store["sep"])
 
     @property
+    def csv_read_options(self):
+        if self.store["header"] is None:
+            return pyarrow.csv.ReadOptions(autogenerate_column_names=True)
+        return None
+
+    @property
     def source_path(self):
         """A path in the benchmarks data/ folder.
 
