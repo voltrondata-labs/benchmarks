@@ -84,8 +84,8 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: | 
             Build output of commit ${{ github.sha }}
-            Comparision Plot
-            ![Plot](raw.githubusercontent.com/uccross/skyhookdm-benchmarks/blob/main/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/column-result.png)
             Column Plot
-            ![Plot](raw.githubusercontent.com/uccross/skyhookdm-benchmarks/blob/main/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/row-result.png)
+            ![Plot](https://raw.githubusercontent.com/uccross/skyhookdm-benchmarks/main/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/column-result.png)
             Row Plot
+            ![Plot](https://raw.githubusercontent.com/uccross/skyhookdm-benchmarks/main/benchmarks-result/${{ env.CURRENT_DATE }}/${{ github.sha }}/row-result.png)
+
