@@ -1,7 +1,11 @@
 name: build
+
 on:
-  repository_dispatch:
-    types: [run]
+  push:
+    branches: [ skyhookdm-workflow, debug ]
+  pull_request:
+    branches: [ skyhookdm-workflow, debug ]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
