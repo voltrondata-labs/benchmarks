@@ -1,9 +1,7 @@
 name: build
 on:
-  push:
-    branches: [ debug ]
-  pull_request:
-    branches: [ debug ]
+  repository_dispatch:
+    types: [run]
 jobs:
   build:
     runs-on: ubuntu-latest
