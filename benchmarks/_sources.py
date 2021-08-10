@@ -192,12 +192,11 @@ EXPECTED_SIZES = {
     "nyctaxi_2010-01.uncompressed.parquet.schema": 14386,
     "nyctaxi_sample.gzip.csv": 34506,
     "nyctaxi_sample.lz4.feather": 90738,
-    "nyctaxi_sample.lz4.parquet": 77149,
+    "nyctaxi_sample.lz4.parquet": 76861,
     "nyctaxi_sample.snappy.parquet": 71533,
     "nyctaxi_sample.uncompressed.csv": 133440,
     "nyctaxi_sample.uncompressed.feather": 180018,
     "nyctaxi_sample.uncompressed.parquet": 103892,
-    "wide.parquet": 15254685,
 }
 
 
