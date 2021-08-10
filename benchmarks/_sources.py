@@ -169,6 +169,8 @@ STORE = {
 }
 
 
+TEST = True
+
 EXPECTED_SIZES = {
     "fanniemae_2016Q4.gzip.csv": 268948693,
     "fanniemae_2016Q4.lz4.feather": 638411666,
