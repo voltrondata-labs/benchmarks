@@ -45,26 +45,20 @@ cases, case_ids = benchmark.cases, benchmark.case_ids
 def assert_benchmark(result, case, source):
     munged = copy.deepcopy(result)
 
-    # The async tag may or may not be included.  If it is included
-    # the value is always true
-    has_async_tag = "async" in munged["tags"]
-
     legacy = {
         "name": "dataset-read",
         "dataset": source,
         "cpu_count": None,
+        "async": True,
         "pre_buffer": None,
     }
     pre_buffer = {
         "name": "dataset-read",
         "dataset": source,
         "cpu_count": None,
+        "async": True,
         "pre_buffer": case[0],
     }
-
-    if has_async_tag:
-        legacy["async"] = True
-        pre_buffer["async"] = True
 
     try:
         assert munged["tags"] == pre_buffer
