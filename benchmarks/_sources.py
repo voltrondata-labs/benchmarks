@@ -169,6 +169,38 @@ STORE = {
 }
 
 
+EXPECTED_SIZES = {
+    "fanniemae_2016Q4.gzip.csv": 268948693,
+    "fanniemae_2016Q4.lz4.feather": 638418466,
+    "fanniemae_2016Q4.snappy.parquet": 143174389,
+    "fanniemae_2016Q4.uncompressed.csv": 2159525881,
+    "fanniemae_2016Q4.uncompressed.feather": 5045770962,
+    "fanniemae_2016Q4.uncompressed.parquet": 390114276,
+    "fanniemae_2016Q4.uncompressed.parquet.schema": 390122613,
+    "fanniemae_sample.gzip.csv": 12154,
+    "fanniemae_sample.lz4.feather": 110682,
+    "fanniemae_sample.snappy.parquet": 44074,
+    "fanniemae_sample.uncompressed.csv": 211989,
+    "fanniemae_sample.uncompressed.feather": 680498,
+    "fanniemae_sample.uncompressed.parquet": 50301,
+    "nyctaxi_2010-01.gzip.csv": 503844947,
+    "nyctaxi_2010-01.lz4.feather": 1175116042,
+    "nyctaxi_2010-01.snappy.parquet": 754527953,
+    "nyctaxi_2010-01.uncompressed.csv": 2005778964,
+    "nyctaxi_2010-01.uncompressed.feather": 2505808498,
+    "nyctaxi_2010-01.uncompressed.parquet": 1246083270,
+    "nyctaxi_2010-01.uncompressed.parquet.schema": 14386,
+    "nyctaxi_sample.gzip.csv": 34506,
+    "nyctaxi_sample.lz4.feather": 90738,
+    "nyctaxi_sample.lz4.parquet": 77149,
+    "nyctaxi_sample.snappy.parquet": 71533,
+    "nyctaxi_sample.uncompressed.csv": 133440,
+    "nyctaxi_sample.uncompressed.feather": 180018,
+    "nyctaxi_sample.uncompressed.parquet": 103892,
+    "wide.parquet": 15254685,
+}
+
+
 class Source:
     """Example source store on disk:
 
@@ -279,13 +311,17 @@ class Source:
             data/nyctaxi_sample.csv
         """
         path = self.temp_path(file_type, compression)
-        if not path.exists():
+        expected_size = EXPECTED_SIZES.get(path.name)
+        if not path.exists() or os.path.getsize(path) != expected_size:
             if file_type == "feather":
                 self._feather_write(self.table, path, compression)
             elif file_type == "parquet":
                 self._parquet_write(self.table, path, compression)
             elif file_type == "csv":
                 self._csv_write(self.table, path, compression)
+            actual_size = os.path.getsize(path)
+            debug = [path.name, expected_size, actual_size]
+            assert expected_size == actual_size, debug
         return path
 
     @functools.cached_property
