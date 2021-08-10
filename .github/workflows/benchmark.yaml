@@ -12,7 +12,7 @@ jobs:
       image: uccross/skyhookdm-arrow-benchmark:v0.2.0
       options: --privileged
     steps:
-      - uses: actions/checkout@v2               
+      - uses: actions/checkout@v2  
           
       - name: Install Python dependencies
         run: |
@@ -79,7 +79,9 @@ jobs:
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ github.event.client_payload.ref }}
+          token: ${{ secrets.JAYJEET_PAT_TOKEN }}
+          repository: uccross/skyhookdm-arrow
           body: | 
             Build output of commit ${{ github.sha }}
             Column Plot
