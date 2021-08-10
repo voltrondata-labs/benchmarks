@@ -26,6 +26,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
         cases = self.get_cases(case, kwargs)
         for source in self.get_sources(source):
             tags = self.get_tags(kwargs, source)
+            tags["async"] = True
             format_str = source.format_str
             schema = self._get_schema(source)
             s3 = pyarrow.fs.S3FileSystem(region=source.region, anonymous=True)
@@ -39,31 +40,13 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
                     format=format_,
                     filesystem=s3,
                 )
-                supports_async = self._get_supports_async(dataset, format_str)
-                if supports_async:
-                    tags["async"] = supports_async
-                f = self._get_benchmark_function(dataset, supports_async)
+                f = self._get_benchmark_function(dataset)
                 yield self.benchmark(f, tags, kwargs, case)
                 if legacy:
                     break  # no need to run the null legacy case twice
 
-    def _get_supports_async(self, dataset, format_str):
-        # TODO (ARROW-11843): Remove this check, parquet will support async
-        if format_str == "parquet":
-            return False
-        try:
-            dataset.scanner(use_async=True)
-            return True
-        except TypeError:
-            return False
-        except AttributeError:
-            return False
-
-    def _get_benchmark_function(self, dataset, supports_async):
-        if supports_async:
-            return lambda: dataset.to_table(use_async=True)
-        else:
-            return lambda: dataset.to_table()
+    def _get_benchmark_function(self, dataset):
+        return lambda: dataset.to_table(use_async=True)
 
     def _get_schema(self, source):
         # TODO: FileSystemDataset.from_paths() can't currently discover
