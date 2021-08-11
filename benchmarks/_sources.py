@@ -168,8 +168,23 @@ STORE = {
     },
 }
 
-
 EXPECTED_SIZES = {
+    "chi_traffic_2020_Q1.parquet": 182895135,
+    "chi_traffic_sample.parquet": 116984,
+    "fanniemae_2016Q4.csv.gz": 262125134,
+    "fanniemae_sample.csv": 192742,
+    "nyctaxi_2010-01.csv.gz": 591876633,
+    "nyctaxi_sample.csv": 182665,
+    "type_dict.parquet": 2890770,
+    "type_floats.parquet": 23851672,
+    "type_integers.parquet": 15882666,
+    "type_nested.parquet": 130538033,
+    "type_simple_features.parquet": 28637722,
+    "type_strings.parquetv": 87174822,
+    "ursa-labs-taxi-data": 96,
+    "ursa-labs-taxi-data-ipc": 96,
+    "ursa-labs-taxi-data-sample": 96,
+    "ursa-labs-taxi-data-sample-ipc": 96,
     "fanniemae_2016Q4.gzip.csv": 268948693,
     "fanniemae_2016Q4.lz4.feather": 638411666,
     "fanniemae_2016Q4.snappy.parquet": 143174389,
@@ -326,17 +341,17 @@ class Source:
             data/nyctaxi_sample.csv
         """
         path = self.temp_path(file_type, compression)
-        expected_size = bytes_fmt(EXPECTED_SIZES.get(path.name))
-        if not path.exists() or bytes_fmt(os.path.getsize(path)) != expected_size:
+        expected = bytes_fmt(EXPECTED_SIZES.get(path.name))
+        if not path.exists() or bytes_fmt(os.path.getsize(path)) != expected:
             if file_type == "feather":
                 self._feather_write(self.table, path, compression)
             elif file_type == "parquet":
                 self._parquet_write(self.table, path, compression)
             elif file_type == "csv":
                 self._csv_write(self.table, path, compression)
-            actual_size = bytes_fmt(os.path.getsize(path))
-            debug = [path.name, expected_size, actual_size]
-            assert expected_size == actual_size, debug
+            actual = bytes_fmt(os.path.getsize(path))
+            debug = [path.name, expected, actual]
+            assert expected == actual, debug
         return path
 
     @functools.cached_property
@@ -382,15 +397,21 @@ class Source:
         return self.store.get("source")
 
     def download_source_if_not_exists(self):
-        for idx, path in enumerate(self.source_paths):
-            source_path = pathlib.Path(path)
-            if not source_path.exists():
-                source_path.parent.mkdir(parents=True, exist_ok=True)
+        for idx, p in enumerate(self.source_paths):
+            path = pathlib.Path(p)
+            expected = bytes_fmt(EXPECTED_SIZES.get(path.name))
+            if not path.exists() or bytes_fmt(os.path.getsize(path)) != expected:
+                path.parent.mkdir(parents=True, exist_ok=True)
                 source = self.store.get("source")
                 if not source:
                     source = self._get_object_url(idx)
                 r = requests.get(source)
-                open(source_path, "wb").write(r.content)
+                open(path, "wb").write(r.content)
+                actual = bytes_fmt(os.path.getsize(path))
+                debug = [path.name, expected, actual]
+                skip = ["data.parquet", "data.feather"]  # TODO
+                if path.name not in skip:
+                    assert expected == actual, debug
 
     def _csv_write(self, table, path, compression):
         compression = munge_compression(compression, "csv")
