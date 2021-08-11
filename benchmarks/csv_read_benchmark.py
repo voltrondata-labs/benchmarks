@@ -10,8 +10,8 @@ class CsvReadBenchmark(_benchmark.Benchmark):
 
     name = "csv-read"
     arguments = ["source"]
-    sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
-    sources_test = ["fanniemae_sample", "nyctaxi_sample"]
+    sources_test = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
+    sources = ["fanniemae_sample", "nyctaxi_sample"]
     valid_cases = [("streaming", "compression")] + [
         ("streaming", "uncompressed"),
         ("file", "uncompressed"),
