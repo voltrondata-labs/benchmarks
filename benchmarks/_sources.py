@@ -341,17 +341,14 @@ class Source:
             data/nyctaxi_sample.csv
         """
         path = self.temp_path(file_type, compression)
-        expected = bytes_fmt(EXPECTED_SIZES.get(path.name))
-        if not path.exists() or bytes_fmt(os.path.getsize(path)) != expected:
+        if self._if_path_does_not_exist_or_not_expected_file_size(path):
             if file_type == "feather":
                 self._feather_write(self.table, path, compression)
             elif file_type == "parquet":
                 self._parquet_write(self.table, path, compression)
             elif file_type == "csv":
                 self._csv_write(self.table, path, compression)
-            actual = bytes_fmt(os.path.getsize(path))
-            debug = [path.name, expected, actual]
-            assert expected == actual, debug
+            self._assert_expected_file_size(path)
         return path
 
     @functools.cached_property
@@ -399,19 +396,34 @@ class Source:
     def download_source_if_not_exists(self):
         for idx, p in enumerate(self.source_paths):
             path = pathlib.Path(p)
-            expected = bytes_fmt(EXPECTED_SIZES.get(path.name))
-            if not path.exists() or bytes_fmt(os.path.getsize(path)) != expected:
+            if self._if_path_does_not_exist_or_not_expected_file_size(path):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 source = self.store.get("source")
                 if not source:
                     source = self._get_object_url(idx)
                 r = requests.get(source)
                 open(path, "wb").write(r.content)
-                actual = bytes_fmt(os.path.getsize(path))
-                debug = [path.name, expected, actual]
-                skip = ["data.parquet", "data.feather"]  # TODO
-                if path.name not in skip:
-                    assert expected == actual, debug
+                self._assert_expected_file_size(path)
+
+    def _if_path_does_not_exist_or_not_expected_file_size(self, path):
+        expected = bytes_fmt(EXPECTED_SIZES.get(path.name))
+        return not path.exists() or bytes_fmt(os.path.getsize(path)) != expected
+
+    def _assert_expected_file_size(self, path):
+        expected = EXPECTED_SIZES.get(path.name)
+        expected_formatted = bytes_fmt(expected)
+        actual = os.path.getsize(path)
+        actual_formatted = bytes_fmt(actual)
+        debug = [
+            path.name,
+            expected_formatted,
+            actual_formatted,
+            expected,
+            actual,
+        ]
+        skip = ["data.parquet", "data.feather"]  # TODO
+        if path.name not in skip:
+            assert expected_formatted == actual_formatted, debug
 
     def _csv_write(self, table, path, compression):
         compression = munge_compression(compression, "csv")
