@@ -185,6 +185,7 @@ EXPECTED_SIZES = {
     "fanniemae_sample.uncompressed.parquet": 50301,
     "nyctaxi_2010-01.gzip.csv": 503844947,
     "nyctaxi_2010-01.lz4.feather": 1175111122,
+    "nyctaxi_2010-01.lz4.parquet": 735273049,
     "nyctaxi_2010-01.snappy.parquet": 754527953,
     "nyctaxi_2010-01.uncompressed.csv": 2005778964,
     "nyctaxi_2010-01.uncompressed.feather": 2505803578,
