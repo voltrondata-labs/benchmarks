@@ -31,24 +31,25 @@ class CsvReadBenchmark(_benchmark.Benchmark):
     def _get_benchmark_function(self, source, schema, streaming, compression):
         path = source.create_if_not_exists("csv", compression)
         munged_compression = compression if compression != "uncompressed" else None
-        in_stream = pyarrow.input_stream(path, compression=munged_compression)
-        convert_options = pyarrow.csv.ConvertOptions(column_types=schema)
+        parse_options = source.csv_parse_options
+        if streaming == "streaming":
 
-        def read_csv_streaming():
-            reader = pyarrow.csv.open_csv(
-                in_stream,
-                convert_options=convert_options,
-                parse_options=source.csv_parse_options,
-                read_options=source.csv_read_options,
-            )
-            return reader.read_all()
+            def read_csv_streaming():
+                in_stream = pyarrow.input_stream(path, compression=munged_compression)
+                convert_options = pyarrow.csv.ConvertOptions(column_types=schema)
+                reader = pyarrow.csv.open_csv(
+                    in_stream,
+                    convert_options=convert_options,
+                    parse_options=parse_options,
+                )
+                return reader.read_all()
 
-        def read_csv_file():
-            table = pyarrow.csv.read_csv(
-                in_stream,
-                parse_options=source.csv_parse_options,
-                read_options=source.csv_read_options,
-            )
-            return table
+            return read_csv_streaming
+        else:
 
-        return read_csv_streaming if streaming == "streaming" else read_csv_file
+            def read_csv_file():
+                in_stream = pyarrow.input_stream(path, compression=munged_compression)
+                table = pyarrow.csv.read_csv(in_stream, parse_options=parse_options)
+                return table
+
+            return read_csv_file
