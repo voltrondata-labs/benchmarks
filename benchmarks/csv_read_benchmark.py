@@ -31,10 +31,10 @@ class CsvReadBenchmark(_benchmark.Benchmark):
     def _get_benchmark_function(self, source, schema, streaming, compression):
         path = source.create_if_not_exists("csv", compression)
         munged_compression = compression if compression != "uncompressed" else None
-        in_stream = pyarrow.input_stream(path, compression=munged_compression)
         convert_options = pyarrow.csv.ConvertOptions(column_types=schema)
 
         def read_csv_streaming():
+            in_stream = pyarrow.input_stream(path, compression=munged_compression)
             reader = pyarrow.csv.open_csv(
                 in_stream,
                 convert_options=convert_options,
@@ -44,6 +44,7 @@ class CsvReadBenchmark(_benchmark.Benchmark):
             return reader.read_all()
 
         def read_csv_file():
+            in_stream = pyarrow.input_stream(path, compression=munged_compression)
             table = pyarrow.csv.read_csv(
                 in_stream,
                 parse_options=source.csv_parse_options,
