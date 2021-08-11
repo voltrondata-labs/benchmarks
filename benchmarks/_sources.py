@@ -204,10 +204,10 @@ EXPECTED_SIZES = {
 def bytes_fmt(value):
     if value is None:
         return None
-    if value < 1024:
-        return "{}".format(value)
+    if value == 0:
+        return "0"
     if value < 1024 ** 2:
-        return "{:.0f} Ki".format(value / 1024)
+        return "small"
     if value < 1024 ** 3:
         return "{:.0f} Mi".format(value / 1024 ** 2)
     if value < 1024 ** 4:
