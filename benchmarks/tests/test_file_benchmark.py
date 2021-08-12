@@ -102,7 +102,7 @@ def assert_run_read(run, index, case, source):
     assert_benchmark(result, case, source.name, "read", "output_type")
     assert (
         "pyarrow.Table" in str(output)
-        or "[757 rows x 108 columns]" in str(output)
+        or "[1000 rows x 31 columns]" in str(output)
         or "[998 rows x 18 columns]" in str(output)
     )
 
