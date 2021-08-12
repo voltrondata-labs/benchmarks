@@ -24,6 +24,26 @@ tip_amount: double
 tolls_amount: double
 total_amount: double"""
 
+NYCTAXI_TABLE_TIMESTAMP = """pyarrow.Table
+vendor_id: string
+pickup_at: timestamp[us]
+dropoff_at: timestamp[us]
+passenger_count: int8
+trip_distance: float
+pickup_longitude: float
+pickup_latitude: float
+rate_code_id: null
+store_and_fwd_flag: string
+dropoff_longitude: float
+dropoff_latitude: float
+payment_type: string
+fare_amount: float
+extra: float
+mta_tax: float
+tip_amount: float
+tolls_amount: float
+total_amount: float"""
+
 FANNIEMAE_TABLE = """pyarrow.Table
 0: int64
 1: string
@@ -58,11 +78,15 @@ FANNIEMAE_TABLE = """pyarrow.Table
 30: string"""
 
 
-def assert_fanniemae_or_nyctaxi_table(source, output):
+def assert_table_output(source, output, other_nyc=False):
+    out = str(output)
     if source.startswith("nyctaxi"):
-        assert NYCTAXI_TABLE in str(output)
+        if other_nyc:
+            assert NYCTAXI_TABLE_TIMESTAMP in out
+        else:
+            assert NYCTAXI_TABLE in out
     else:
-        assert FANNIEMAE_TABLE in str(output)
+        assert FANNIEMAE_TABLE in out
 
 
 def assert_benchmark(result, source, name, language="Python"):
