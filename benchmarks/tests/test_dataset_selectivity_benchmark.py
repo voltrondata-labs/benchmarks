@@ -4,7 +4,7 @@ import pytest
 
 from .. import _sources
 from .. import dataset_selectivity_benchmark
-from ..tests._asserts import assert_cli, assert_context
+from ..tests import _asserts
 
 
 HELP = """
@@ -53,7 +53,7 @@ def assert_benchmark(result, case, source):
         "selectivity": case[0],
     }
     assert munged["tags"] == expected
-    assert_context(munged)
+    _asserts.assert_context(munged)
 
 
 def assert_run(run, index, case, source):
@@ -72,4 +72,4 @@ def test_dataset_selectivity(case):
 
 def test_dataset_selectivity_cli():
     command = ["conbench", "dataset-selectivity", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)

@@ -3,7 +3,7 @@ import copy
 import pytest
 
 from .. import js_micro_benchmarks
-from ..tests._asserts import assert_cli, assert_context
+from ..tests import _asserts
 
 
 HELP = """
@@ -23,7 +23,7 @@ Options:
 
 def assert_benchmark(result):
     munged = copy.deepcopy(result)
-    assert_context(munged, language="JavaScript")
+    _asserts.assert_context(munged, language="JavaScript")
     assert munged["tags"] == {}  # TODO
     assert munged["stats"]["unit"] == "s"
     assert munged["stats"]["time_unit"] == "s"
@@ -78,4 +78,4 @@ def test_javascript_micro():
 
 def test_javascript_micro_cli():
     command = ["conbench", "js-micro", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)

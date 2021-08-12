@@ -4,7 +4,7 @@ import pytest
 
 from .. import _sources
 from .. import dataset_read_benchmark
-from ..tests._asserts import assert_cli, assert_context
+from ..tests import _asserts
 
 
 HELP = """
@@ -65,13 +65,13 @@ def assert_benchmark(result, case, source):
     except AssertionError:
         assert munged["tags"] == legacy
 
-    assert_context(munged)
+    _asserts.assert_context(munged)
 
 
 def assert_run(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name)
-    assert "pyarrow.Table" in str(output)
+    _asserts.assert_table_output(source.name, output, nyc_ts=True)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
@@ -84,4 +84,4 @@ def test_dataset_read(case):
 
 def test_dataset_read_cli():
     command = ["conbench", "dataset-read", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)

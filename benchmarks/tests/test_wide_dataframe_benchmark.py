@@ -3,7 +3,7 @@ import copy
 import pytest
 
 from .. import wide_dataframe_benchmark
-from ..tests._asserts import assert_cli, assert_context
+from ..tests import _asserts
 
 
 HELP = """
@@ -47,7 +47,7 @@ def assert_benchmark(result, case):
         "cpu_count": None,
         "use_legacy_dataset": case[0],
     }
-    assert_context(munged)
+    _asserts.assert_context(munged)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
@@ -59,4 +59,4 @@ def test_wide_dataframe(case):
 
 def test_wide_dataframe_cli():
     command = ["conbench", "wide-dataframe", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)
