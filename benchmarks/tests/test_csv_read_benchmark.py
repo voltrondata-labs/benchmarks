@@ -3,7 +3,7 @@ import pytest
 
 from .. import _sources
 from .. import csv_read_benchmark
-from ..tests._asserts import assert_context, assert_cli
+from ..tests import _asserts
 
 
 HELP = """
@@ -55,8 +55,11 @@ def assert_run(run, index, case, source):
         "compression": case[1],
     }
     assert munged["tags"] == expected
-    assert_context(munged)
-    assert "pyarrow.Table" in str(output)
+    _asserts.assert_context(munged)
+    if source.name.startswith("nyctaxi"):
+        assert _asserts.NYC_TAXI_TABLE in str(output)
+    else:
+        assert _asserts.FANNIEMAE_TABLE in str(output)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
@@ -69,4 +72,4 @@ def test_csv_read(case):
 
 def test_csv_read_cli():
     command = ["conbench", "csv-read", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)
