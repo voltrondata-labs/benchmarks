@@ -1,6 +1,6 @@
 from .. import _sources
 from .. import dataset_select_benchmark
-from ..tests._asserts import assert_cli, assert_benchmark
+from ..tests import _asserts
 
 
 HELP = """
@@ -24,8 +24,8 @@ Options:
 
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
-    assert_benchmark(result, source.name, benchmark.name)
-    assert "pyarrow.Table" in str(output)
+    _asserts.assert_benchmark(result, source.name, benchmark.name)
+    _asserts.assert_table_output(source.name, output, nyc_select=True)
 
 
 def test_dataset_read():
@@ -39,4 +39,4 @@ def test_dataset_read():
 
 def test_dataset_read_cli():
     command = ["conbench", "dataset-select", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)

@@ -44,6 +44,20 @@ tip_amount: float
 tolls_amount: float
 total_amount: float"""
 
+
+# TODO: why null vs string?
+_TEMP = (
+    NYCTAXI_TABLE_TIMESTAMP
+    + """
+year: dictionary<values=int32, indices=int32, ordered=0>
+month: dictionary<values=int32, indices=int32, ordered=0>
+part: dictionary<values=int32, indices=int32, ordered=0>"""
+)
+NYCTAXI_TABLE_SELECT = _TEMP.replace(
+    "rate_code_id: null",
+    "rate_code_id: string",
+)
+
 FANNIEMAE_TABLE = """pyarrow.Table
 0: int64
 1: string
@@ -78,11 +92,15 @@ FANNIEMAE_TABLE = """pyarrow.Table
 30: string"""
 
 
-def assert_table_output(source, output, other_nyc=False):
+def assert_table_output(source, output, nyc_ts=False, nyc_select=False):
     out = str(output)
     if source.startswith("nyctaxi"):
-        if other_nyc:
+        if nyc_ts:
             assert NYCTAXI_TABLE_TIMESTAMP in out
+        elif nyc_select:
+            print(out)
+            print(NYCTAXI_TABLE_SELECT)
+            assert NYCTAXI_TABLE_SELECT in out
         else:
             assert NYCTAXI_TABLE in out
     else:

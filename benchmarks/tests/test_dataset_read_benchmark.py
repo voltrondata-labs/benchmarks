@@ -71,7 +71,7 @@ def assert_benchmark(result, case, source):
 def assert_run(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name)
-    _asserts.assert_table_output(source.name, output, other_nyc=True)
+    _asserts.assert_table_output(source.name, output, nyc_ts=True)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
