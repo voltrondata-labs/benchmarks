@@ -56,7 +56,7 @@ def assert_run(run, index, case, source):
     }
     assert munged["tags"] == expected
     _asserts.assert_context(munged)
-    _asserts.assert_fanniemae_or_nyc_taxi_table(source.name, output)
+    _asserts.assert_fanniemae_or_nyctaxi_table(source.name, output)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)

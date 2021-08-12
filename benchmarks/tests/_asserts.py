@@ -4,7 +4,7 @@ import subprocess
 
 R_CLI = "The R Foundation for Statistical Computing"
 
-NYC_TAXI_TABLE = """pyarrow.Table
+NYCTAXI_TABLE = """pyarrow.Table
 vendor_id: string
 pickup_datetime: string
 dropoff_datetime: string
@@ -58,9 +58,9 @@ FANNIEMAE_TABLE = """pyarrow.Table
 30: string"""
 
 
-def assert_fanniemae_or_nyc_taxi_table(source, output):
+def assert_fanniemae_or_nyctaxi_table(source, output):
     if source.startswith("nyctaxi"):
-        assert NYC_TAXI_TABLE in str(output)
+        assert NYCTAXI_TABLE in str(output)
     else:
         assert FANNIEMAE_TABLE in str(output)
 

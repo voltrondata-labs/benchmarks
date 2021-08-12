@@ -28,7 +28,7 @@ Options:
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
     _asserts.assert_benchmark(result, source.name, benchmark.name)
-    _asserts.assert_fanniemae_or_nyc_taxi_table(source.name, output)
+    _asserts.assert_fanniemae_or_nyctaxi_table(source.name, output)
 
 
 def assert_run_r(run, index, benchmark, source):
