@@ -180,7 +180,7 @@ EXPECTED_SIZES = {
     "type_integers.parquet": 15882666,
     "type_nested.parquet": 130538033,
     "type_simple_features.parquet": 28637722,
-    "type_strings.parquetv": 87174822,
+    "type_strings.parquet": 87174822,
     "ursa-labs-taxi-data": 96,
     "ursa-labs-taxi-data-ipc": 96,
     "ursa-labs-taxi-data-sample": 96,
