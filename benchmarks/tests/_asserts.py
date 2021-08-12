@@ -58,6 +58,13 @@ FANNIEMAE_TABLE = """pyarrow.Table
 30: string"""
 
 
+def assert_fanniemae_or_nyc_taxi_table(source, output):
+    if source.startswith("nyctaxi"):
+        assert NYC_TAXI_TABLE in str(output)
+    else:
+        assert FANNIEMAE_TABLE in str(output)
+
+
 def assert_benchmark(result, source, name, language="Python"):
     munged = copy.deepcopy(result)
     expected = {
