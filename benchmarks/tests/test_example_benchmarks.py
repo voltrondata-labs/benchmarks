@@ -3,7 +3,7 @@ import copy
 import pytest
 
 from .. import _example_benchmarks
-from ..tests._asserts import assert_context, assert_cli, R_CLI
+from ..tests import _asserts
 
 
 SIMPLE_HELP = """
@@ -97,12 +97,12 @@ def assert_simple_benchmark(result):
         "name": "example-simple",
         "cpu_count": None,
     }
-    assert_context(munged)
+    _asserts.assert_context(munged)
 
 
 def assert_simple_benchmark_exception(result):
     munged = copy.deepcopy(result)
-    assert_context(munged)
+    _asserts.assert_context(munged)
     del munged["timestamp"]
     del munged["context"]
     assert munged == {
@@ -118,12 +118,12 @@ def assert_r_only_benchmark(result):
         "language": "R",
         "cpu_count": None,
     }
-    assert_context(munged, language="R")
+    _asserts.assert_context(munged, language="R")
 
 
 def assert_r_only_benchmark_exception(result):
     munged = copy.deepcopy(result)
-    assert_context(munged, language="R")
+    _asserts.assert_context(munged, language="R")
     assert munged["tags"] == {
         "name": "example-R-only-exception",
         "cpu_count": None,
@@ -136,7 +136,7 @@ def assert_r_only_benchmark_exception(result):
 
 def assert_r_only_benchmark_exception_no_result(result):
     munged = copy.deepcopy(result)
-    assert_context(munged, language="R")
+    _asserts.assert_context(munged, language="R")
     assert munged["tags"] == {
         "name": "example-R-only-no-result",
         "cpu_count": None,
@@ -149,7 +149,7 @@ def assert_r_only_benchmark_exception_no_result(result):
 
 def assert_external_benchmark(result):
     munged = copy.deepcopy(result)
-    assert_context(munged, language="C++")
+    _asserts.assert_context(munged, language="C++")
 
     # assert tags
     assert munged["tags"] == {
@@ -183,12 +183,12 @@ def assert_cases_benchmark(result, case):
         "rows": case[0],
         "columns": case[1],
     }
-    assert_context(munged)
+    _asserts.assert_context(munged)
 
 
 def assert_cases_benchmark_exception(result, case):
     munged = copy.deepcopy(result)
-    assert_context(munged)
+    _asserts.assert_context(munged)
     del munged["context"]
     del munged["timestamp"]
     assert munged == {
@@ -218,7 +218,7 @@ def test_simple_exception():
 
 def test_simple_cli():
     command = ["conbench", "example-simple", "--help"]
-    assert_cli(command, SIMPLE_HELP)
+    _asserts.assert_cli(command, SIMPLE_HELP)
 
 
 def test_external():
@@ -230,14 +230,14 @@ def test_external():
 
 def test_external_cli():
     command = ["conbench", "example-external", "--help"]
-    assert_cli(command, EXTERNAL_HELP)
+    _asserts.assert_cli(command, EXTERNAL_HELP)
 
 
 def test_r_only():
     benchmark = _example_benchmarks.WithoutPythonBenchmark()
     [(result, output)] = benchmark.run()
     assert_r_only_benchmark(result)
-    assert R_CLI in str(output)
+    assert _asserts.R_CLI in str(output)
 
 
 def test_r_only_exception():
@@ -256,7 +256,7 @@ def test_r_only_exception_no_result():
 
 def test_r_only_cli():
     command = ["conbench", "example-R-only", "--help"]
-    assert_cli(command, R_ONLY_HELP)
+    _asserts.assert_cli(command, R_ONLY_HELP)
 
 
 @pytest.mark.parametrize("case", cases_benchmark.cases, ids=cases_benchmark.case_ids)
@@ -276,4 +276,4 @@ def test_cases_exception(case):
 
 def test_cases_cli():
     command = ["conbench", "example-cases", "--help"]
-    assert_cli(command, CASES_HELP)
+    _asserts.assert_cli(command, CASES_HELP)

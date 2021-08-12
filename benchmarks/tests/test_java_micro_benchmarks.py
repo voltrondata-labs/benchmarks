@@ -3,7 +3,7 @@ import copy
 import pytest
 
 from .. import java_micro_benchmarks
-from ..tests._asserts import assert_cli, assert_context
+from ..tests import _asserts
 
 
 HELP = """
@@ -28,7 +28,7 @@ Options:
 
 def assert_benchmark(result):
     munged = copy.deepcopy(result)
-    assert_context(munged, language="Java")
+    _asserts.assert_context(munged, language="Java")
     assert munged["tags"] == {
         "name": "setZero",
         "source": "java-micro",
@@ -83,4 +83,4 @@ def test_java_micro():
 
 def test_java_micro_cli():
     command = ["conbench", "java-micro", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)

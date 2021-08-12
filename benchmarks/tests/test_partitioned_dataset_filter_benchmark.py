@@ -3,7 +3,7 @@ import copy
 import pytest
 
 from .. import partitioned_dataset_filter_benchmark
-from ..tests._asserts import assert_context, assert_cli, R_CLI
+from ..tests import _asserts
 
 
 HELP = """
@@ -47,7 +47,7 @@ def assert_benchmark(result, source, name, case, language="Python"):
         expected["query"] = case[0]
         expected["language"] = "R"
     assert munged["tags"] == expected
-    assert_context(munged, language=language)
+    _asserts.assert_context(munged, language=language)
 
 
 benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()
@@ -59,9 +59,9 @@ def test_partitioned_dataset_filter(case):
     pytest.skip("needs a test partitioned dataset")
     [(result, output)] = benchmark.run(case, iterations=1)
     assert_benchmark(result, "dataset-taxi-parquet", benchmark.name, case, language="R")
-    assert R_CLI in str(output)
+    assert _asserts.R_CLI in str(output)
 
 
 def test_partitioned_dataset_filter_cli():
     command = ["conbench", "partitioned-dataset-filter", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)

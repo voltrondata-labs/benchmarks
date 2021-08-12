@@ -3,7 +3,7 @@ import copy
 import pytest
 
 from .. import cpp_micro_benchmarks
-from ..tests._asserts import assert_cli, assert_context
+from ..tests import _asserts
 
 
 HELP = """
@@ -113,7 +113,7 @@ def test_get_run_command():
 
 def assert_benchmark(result):
     munged = copy.deepcopy(result)
-    assert_context(munged, language="C++")
+    _asserts.assert_context(munged, language="C++")
     assert munged["tags"] == {
         "name": "TakeStringRandomIndicesWithNulls",
         "params": "262144/1000",
@@ -142,4 +142,4 @@ def test_cpp_micro():
 
 def test_cpp_micro_cli():
     command = ["conbench", "cpp-micro", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)

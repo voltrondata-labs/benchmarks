@@ -2,7 +2,7 @@ import json
 import os
 
 from .. import _benchmark, _example_benchmarks
-from ..tests._asserts import assert_cli, get_cli_output
+from ..tests import _asserts
 
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
@@ -50,9 +50,9 @@ def test_list_cli():
         benchmarks = json.dumps(json.load(f), indent=2)
 
     try:
-        assert_cli(command, benchmarks)
+        _asserts.assert_cli(command, benchmarks)
     except AssertionError:
-        output = get_cli_output(command)
+        output = _asserts.get_cli_output(command)
         with open(benchmarks_file, "w") as f:
             f.write(output)
             f.write("\n")
