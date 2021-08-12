@@ -23,33 +23,29 @@ class CsvReadBenchmark(_benchmark.Benchmark):
         cases = self.get_cases(case, kwargs)
         for source in self.get_sources(source):
             for case in cases:
-                schema = source.table.schema
-                f = self._get_benchmark_function(source, schema, *case)
+                f = self._get_benchmark_function(source, *case)
                 tags = self.get_tags(kwargs, source)
                 yield self.benchmark(f, tags, kwargs, case)
 
-    def _get_benchmark_function(self, source, schema, streaming, compression):
+    def _get_benchmark_function(self, source, streaming, compression):
+        # Note: this will write a comma separated csv with a header, even if
+        # the original source file lacked a header and was pipe delimited.
         path = source.create_if_not_exists("csv", compression)
-        munged_compression = compression if compression != "uncompressed" else None
-        convert_options = pyarrow.csv.ConvertOptions(column_types=schema)
+        munged = compression if compression != "uncompressed" else None
+        schema = source.table.schema
 
-        def read_csv_streaming():
-            in_stream = pyarrow.input_stream(path, compression=munged_compression)
-            reader = pyarrow.csv.open_csv(
-                in_stream,
-                convert_options=convert_options,
-                parse_options=source.csv_parse_options,
-                read_options=source.csv_read_options,
-            )
-            return reader.read_all()
+        def read_streaming():
+            table = pyarrow.csv.open_csv(
+                pyarrow.input_stream(path, compression=munged),
+                convert_options=pyarrow.csv.ConvertOptions(column_types=schema),
+            ).read_all()
+            return table
 
-        def read_csv_file():
-            in_stream = pyarrow.input_stream(path, compression=munged_compression)
+        def read_file():
             table = pyarrow.csv.read_csv(
-                in_stream,
-                parse_options=source.csv_parse_options,
-                read_options=source.csv_read_options,
+                pyarrow.input_stream(path, compression=munged),
+                convert_options=pyarrow.csv.ConvertOptions(column_types=schema),
             )
             return table
 
-        return read_csv_streaming if streaming == "streaming" else read_csv_file
+        return read_streaming if streaming == "streaming" else read_file
