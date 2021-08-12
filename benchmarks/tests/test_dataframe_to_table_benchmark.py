@@ -2,7 +2,7 @@ import pytest
 
 from .. import _sources
 from .. import dataframe_to_table_benchmark
-from ..tests._asserts import assert_benchmark, assert_cli, R_CLI
+from ..tests import _asserts
 
 
 HELP = """
@@ -27,14 +27,14 @@ Options:
 
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
-    assert_benchmark(result, source.name, benchmark.name)
-    assert "pyarrow.Table" in str(output)
+    _asserts.assert_benchmark(result, source.name, benchmark.name)
+    _asserts.assert_fanniemae_or_nyc_taxi_table(source.name, output)
 
 
 def assert_run_r(run, index, benchmark, source):
     result, output = run[index]
-    assert_benchmark(result, source.name, benchmark.name, language="R")
-    assert R_CLI in str(output)
+    _asserts.assert_benchmark(result, source.name, benchmark.name, language="R")
+    assert _asserts.R_CLI in str(output)
 
 
 @pytest.mark.slow
@@ -59,4 +59,4 @@ def test_dataframe_to_table_r():
 
 def test_dataframe_to_table_cli():
     command = ["conbench", "dataframe-to-table", "--help"]
-    assert_cli(command, HELP)
+    _asserts.assert_cli(command, HELP)
