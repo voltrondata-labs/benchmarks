@@ -13,10 +13,10 @@ class CsvReadBenchmark(_benchmark.Benchmark):
     sources_test = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources = ["fanniemae_sample", "nyctaxi_sample"]
     valid_cases = [("streaming", "compression")] + [
-        ("streaming", "uncompressed"),
+        # ("streaming", "uncompressed"),
         ("file", "uncompressed"),
-        ("streaming", "gzip"),
-        ("file", "gzip"),
+        # ("streaming", "gzip"),
+        # ("file", "gzip"),
     ]
 
     def run(self, source, case=None, **kwargs):
