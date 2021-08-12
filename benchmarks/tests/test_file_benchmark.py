@@ -4,7 +4,7 @@ import pytest
 
 from .. import _sources
 from .. import file_benchmark
-from ..tests._asserts import assert_context, assert_cli, R_CLI
+from ..tests import _asserts
 
 
 FILE_READ_HELP = """
@@ -100,23 +100,22 @@ def assert_run_write(run, index, case, source):
 def assert_run_read(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type")
-    assert (
-        "pyarrow.Table" in str(output)
-        or "[1000 rows x 31 columns]" in str(output)
-        or "[998 rows x 18 columns]" in str(output)
-    )
+    if "pyarrow.Table" in str(output):
+        _asserts.assert_table_output(source.name, output)
+    else:
+        _asserts.assert_dimensions_output(source.name, output)
 
 
 def assert_run_write_r(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "write", "input_type", language="R")
-    assert R_CLI in str(output)
+    assert _asserts.R_CLI in str(output)
 
 
 def assert_run_read_r(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type", language="R")
-    assert R_CLI in str(output)
+    assert _asserts.R_CLI in str(output)
 
 
 def assert_benchmark(result, case, source, action, type_tag, language="Python"):
@@ -133,7 +132,7 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
     if language == "R":
         expected["language"] = "R"
     assert munged["tags"] == expected
-    assert_context(munged, language=language)
+    _asserts.assert_context(munged, language=language)
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)
@@ -170,9 +169,9 @@ def test_write_r(case):
 
 def test_write_cli():
     command = ["conbench", "file-write", "--help"]
-    assert_cli(command, FILE_WRITE_HELP)
+    _asserts.assert_cli(command, FILE_WRITE_HELP)
 
 
 def test_read_cli():
     command = ["conbench", "file-read", "--help"]
-    assert_cli(command, FILE_READ_HELP)
+    _asserts.assert_cli(command, FILE_READ_HELP)

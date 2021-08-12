@@ -107,6 +107,14 @@ def assert_table_output(source, output, nyc_ts=False, nyc_select=False):
         assert FANNIEMAE_TABLE in out
 
 
+def assert_dimensions_output(source, output):
+    out = str(output)
+    if source.startswith("nyctaxi"):
+        assert "[998 rows x 18 columns]" in out
+    else:
+        assert "[1000 rows x 31 columns]" in out
+
+
 def assert_benchmark(result, source, name, language="Python"):
     munged = copy.deepcopy(result)
     expected = {
