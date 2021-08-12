@@ -426,6 +426,8 @@ class Source:
             assert expected_formatted == actual_formatted, debug
 
     def _csv_write(self, table, path, compression):
+        # Note: this will write a comma separated csv with a header, even if
+        # the original source file lacked a header and was pipe delimited.
         compression = munge_compression(compression, "csv")
         out_stream = pyarrow.output_stream(path, compression=compression)
         pyarrow.csv.write_csv(table, out_stream)
