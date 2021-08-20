@@ -5,7 +5,6 @@ import pytest
 from .. import partitioned_dataset_filter_benchmark
 from ..tests import _asserts
 
-
 HELP = """
 Usage: conbench partitioned-dataset-filter [OPTIONS]
 

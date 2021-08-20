@@ -5,7 +5,6 @@ import pytest
 from .. import _example_benchmarks
 from ..tests import _asserts
 
-
 SIMPLE_HELP = """
 Usage: conbench example-simple [OPTIONS]
 

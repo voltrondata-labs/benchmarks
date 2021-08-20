@@ -143,6 +143,13 @@ defaults or to disable a particular benchmark.
     (qa) $ git add foo.py
 
 
+### Sort imports (before committing)
+    (qa) $ cd ~/workspace/benchmarks/
+    (qa) $ isort .
+        Fixing foo.py
+    (qa) $ git add foo.py
+
+
 ### Lint code (before committing)
     (qa) $ cd ~/workspace/benchmarks/
     (qa) $ flake8

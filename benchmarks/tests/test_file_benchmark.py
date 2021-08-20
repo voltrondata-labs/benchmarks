@@ -2,10 +2,8 @@ import copy
 
 import pytest
 
-from .. import _sources
-from .. import file_benchmark
+from .. import _sources, file_benchmark
 from ..tests import _asserts
-
 
 FILE_READ_HELP = """
 Usage: conbench file-read [OPTIONS] SOURCE

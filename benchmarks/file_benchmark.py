@@ -7,7 +7,6 @@ import pyarrow.parquet as parquet
 
 from benchmarks import _benchmark, _sources
 
-
 CASES = [
     ("parquet", "uncompressed", "table"),
     ("parquet", "uncompressed", "dataframe"),

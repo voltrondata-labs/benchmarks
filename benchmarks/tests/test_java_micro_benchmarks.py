@@ -5,7 +5,6 @@ import pytest
 from .. import java_micro_benchmarks
 from ..tests import _asserts
 
-
 HELP = """
 Usage: conbench java-micro [OPTIONS]
 

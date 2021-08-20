@@ -1,10 +1,9 @@
 import copy
+
 import pytest
 
-from .. import _sources
-from .. import csv_read_benchmark
+from .. import _sources, csv_read_benchmark
 from ..tests import _asserts
-
 
 HELP = """
 Usage: conbench csv-read [OPTIONS] SOURCE

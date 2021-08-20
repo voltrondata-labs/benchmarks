@@ -5,7 +5,6 @@ import pytest
 from .. import wide_dataframe_benchmark
 from ..tests import _asserts
 
-
 HELP = """
 Usage: conbench wide-dataframe [OPTIONS]
 

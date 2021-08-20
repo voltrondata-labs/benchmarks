@@ -11,7 +11,6 @@ import pyarrow
 
 from benchmarks import _sources
 
-
 logging.basicConfig(format="%(levelname)s: %(message)s")
 
 

@@ -1,7 +1,5 @@
-from .. import _sources
-from .. import dataset_select_benchmark
+from .. import _sources, dataset_select_benchmark
 from ..tests import _asserts
-
 
 HELP = """
 Usage: conbench dataset-select [OPTIONS] SOURCE

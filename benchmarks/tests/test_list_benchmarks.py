@@ -4,7 +4,6 @@ import os
 from .. import _benchmark, _example_benchmarks
 from ..tests import _asserts
 
-
 this_dir = os.path.abspath(os.path.dirname(__file__))
 benchmarks_file = os.path.join(this_dir, "..", "..", "benchmarks.json")
 

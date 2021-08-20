@@ -6,7 +6,6 @@ import conbench.runner
 
 from benchmarks import _benchmark
 
-
 RUN_OPTIONS = {
     "iterations": {
         "default": None,

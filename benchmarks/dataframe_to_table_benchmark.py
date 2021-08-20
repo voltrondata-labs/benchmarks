@@ -1,5 +1,4 @@
 import conbench.runner
-
 import pyarrow
 import pyarrow.parquet as parquet
 

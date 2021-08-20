@@ -1,7 +1,6 @@
 import copy
 import subprocess
 
-
 R_CLI = "The R Foundation for Statistical Computing"
 
 NYCTAXI_TABLE = """pyarrow.Table

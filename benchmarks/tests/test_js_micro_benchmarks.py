@@ -5,7 +5,6 @@ import pytest
 from .. import js_micro_benchmarks
 from ..tests import _asserts
 
-
 HELP = """
 Usage: conbench js-micro [OPTIONS]
 

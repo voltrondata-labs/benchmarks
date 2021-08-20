@@ -1,7 +1,5 @@
-from .. import _sources
-from .. import dataset_filter_benchmark
+from .. import _sources, dataset_filter_benchmark
 from ..tests import _asserts
-
 
 HELP = """
 Usage: conbench dataset-filter [OPTIONS] SOURCE

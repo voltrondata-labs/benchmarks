@@ -2,10 +2,8 @@ import copy
 
 import pytest
 
-from .. import _sources
-from .. import dataset_read_benchmark
+from .. import _sources, dataset_read_benchmark
 from ..tests import _asserts
-
 
 HELP = """
 Usage: conbench dataset-read [OPTIONS] SOURCE

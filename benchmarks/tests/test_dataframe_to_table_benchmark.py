@@ -1,9 +1,7 @@
 import pytest
 
-from .. import _sources
-from .. import dataframe_to_table_benchmark
+from .. import _sources, dataframe_to_table_benchmark
 from ..tests import _asserts
-
 
 HELP = """
 Usage: conbench dataframe-to-table [OPTIONS] SOURCE

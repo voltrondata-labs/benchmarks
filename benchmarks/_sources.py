@@ -1,6 +1,7 @@
 import functools
 import os
 import pathlib
+from enum import Enum
 
 import pandas
 import pyarrow
@@ -8,9 +9,6 @@ import pyarrow.csv
 import pyarrow.feather as feather
 import pyarrow.parquet as parquet
 import requests
-
-from enum import Enum
-
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 local_data_dir = os.path.join(this_dir, "data")

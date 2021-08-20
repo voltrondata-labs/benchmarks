@@ -2,10 +2,8 @@ import copy
 
 import pytest
 
-from .. import _sources
-from .. import dataset_selectivity_benchmark
+from .. import _sources, dataset_selectivity_benchmark
 from ..tests import _asserts
-
 
 HELP = """
 Usage: conbench dataset-selectivity [OPTIONS] SOURCE
