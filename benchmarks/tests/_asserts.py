@@ -97,8 +97,6 @@ def assert_table_output(source, output, nyc_ts=False, nyc_select=False):
         if nyc_ts:
             assert NYCTAXI_TABLE_TIMESTAMP in out
         elif nyc_select:
-            print(out)
-            print(NYCTAXI_TABLE_SELECT)
             assert NYCTAXI_TABLE_SELECT in out
         else:
             assert NYCTAXI_TABLE in out
