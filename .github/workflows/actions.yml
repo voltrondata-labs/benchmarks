@@ -18,7 +18,8 @@ jobs:
       - name: Lint (black)
         uses: psf/black@stable
         with:
-          args: ". --check"
+          options: --check --diff
+          src: .
       - name: Install Python dependencies
         run: |
           python setup.py develop
@@ -29,6 +30,9 @@ jobs:
       - name: Lint (flake8)
         run: |
           flake8
+      - name: Lint (isort)
+        run: |
+          isort --check .
       - name: Install libcurl (for R arrow)
         run: |
           sudo apt-get -y install libssl-dev libcurl4-openssl-dev
