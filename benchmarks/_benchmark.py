@@ -46,7 +46,55 @@ def arrow_info():
     }
 
 
-class Benchmark(conbench.runner.Benchmark):
+class BenchmarkMixin:
+    def execute_command(self, command):
+        try:
+            print(command)
+            result = subprocess.run(command, capture_output=True, check=True)
+        except subprocess.CalledProcessError as e:
+            print(e.stderr.decode("utf-8"))
+            raise e
+        return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
+
+    def _handle_error(self, e, name, tags, context, r_command=None):
+        output = None
+        tags["name"] = name
+        error = {
+            "timestamp": _now_formatted(),
+            "tags": tags,
+            "context": context,
+            "error": str(e),
+        }
+        if r_command is not None:
+            error["command"] = r_command
+        else:
+            context.update(self.conbench.python_info)
+        logging.exception(json.dumps(error))
+        return error, output
+
+
+class ExternalRepository(conbench.runner.Benchmark, BenchmarkMixin):
+    def __init__(self):
+        self.conbench = conbench.runner.Conbench()
+
+    def record(self, result, name, tags, context, options, output=None):
+        github = {
+            "repository": self.flags["repository"],
+            "commit": options["commit"],
+        }
+        benchmark, output = self.conbench.record(
+            result,
+            name,
+            tags=tags,
+            context=context,
+            github=github,
+            options=options,
+            output=output,
+        )
+        return benchmark, output
+
+
+class Benchmark(conbench.runner.Benchmark, BenchmarkMixin):
     arguments = []
     options = {"cpu_count": {"type": int}}
 
@@ -108,15 +156,6 @@ class Benchmark(conbench.runner.Benchmark):
         )
         return benchmark, output
 
-    def execute_command(self, command):
-        try:
-            print(command)
-            result = subprocess.run(command, capture_output=True, check=True)
-        except subprocess.CalledProcessError as e:
-            print(e.stderr.decode("utf-8"))
-            raise e
-        return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
-
     def get_sources(self, source):
         if isinstance(source, list):
             return source
@@ -153,22 +192,6 @@ class Benchmark(conbench.runner.Benchmark):
         if case:
             tags.update(dict(zip(self.fields, case)))
         return tags, context
-
-    def _handle_error(self, e, name, tags, context, r_command=None):
-        output = None
-        tags["name"] = name
-        error = {
-            "timestamp": _now_formatted(),
-            "tags": tags,
-            "context": context,
-            "error": str(e),
-        }
-        if r_command is not None:
-            error["command"] = r_command
-        else:
-            context.update(self.conbench.python_info)
-        logging.exception(json.dumps(error))
-        return error, output
 
 
 class BenchmarkR(Benchmark):
@@ -252,6 +275,7 @@ class BenchmarkList(conbench.runner.BenchmarkList):
             if (
                 flags["language"] != "C++"
                 and flags["language"] != "Java"
+                and flags["language"] != "Rust"
                 and flags["language"] != "JavaScript"
                 and "--drop-caches=true" not in parts
             ):
