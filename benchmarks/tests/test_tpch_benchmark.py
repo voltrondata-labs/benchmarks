@@ -11,49 +11,49 @@ Usage: conbench tpch [OPTIONS]
   For each benchmark option, the first option value is the default.
 
   Valid benchmark combinations:
-  --query-num=1 --scale=1 --format=native
-  --query-num=1 --scale=1 --format=parquet
-  --query-num=1 --scale=1 --format=feather
-  --query-num=1 --scale=10 --format=native
-  --query-num=1 --scale=10 --format=parquet
-  --query-num=1 --scale=10 --format=feather
-  --query-num=2 --scale=1 --format=native
-  --query-num=2 --scale=1 --format=parquet
-  --query-num=2 --scale=1 --format=feather
-  --query-num=2 --scale=10 --format=native
-  --query-num=2 --scale=10 --format=parquet
-  --query-num=2 --scale=10 --format=feather
-  --query-num=3 --scale=1 --format=native
-  --query-num=3 --scale=1 --format=parquet
-  --query-num=3 --scale=1 --format=feather
-  --query-num=3 --scale=10 --format=native
-  --query-num=3 --scale=10 --format=parquet
-  --query-num=3 --scale=10 --format=feather
-  --query-num=4 --scale=1 --format=native
-  --query-num=4 --scale=1 --format=parquet
-  --query-num=4 --scale=1 --format=feather
-  --query-num=4 --scale=10 --format=native
-  --query-num=4 --scale=10 --format=parquet
-  --query-num=4 --scale=10 --format=feather
-  --query-num=5 --scale=1 --format=native
-  --query-num=5 --scale=1 --format=parquet
-  --query-num=5 --scale=1 --format=feather
-  --query-num=5 --scale=10 --format=native
-  --query-num=5 --scale=10 --format=parquet
-  --query-num=5 --scale=10 --format=feather
-  --query-num=6 --scale=1 --format=native
-  --query-num=6 --scale=1 --format=parquet
-  --query-num=6 --scale=1 --format=feather
-  --query-num=6 --scale=10 --format=native
-  --query-num=6 --scale=10 --format=parquet
-  --query-num=6 --scale=10 --format=feather
+  --query-id=1 --scale-factor=1 --format=native
+  --query-id=1 --scale-factor=1 --format=parquet
+  --query-id=1 --scale-factor=1 --format=feather
+  --query-id=1 --scale-factor=10 --format=native
+  --query-id=1 --scale-factor=10 --format=parquet
+  --query-id=1 --scale-factor=10 --format=feather
+  --query-id=2 --scale-factor=1 --format=native
+  --query-id=2 --scale-factor=1 --format=parquet
+  --query-id=2 --scale-factor=1 --format=feather
+  --query-id=2 --scale-factor=10 --format=native
+  --query-id=2 --scale-factor=10 --format=parquet
+  --query-id=2 --scale-factor=10 --format=feather
+  --query-id=3 --scale-factor=1 --format=native
+  --query-id=3 --scale-factor=1 --format=parquet
+  --query-id=3 --scale-factor=1 --format=feather
+  --query-id=3 --scale-factor=10 --format=native
+  --query-id=3 --scale-factor=10 --format=parquet
+  --query-id=3 --scale-factor=10 --format=feather
+  --query-id=4 --scale-factor=1 --format=native
+  --query-id=4 --scale-factor=1 --format=parquet
+  --query-id=4 --scale-factor=1 --format=feather
+  --query-id=4 --scale-factor=10 --format=native
+  --query-id=4 --scale-factor=10 --format=parquet
+  --query-id=4 --scale-factor=10 --format=feather
+  --query-id=5 --scale-factor=1 --format=native
+  --query-id=5 --scale-factor=1 --format=parquet
+  --query-id=5 --scale-factor=1 --format=feather
+  --query-id=5 --scale-factor=10 --format=native
+  --query-id=5 --scale-factor=10 --format=parquet
+  --query-id=5 --scale-factor=10 --format=feather
+  --query-id=6 --scale-factor=1 --format=native
+  --query-id=6 --scale-factor=1 --format=parquet
+  --query-id=6 --scale-factor=1 --format=feather
+  --query-id=6 --scale-factor=10 --format=native
+  --query-id=6 --scale-factor=10 --format=parquet
+  --query-id=6 --scale-factor=10 --format=feather
 
   To run all combinations:
   $ conbench tpch --all=true
 
 Options:
-  --query-num [1|2|3|4|5|6]
-  --scale [1|10]
+  --query-id [1|2|3|4|5|6]
+  --scale-factor [1|10]
   --format [feather|native|parquet]
   --all BOOLEAN                   [default: False]
   --iterations INTEGER            [default: 1]
@@ -74,8 +74,8 @@ def assert_benchmark(result, name, language="Python"):
         "cpu_count": None,
         "engine": "arrow",
         "mem_map": False,
-        "query_num": 1,
-        "scale": 1,
+        "query_id": 1,
+        "scale_factor": 1,
         "format": "native",
     }
     if language == "R":

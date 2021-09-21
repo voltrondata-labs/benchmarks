@@ -4,11 +4,11 @@ from benchmarks import _benchmark
 
 
 def get_valid_cases():
-    result = [["query_num", "scale", "format"]]
-    for query_num in range(6):
-        for scale in [1, 10]:
+    result = [["query_id", "scale_factor", "format"]]
+    for query_id in range(6):
+        for scale_factor in [1, 10]:
             for _format in ["native", "parquet", "feather"]:
-                result.append([query_num + 1, scale, _format])
+                result.append([query_id + 1, scale_factor, _format])
     return result
 
 
@@ -28,8 +28,8 @@ class TpchBenchmark(_benchmark.BenchmarkR):
             yield self.r_benchmark(command, tags, kwargs, case)
 
     def _set_defaults(self, options):
-        options["query_num"] = options.get("query_num", 1)
-        options["scale"] = options.get("scale", 1)
+        options["query_id"] = options.get("query_id", 1)
+        options["scale_factor"] = options.get("scale_factor", 1)
         options["format"] = options.get("format", "native")
 
     def _get_r_command(self, options, case):
