@@ -41,9 +41,9 @@ def assert_benchmark(result, source, name, case, language="Python"):
         "name": name,
         "dataset": source,
         "cpu_count": None,
+        "query": case[0],
     }
     if language == "R":
-        expected["query"] = case[0]
         expected["language"] = "R"
     assert munged["tags"] == expected
     _asserts.assert_context(munged, language=language)
