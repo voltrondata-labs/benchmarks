@@ -38,8 +38,8 @@ class TpchBenchmark(_benchmark.BenchmarkR):
             f"run_one({self.r_name}, "
             f"cpu_count={self.r_cpu_count(options)}, "
             f"format='{case[2]}', "
-            f"scale={case[1]}, "
+            f"scale_factor={case[1]}, "
             f"engine='arrow', "
-            f"mem_map=FALSE, "
-            f"query_num={case[0]})"
+            f"memory_map=FALSE, "
+            f"query_id={case[0]})"
         )
