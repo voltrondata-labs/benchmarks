@@ -23,7 +23,7 @@ class TpchBenchmark(_benchmark.BenchmarkR):
         for case in self.get_cases(case, kwargs):
             tags = self.get_tags(kwargs)
             tags["engine"] = "arrow"
-            tags["mem_map"] = False
+            tags["memory_map"] = False
             command = self._get_r_command(kwargs, case)
             yield self.r_benchmark(command, tags, kwargs, case)
 

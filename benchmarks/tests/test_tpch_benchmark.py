@@ -73,7 +73,7 @@ def assert_benchmark(result, name, language="Python"):
         "name": name,
         "cpu_count": None,
         "engine": "arrow",
-        "mem_map": False,
+        "memory_map": False,
         "query_id": 1,
         "scale_factor": 1,
         "format": "native",
