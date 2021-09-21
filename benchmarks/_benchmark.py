@@ -174,7 +174,7 @@ class Benchmark(conbench.runner.Benchmark):
 class BenchmarkR(Benchmark):
     arguments = []
     options = {
-        "iterations": {"default": 1, "type": int},
+        "iterations": {"type": int, "default": 1},
         "drop_caches": {"type": bool, "default": "false"},
         "cpu_count": {"type": int},
     }
