@@ -28,8 +28,8 @@ class TpchBenchmark(_benchmark.BenchmarkR):
             yield self.r_benchmark(command, tags, kwargs, case)
 
     def _set_defaults(self, options):
-        options["query_id"] = options.get("query_id", 1)
-        options["scale_factor"] = options.get("scale_factor", 1)
+        options["query_id"] = int(options.get("query_id", 1))
+        options["scale_factor"] = int(options.get("scale_factor", 1))
         options["format"] = options.get("format", "native")
 
     def _get_r_command(self, options, case):
