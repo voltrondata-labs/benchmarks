@@ -5,10 +5,10 @@ from benchmarks import _benchmark
 
 def get_valid_cases():
     result = [["query_id", "scale_factor", "format"]]
-    for query_id in range(6):
+    for query_id in [1, 6]:
         for scale_factor in [1, 10]:
             for _format in ["native", "parquet", "feather"]:
-                result.append([query_id + 1, scale_factor, _format])
+                result.append([query_id, scale_factor, _format])
     return result
 
 
