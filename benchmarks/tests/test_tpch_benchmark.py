@@ -17,18 +17,66 @@ Usage: conbench tpch [OPTIONS]
   --query-id=1 --scale-factor=10 --format=native
   --query-id=1 --scale-factor=10 --format=parquet
   --query-id=1 --scale-factor=10 --format=feather
+  --query-id=2 --scale-factor=1 --format=native
+  --query-id=2 --scale-factor=1 --format=parquet
+  --query-id=2 --scale-factor=1 --format=feather
+  --query-id=2 --scale-factor=10 --format=native
+  --query-id=2 --scale-factor=10 --format=parquet
+  --query-id=2 --scale-factor=10 --format=feather
+  --query-id=3 --scale-factor=1 --format=native
+  --query-id=3 --scale-factor=1 --format=parquet
+  --query-id=3 --scale-factor=1 --format=feather
+  --query-id=3 --scale-factor=10 --format=native
+  --query-id=3 --scale-factor=10 --format=parquet
+  --query-id=3 --scale-factor=10 --format=feather
+  --query-id=4 --scale-factor=1 --format=native
+  --query-id=4 --scale-factor=1 --format=parquet
+  --query-id=4 --scale-factor=1 --format=feather
+  --query-id=4 --scale-factor=10 --format=native
+  --query-id=4 --scale-factor=10 --format=parquet
+  --query-id=4 --scale-factor=10 --format=feather
+  --query-id=5 --scale-factor=1 --format=native
+  --query-id=5 --scale-factor=1 --format=parquet
+  --query-id=5 --scale-factor=1 --format=feather
+  --query-id=5 --scale-factor=10 --format=native
+  --query-id=5 --scale-factor=10 --format=parquet
+  --query-id=5 --scale-factor=10 --format=feather
   --query-id=6 --scale-factor=1 --format=native
   --query-id=6 --scale-factor=1 --format=parquet
   --query-id=6 --scale-factor=1 --format=feather
   --query-id=6 --scale-factor=10 --format=native
   --query-id=6 --scale-factor=10 --format=parquet
   --query-id=6 --scale-factor=10 --format=feather
+  --query-id=7 --scale-factor=1 --format=native
+  --query-id=7 --scale-factor=1 --format=parquet
+  --query-id=7 --scale-factor=1 --format=feather
+  --query-id=7 --scale-factor=10 --format=native
+  --query-id=7 --scale-factor=10 --format=parquet
+  --query-id=7 --scale-factor=10 --format=feather
+  --query-id=8 --scale-factor=1 --format=native
+  --query-id=8 --scale-factor=1 --format=parquet
+  --query-id=8 --scale-factor=1 --format=feather
+  --query-id=8 --scale-factor=10 --format=native
+  --query-id=8 --scale-factor=10 --format=parquet
+  --query-id=8 --scale-factor=10 --format=feather
+  --query-id=9 --scale-factor=1 --format=native
+  --query-id=9 --scale-factor=1 --format=parquet
+  --query-id=9 --scale-factor=1 --format=feather
+  --query-id=9 --scale-factor=10 --format=native
+  --query-id=9 --scale-factor=10 --format=parquet
+  --query-id=9 --scale-factor=10 --format=feather
+  --query-id=10 --scale-factor=1 --format=native
+  --query-id=10 --scale-factor=1 --format=parquet
+  --query-id=10 --scale-factor=1 --format=feather
+  --query-id=10 --scale-factor=10 --format=native
+  --query-id=10 --scale-factor=10 --format=parquet
+  --query-id=10 --scale-factor=10 --format=feather
 
   To run all combinations:
   $ conbench tpch --all=true
 
 Options:
-  --query-id [1|6]
+  --query-id [1|2|3|4|5|6|7|8|9|10]
   --scale-factor [1|10]
   --format [feather|native|parquet]
   --all BOOLEAN                   [default: False]
