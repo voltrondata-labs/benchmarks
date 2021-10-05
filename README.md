@@ -12,21 +12,25 @@
 
 
 This package contains Python macro benchmarks for Apache Arrow, as well
-as external benchmark wrappers that execute and record the results for both the
-Arrow C++, Java, and JavaScript micro benchmarks (which are found in the
-[arrow](https://github.com/apache/arrow) repository), and the Arrow R macro
-benchmarks (which are found in the
-[arrowbench](https://github.com/ursacomputing/arrowbench) repository). These
-benchmarks use the [Conbench runner](https://github.com/ursacomputing/conbench)
+as external benchmark wrappers that execute and record the results for:
+- Arrow C++, Java, and JavaScript micro benchmarks (which are found in the
+[arrow](https://github.com/apache/arrow) repository)
+- Arrow R macro benchmarks (which are found in the
+[arrowbench](https://github.com/ursacomputing/arrowbench) repository).
+- Arrow Rust, and DataFusion micro benchmarks (which are found in the
+[arrow-rs](https://github.com/apache/arrow-rs) and
+[arrow-datafusion](https://github.com/apache/arrow-datafusion) repositories)
+
+These benchmarks use the [Conbench runner](https://github.com/ursacomputing/conbench)
 for benchmark execution, and the results are published to Arrow's public
 [Conbench server](https://conbench.ursa.dev/).
 
 On each commit to the main [Arrow](https://github.com/apache/arrow)
-branch, the C++, Python, Java, JavaScript, and R benchmarks are run on a
-variety of physical benchmarking machines & EC2 instances of different sizes,
-and the results are published to Conbench. Additionally, benchmarks can
-also be run on an Arrow pull request by adding a GitHub comment with
-the text: **`@ursabot please benchmark`**. A baseline benchmarking run
+branch, the C++, Python, Java, JavaScript, Rust, DataFusion, and R benchmarks
+are run on a variety of physical benchmarking machines & EC2 instances of
+different sizes, and the results are published to Conbench. Additionally,
+benchmarks can also be run on an Arrow pull request by adding a GitHub comment
+with the text: **`@ursabot please benchmark`**. A baseline benchmarking run
 against the pull request's head with also be scheduled, and Conbench
 comparison links will be posted as a follow-up GitHub comment.
 
@@ -43,6 +47,7 @@ ursabot benchmark commands.
 @ursabot please benchmark lang=Java
 @ursabot please benchmark lang=JavaScript
 @ursabot please benchmark lang=R
+@ursabot please benchmark lang=Rust
 @ursabot please benchmark name=file-write
 @ursabot please benchmark name=file-write lang=Python
 @ursabot please benchmark name=file-.*
@@ -196,9 +201,10 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  cpp-micro                   Run the Arrow C++ micro benchmarks.
-  csv-read                    Run csv-read benchmark.
+  cpp-micro                   Run Arrow C++ micro benchmarks.
+  csv-read                    Run csv-read benchmark(s).
   dataframe-to-table          Run dataframe-to-table benchmark.
+  datafusion-micro            Run Arrow Datafusion micro benchmarks.
   dataset-filter              Run dataset-filter benchmark.
   dataset-read                Run dataset-read benchmark(s).
   dataset-select              Run dataset-select benchmark.
@@ -213,10 +219,12 @@ Commands:
   example-simple-exception    Run example-simple-exception benchmark.
   file-read                   Run file-read benchmark(s).
   file-write                  Run file-write benchmark(s).
-  java-micro                  Run the Arrow Java micro benchmarks.
-  js-micro                    Run the Arrow JavaScript micro benchmarks.
+  java-micro                  Run Arrow Java micro benchmarks.
+  js-micro                    Run Arrow JavaScript micro benchmarks.
   list                        List of benchmarks (for orchestration).
   partitioned-dataset-filter  Run partitioned-dataset-filter benchmark(s).
+  rust-micro                  Run Arrow Rust micro benchmarks.
+  tpch                        Run tpch benchmark(s).
   wide-dataframe              Run wide-dataframe benchmark(s).
 ```
 

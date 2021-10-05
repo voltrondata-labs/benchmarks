@@ -8,7 +8,7 @@ from ..tests import _asserts
 HELP = """
 Usage: conbench js-micro [OPTIONS]
 
-  Run the Arrow JavaScript micro benchmarks.
+  Run Arrow JavaScript micro benchmarks.
 
 Options:
   --src TEXT             Specify Arrow source directory.

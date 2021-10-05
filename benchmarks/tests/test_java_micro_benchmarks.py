@@ -8,7 +8,7 @@ from ..tests import _asserts
 HELP = """
 Usage: conbench java-micro [OPTIONS]
 
-  Run the Arrow Java micro benchmarks.
+  Run Arrow Java micro benchmarks.
 
 Options:
   --src TEXT               Specify Arrow source directory.

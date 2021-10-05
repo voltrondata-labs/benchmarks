@@ -80,13 +80,13 @@ def _parse_benchmark_name(full_name):
 
 @conbench.runner.register_benchmark
 class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
-    """Run the Arrow Java micro benchmarks."""
+    """Run Arrow Java micro benchmarks."""
 
     external = True
     name = "java-micro"
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
-    description = "Run the Arrow Java micro benchmarks."
+    description = "Run Arrow Java micro benchmarks."
     flags = {"language": "Java"}
     iterations = 1
 

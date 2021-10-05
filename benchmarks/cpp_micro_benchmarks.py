@@ -105,13 +105,13 @@ def _parse_benchmark_name(full_name):
 
 @conbench.runner.register_benchmark
 class RecordCppMicroBenchmarks(_benchmark.Benchmark):
-    """Run the Arrow C++ micro benchmarks."""
+    """Run Arrow C++ micro benchmarks."""
 
     external = True
     name = "cpp-micro"
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
-    description = "Run the Arrow C++ micro benchmarks."
+    description = "Run Arrow C++ micro benchmarks."
     iterations = 1
     flags = {"language": "C++"}
 

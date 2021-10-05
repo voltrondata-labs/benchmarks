@@ -30,7 +30,7 @@ def _parse_benchmark_tags(name):
 
 @conbench.runner.register_benchmark
 class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
-    """Run the Arrow JavaScript micro benchmarks."""
+    """Run Arrow JavaScript micro benchmarks."""
 
     external = True
     name = "js-micro"
@@ -41,7 +41,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
             "help": "Specify Arrow source directory.",
         },
     }
-    description = "Run the Arrow JavaScript micro benchmarks."
+    description = "Run Arrow JavaScript micro benchmarks."
     flags = {"language": "JavaScript"}
     iterations = None
 

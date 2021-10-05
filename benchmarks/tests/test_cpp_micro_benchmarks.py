@@ -8,7 +8,7 @@ from ..tests import _asserts
 HELP = """
 Usage: conbench cpp-micro [OPTIONS]
 
-  Run the Arrow C++ micro benchmarks.
+  Run Arrow C++ micro benchmarks.
 
 Options:
   --src TEXT                 Specify Arrow source directory.

@@ -77,11 +77,7 @@ class ExternalRepository(conbench.runner.Benchmark, BenchmarkMixin):
     def __init__(self):
         self.conbench = conbench.runner.Conbench()
 
-    def record(self, result, name, tags, context, options, output=None):
-        github = {
-            "repository": self.flags["repository"],
-            "commit": options["commit"],
-        }
+    def record(self, result, name, tags, context, github, options, output=None):
         benchmark, output = self.conbench.record(
             result,
             name,

@@ -3,6 +3,8 @@ import csv
 import os
 import pathlib
 
+from conbench.machine_info import github_info
+
 from benchmarks import _benchmark
 
 
@@ -26,9 +28,9 @@ def _parse_benchmark_group(row):
     return suite, name
 
 
-def _read_results(source_dir):
+def _read_results(src_dir):
     results = collections.defaultdict(lambda: collections.defaultdict(list))
-    path = pathlib.Path(os.path.join(source_dir, "target", "criterion"))
+    path = pathlib.Path(os.path.join(src_dir, "target", "criterion"))
     for path in list(path.glob("**/new/raw.csv")):
         with open(path) as csv_file:
             reader = csv.DictReader(csv_file)
@@ -40,27 +42,32 @@ def _read_results(source_dir):
 
 class CriterionBenchmark(_benchmark.ExternalRepository):
     external, iterations = True, None
-    options = {
-        "src_dir": {"type": str},
-        "commit": {"type": str},
-    }
-    exclude = ["arrow-datafusion", "arrow-rust"]  # turn off for now
+    options = {"src_dir": {"type": str}}
+    exclude = ["datafusion-micro", "rust-micro"]  # TODO: turn off for now
 
     def run(self, **kwargs):
-        results = _read_results(kwargs["src_dir"])
+        src_dir = kwargs["src_dir"]
+        self._cargo_bench(src_dir)
+        results = _read_results(src_dir)
         for suite in results:
             self.conbench.mark_new_batch()
             for name, data in results[suite].items():
                 yield self._record_result(suite, name, data, kwargs)
 
+    def _cargo_bench(self, source_dir):
+        os.chdir(source_dir)
+        self.execute_command(["cargo", "bench"])
+
     def _record_result(self, suite, name, data, options):
         tags = {"suite": suite}
         result = {"data": data, "unit": "s"}
         context = {"benchmark_language": "Rust"}
+        github = github_info()
         return self.record(
             result,
             name,
             tags,
             context,
+            github,
             options,
         )

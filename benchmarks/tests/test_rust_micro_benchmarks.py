@@ -1,13 +1,12 @@
 from ..tests import _asserts
 
 HELP = """
-Usage: conbench arrow-datafusion [OPTIONS]
+Usage: conbench rust-micro [OPTIONS]
 
-  Record Arrow Datafusion micro benchmark results.
+  Run Arrow Rust micro benchmarks.
 
 Options:
   --src-dir TEXT
-  --commit TEXT
   --show-result BOOLEAN  [default: True]
   --show-output BOOLEAN  [default: False]
   --run-id TEXT          Group executions together with a run id.
@@ -18,5 +17,5 @@ Options:
 
 
 def test_cli():
-    command = ["conbench", "arrow-datafusion", "--help"]
+    command = ["conbench", "rust-micro", "--help"]
     _asserts.assert_cli(command, HELP)
