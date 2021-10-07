@@ -24,6 +24,13 @@
     }
   },
   {
+    "command": "datafusion-micro",
+    "flags": {
+      "language": "Rust",
+      "repository": "https://github.com/apache/arrow-datafusion"
+    }
+  },
+  {
     "command": "dataset-filter ALL --iterations=3 --drop-caches=true",
     "flags": {
       "language": "Python"
@@ -89,6 +96,13 @@
     "command": "partitioned-dataset-filter --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "R"
+    }
+  },
+  {
+    "command": "rust-micro",
+    "flags": {
+      "language": "Rust",
+      "repository": "https://github.com/apache/arrow-rs"
     }
   },
   {

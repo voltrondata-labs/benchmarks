@@ -43,7 +43,6 @@ def _read_results(src_dir):
 class CriterionBenchmark(_benchmark.ExternalRepository):
     external, iterations = True, None
     options = {"src_dir": {"type": str}}
-    exclude = ["datafusion-micro", "rust-micro"]  # TODO: turn off for now
 
     def run(self, **kwargs):
         src_dir = kwargs["src_dir"]
@@ -54,8 +53,8 @@ class CriterionBenchmark(_benchmark.ExternalRepository):
             for name, data in results[suite].items():
                 yield self._record_result(suite, name, data, kwargs)
 
-    def _cargo_bench(self, source_dir):
-        os.chdir(source_dir)
+    def _cargo_bench(self, src_dir):
+        os.chdir(src_dir)
         self.execute_command(["cargo", "bench"])
 
     def _record_result(self, suite, name, data, options):
