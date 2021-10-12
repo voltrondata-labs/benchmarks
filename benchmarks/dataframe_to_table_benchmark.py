@@ -18,7 +18,6 @@ class DataframeToTableBenchmark(_benchmark.BenchmarkPythonR):
         "type_integers",
         "type_floats",
         "type_nested",
-        "type_simple_features",
     ]
     sources_test = [
         "chi_traffic_sample",
@@ -27,7 +26,6 @@ class DataframeToTableBenchmark(_benchmark.BenchmarkPythonR):
         "type_integers",
         "type_floats",
         "type_nested",
-        "type_simple_features",
     ]
 
     def run(self, source, **kwargs):
