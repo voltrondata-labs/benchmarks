@@ -21,14 +21,14 @@ Usage: conbench dataset-read [OPTIONS] SOURCE
 
 Options:
   --pre-buffer [false|true]
-  --all BOOLEAN              [default: False]
+  --all BOOLEAN              [default: false]
   --cpu-count INTEGER
   --iterations INTEGER       [default: 1]
-  --drop-caches BOOLEAN      [default: False]
-  --gc-collect BOOLEAN       [default: True]
-  --gc-disable BOOLEAN       [default: True]
-  --show-result BOOLEAN      [default: True]
-  --show-output BOOLEAN      [default: False]
+  --drop-caches BOOLEAN      [default: false]
+  --gc-collect BOOLEAN       [default: true]
+  --gc-disable BOOLEAN       [default: true]
+  --show-result BOOLEAN      [default: true]
+  --show-output BOOLEAN      [default: false]
   --run-id TEXT              Group executions together with a run id.
   --run-name TEXT            Name of run (commit, pull request, etc).
   --help                     Show this message and exit.
