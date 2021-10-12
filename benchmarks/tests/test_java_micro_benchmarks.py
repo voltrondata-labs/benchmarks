@@ -17,8 +17,8 @@ Options:
   --java-options TEXT      Java compiler options.
   --iterations INTEGER     Number of iterations of each benchmark.
   --commit TEXT            Arrow commit.
-  --show-result BOOLEAN    [default: True]
-  --show-output BOOLEAN    [default: False]
+  --show-result BOOLEAN    [default: true]
+  --show-output BOOLEAN    [default: false]
   --run-id TEXT            Group executions together with a run id.
   --run-name TEXT          Name of run (commit, pull request, etc).
   --help                   Show this message and exit.
