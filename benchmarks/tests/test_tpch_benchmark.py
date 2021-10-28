@@ -98,7 +98,7 @@ def assert_benchmark(result, name, language="Python"):
         "cpu_count": None,
         "engine": "arrow",
         "memory_map": False,
-        "query_id": 1,
+        "query_id": "TPCH-01",
         "scale_factor": 1,
         "format": "native",
     }
