@@ -151,7 +151,10 @@ class Benchmark(conbench.runner.Benchmark):
         context.pop("arrow_git_revision")
         tags = {**extra_tags}
         if case:
-            tags.update(dict(zip(self.fields, case)))
+            case_tags = dict(zip(self.fields, case))
+            for key in case_tags:
+                if key not in tags:
+                    tags[key] = case_tags[key]
         return tags, context
 
     def _handle_error(self, e, name, tags, context, r_command=None):

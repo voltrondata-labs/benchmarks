@@ -1,3 +1,5 @@
+import uuid
+
 import conbench.runner
 
 from benchmarks import _benchmark
@@ -20,10 +22,14 @@ class TpchBenchmark(_benchmark.BenchmarkR):
 
     def run(self, case=None, **kwargs):
         self._set_defaults(kwargs)
+        run_id = kwargs.get("run_id")
+        run_id = run_id if run_id else uuid.uuid4().hex
         for case in self.get_cases(case, kwargs):
             tags = self.get_tags(kwargs)
             tags["engine"] = "arrow"
             tags["memory_map"] = False
+            tags["query_id"] = f"TPCH-{case[0]:02d}"
+            kwargs["run_id"], kwargs["batch_id"] = self._get_ids(run_id, case)
             command = self._get_r_command(kwargs, case)
             yield self.r_benchmark(command, tags, kwargs, case)
 
@@ -31,6 +37,11 @@ class TpchBenchmark(_benchmark.BenchmarkR):
         options["query_id"] = int(options.get("query_id", 1))
         options["scale_factor"] = int(options.get("scale_factor", 1))
         options["format"] = options.get("format", "native")
+
+    def _get_ids(self, run_id, case):
+        # manually batch so that the batch plots display
+        (_, scale_factor, _format) = case
+        return run_id, f"{run_id}-{scale_factor}{_format[0]}"
 
     def _get_r_command(self, options, case):
         return (
