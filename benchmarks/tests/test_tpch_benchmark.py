@@ -105,12 +105,15 @@ def assert_benchmark(result, name, language="Python"):
     if language == "R":
         expected["language"] = "R"
     assert munged["tags"] == expected
+    assert result["run_id"] == "some-run-id"
+    assert result["batch_id"] == "some-run-id-1n"
     _asserts.assert_context(munged, language=language)
 
 
 def test_benchmark():
     benchmark = tpch_benchmark.TpchBenchmark()
-    [(result, output)] = benchmark.run(iterations=1)
+    run_id = "some-run-id"
+    [(result, output)] = benchmark.run(iterations=1, run_id=run_id)
     assert_benchmark(result, benchmark.name, language="R")
     assert _asserts.R_CLI in str(output)
 
