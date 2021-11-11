@@ -63,7 +63,7 @@ def assert_benchmark(result, case, source):
     except AssertionError:
         assert munged["tags"] == legacy
 
-    _asserts.assert_context(munged)
+    _asserts.assert_info_and_context(munged)
 
 
 def assert_run(run, index, case, source):

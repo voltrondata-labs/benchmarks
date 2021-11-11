@@ -51,7 +51,7 @@ def assert_benchmark(result, case, source):
         "selectivity": case[0],
     }
     assert munged["tags"] == expected
-    _asserts.assert_context(munged)
+    _asserts.assert_info_and_context(munged)
 
 
 def assert_run(run, index, case, source):

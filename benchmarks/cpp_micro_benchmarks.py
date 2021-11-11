@@ -126,7 +126,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
                     yield self._record_result(suite, result, kwargs)
 
     def _record_result(self, suite, result, options):
-        context = {"benchmark_language": "C++"}
+        info, context = {}, {"benchmark_language": "C++"}
         tags = _parse_benchmark_name(result["name"])
         name = tags.pop("name")
         tags["suite"] = suite["name"]
@@ -137,8 +137,9 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         return self.record(
             values,
             tags,
+            info,
             context,
-            options,
+            options=options,
             output=result,
             name=name,
         )

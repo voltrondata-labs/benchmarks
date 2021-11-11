@@ -70,15 +70,16 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
                 yield self._record_result(result, kwargs)
 
     def _record_result(self, result, options):
-        context = {"benchmark_language": "JavaScript"}
+        info, context = {}, {"benchmark_language": "JavaScript"}
         tags = _parse_benchmark_tags(result["name"])
         tags["source"] = self.name
         values = self._get_values(result)
         return self.record(
             values,
             tags,
+            info,
             context,
-            options,
+            options=options,
             output=result,
             name=result["suite"],
         )

@@ -111,15 +111,16 @@ class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
                     yield self._record_result(result, kwargs)
 
     def _record_result(self, result, options):
-        context = {"benchmark_language": "Java"}
+        info, context = {}, {"benchmark_language": "Java"}
         suite, name = _parse_benchmark_name(result["name"])
         tags = {"suite": suite, "source": self.name}
         values = self._get_values(result)
         return self.record(
             values,
             tags,
+            info,
             context,
-            options,
+            options=options,
             output=result,
             name=name,
         )

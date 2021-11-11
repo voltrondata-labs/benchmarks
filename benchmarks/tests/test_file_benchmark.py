@@ -130,7 +130,7 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
     if language == "R":
         expected["language"] = "R"
     assert munged["tags"] == expected
-    _asserts.assert_context(munged, language=language)
+    _asserts.assert_info_and_context(munged, language=language)
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)

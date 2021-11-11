@@ -36,12 +36,13 @@ class ExternalBenchmark(_benchmark.Benchmark):
         }
 
         tags = self.get_tags(kwargs)
-        context = {"benchmark_language": "C++"}
+        info, context = {}, {"benchmark_language": "C++"}
         yield self.record(
             result,
             tags,
+            info,
             context,
-            kwargs,
+            options=kwargs,
             output=result["data"],
         )
 

@@ -265,63 +265,67 @@ Options:
 Example benchmark execution.
 
 ```
-(qa) $ conbench file-read nyctaxi_sample --file-type=parquet --iterations=10 --gc-disable=false
+(qa) $ conbench file-read nyctaxi_sample --file-type=feather --compression=lz4 --output-type=dataframe --iterations=10 --gc-disable=false
 
 Benchmark result:
 {
-    "run_id": "ccb3a04d20ce49ed8be620671129c3ce",
-    "batch_id": "ccb3a04d20ce49ed8be620671129c3ce",
-    "timestamp": "2021-06-22T20:48:09.761129+00:00",
+    "batch_id": "3d97e0185ef44d0d9d095f4b9fdd3fd2",
+    "run_id": "54c00bfd6b6147739bbf1224cfdf9b1d",
+    "timestamp": "2021-11-11T00:32:15.061174+00:00"
     "context": {
-        "arrow_compiler_flags": "-fPIC -arch x86_64 -arch x86_64 -std=c++11 -Qunused-arguments -fcolor-diagnostics -O3 -DNDEBUG",
-        "arrow_compiler_id": "AppleClang",
-        "arrow_compiler_version": "12.0.0.12000032",
-        "arrow_version": "4.0.0",
-        "benchmark_language": "Python",
-        "benchmark_language_version": "Python 3.9.2"
+        "arrow_compiler_flags": " -Qunused-arguments -fcolor-diagnostics -O3 -DNDEBUG",
+        "benchmark_language": "Python"
     },
     "github": {
-        "commit": "f959141ece4d660bce5f7fa545befc0116a7db79",
+        "commit": "4591d76fce2846a29dac33bf01e9ba0337b118e9",
         "repository": "https://github.com/apache/arrow"
     },
+    "info": {
+        "arrow_compiler_id": "AppleClang",
+        "arrow_compiler_version": "12.0.0.12000032",
+        "arrow_version": "5.0.0",
+        "benchmark_language_version": "Python 3.9.7"
+    },
     "machine_info": {
-        "architecture_name": "x86_64",
-        "cpu_core_count": "2",
-        "cpu_frequency_max_hz": "3500000000",
-        "cpu_l1d_cache_bytes": "32768",
-        "cpu_l1i_cache_bytes": "32768",
-        "cpu_l2_cache_bytes": "262144",
-        "cpu_l3_cache_bytes": "4194304",
-        "cpu_model_name": "Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz",
-        "cpu_thread_count": "4",
-        "kernel_name": "20.5.0",
+        "architecture_name": "arm64",
+        "cpu_core_count": "8",
+        "cpu_frequency_max_hz": "0",
+        "cpu_l1d_cache_bytes": "65536",
+        "cpu_l1i_cache_bytes": "131072",
+        "cpu_l2_cache_bytes": "4194304",
+        "cpu_l3_cache_bytes": "0",
+        "cpu_model_name": "Apple M1",
+        "cpu_thread_count": "8",
+        "gpu_count": "0",
+        "gpu_product_names": [],
+        "kernel_name": "20.6.0",
         "memory_bytes": "17179869184",
-        "name": "machine-abc",
+        "name": "diana",
         "os_name": "macOS",
-        "os_version": "10.16"
+        "os_version": "11.5.2"
     },
     "stats": {
         "data": [
-            "0.011945",
-            "0.005703",
-            "0.003593",
-            "0.003556",
-            "0.003648",
-            "0.003815",
-            "0.003887",
-            "0.003463",
-            "0.003822",
-            "0.003223"
+            "0.004986",
+            "0.001076",
+            "0.001132",
+            "0.001086",
+            "0.001221",
+            "0.001143",
+            "0.001074",
+            "0.001057",
+            "0.000990",
+            "0.001032"
         ],
-        "iqr": "0.000305",
+        "iqr": "0.000079",
         "iterations": 10,
-        "max": "0.011945",
-        "mean": "0.004665",
-        "median": "0.003731",
-        "min": "0.003223",
-        "q1": "0.003565",
-        "q3": "0.003871",
-        "stdev": "0.002647",
+        "max": "0.004986",
+        "mean": "0.001480",
+        "median": "0.001081",
+        "min": "0.000990",
+        "q1": "0.001061",
+        "q3": "0.001140",
+        "stdev": "0.001234",
         "time_unit": "s",
         "times": [],
         "unit": "s"
@@ -330,7 +334,7 @@ Benchmark result:
         "compression": "lz4",
         "cpu_count": null,
         "dataset": "nyctaxi_sample",
-        "file_type": "parquet",
+        "file_type": "feather",
         "name": "file-read",
         "output_type": "dataframe"
     }
@@ -435,12 +439,13 @@ class ExternalBenchmark(_benchmark.Benchmark):
         }
 
         tags = self.get_tags(kwargs)
-        context = {"benchmark_language": "C++"}
+        info, context = {}, {"benchmark_language": "C++"}
         yield self.record(
             result,
             tags,
+            info,
             context,
-            kwargs,
+            options=kwargs,
             output=result["data"],
         )
 ```

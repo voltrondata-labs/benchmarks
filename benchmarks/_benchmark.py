@@ -69,24 +69,26 @@ class Benchmark(conbench.runner.Benchmark):
         cpu_count = options.get("cpu_count", None)
         if cpu_count is not None:
             pyarrow.set_cpu_count(cpu_count)
-        tags, context = self._get_tags_and_context(case, extra_tags)
+        tags, info, context = self._get_tags_info_context(case, extra_tags)
         try:
             benchmark, output = self.conbench.benchmark(
                 f,
                 self.name,
                 tags=tags,
+                info=info,
                 context=context,
                 github=self.github_info,
                 options=options,
             )
         except Exception as e:
-            benchmark, output = self._handle_error(e, self.name, tags, context)
+            benchmark, output = self._handle_error(e, self.name, tags, info, context)
         return benchmark, output
 
     def record(
         self,
         result,
         extra_tags,
+        extra_info,
         extra_context,
         options,
         case=None,
@@ -95,12 +97,14 @@ class Benchmark(conbench.runner.Benchmark):
     ):
         if name is None:
             name = self.name
-        tags, context = self._get_tags_and_context(case, extra_tags)
+        tags, info, context = self._get_tags_info_context(case, extra_tags)
+        info.update(**extra_info)
         context.update(**extra_context)
         benchmark, output = self.conbench.record(
             result,
             name,
             tags=tags,
+            info=info,
             context=context,
             github=self.github_info,
             options=options,
@@ -146,30 +150,30 @@ class Benchmark(conbench.runner.Benchmark):
         else:
             return info
 
-    def _get_tags_and_context(self, case, extra_tags):
-        context = {**self.arrow_info}
-        context.pop("arrow_git_revision")
+    def _get_tags_info_context(self, case, extra_tags):
+        info = {**self.arrow_info}
+        info.pop("arrow_git_revision")
+        context = {"arrow_compiler_flags": info.pop("arrow_compiler_flags")}
         tags = {**extra_tags}
         if case:
             case_tags = dict(zip(self.fields, case))
             for key in case_tags:
                 if key not in tags:
                     tags[key] = case_tags[key]
-        return tags, context
+        return tags, info, context
 
-    def _handle_error(self, e, name, tags, context, r_command=None):
+    def _handle_error(self, e, name, tags, info, context, r_command=None):
         output = None
         tags["name"] = name
         error = {
             "timestamp": _now_formatted(),
             "tags": tags,
+            "info": info,
             "context": context,
             "error": str(e),
         }
         if r_command is not None:
             error["command"] = r_command
-        else:
-            context.update(self.conbench.python_info)
         logging.exception(json.dumps(error))
         return error, output
 
@@ -183,8 +187,8 @@ class BenchmarkR(Benchmark):
     }
 
     def r_benchmark(self, command, extra_tags, options, case=None):
-        tags, context = self._get_tags_and_context(case, extra_tags)
-        tags, context = self._add_r_tags_and_context(tags, context)
+        tags, info, context = self._get_tags_info_context(case, extra_tags)
+        self._add_r_tags_info_context(tags, info, context)
         data, iterations = [], options.get("iterations", 1)
 
         for _ in range(iterations):
@@ -194,11 +198,12 @@ class BenchmarkR(Benchmark):
                 result, output = self._get_benchmark_result(command)
                 data.extend([row["real"] for row in result["result"]])
             except Exception as e:
-                return self._handle_error(e, self.name, tags, context, command)
+                return self._handle_error(e, self.name, tags, info, context, command)
 
         return self.record(
             {"data": data, "unit": "s"},
             tags,
+            info,
             context,
             options,
             case=case,
@@ -224,12 +229,12 @@ class BenchmarkR(Benchmark):
         for file in os.listdir(f"results/{self.r_name}"):
             return os.path.join(f"results/{self.r_name}", file)
 
-    def _add_r_tags_and_context(self, tags, context):
+    def _add_r_tags_info_context(self, tags, info, context):
         tags["language"] = "R"
-        r_context = self.conbench.r_info
-        r_context["arrow_version_r"] = self.arrow_info_r["arrow_version"]
-        context.update(r_context)
-        return tags, context
+        r_info, r_context = self.conbench.get_r_info_and_context()
+        info.update(**r_info)
+        context.update(**r_context)
+        info["arrow_version_r"] = self.arrow_info_r["arrow_version"]
 
     def _get_arrow_info_r(self):
         r = "packageVersion('arrow')"
