@@ -46,7 +46,7 @@ def assert_benchmark(result, source, name, case, language="Python"):
     if language == "R":
         expected["language"] = "R"
     assert munged["tags"] == expected
-    _asserts.assert_context(munged, language=language)
+    _asserts.assert_info_and_context(munged, language=language)
 
 
 benchmark = partitioned_dataset_filter_benchmark.PartitionedDatasetFilterBenchmark()

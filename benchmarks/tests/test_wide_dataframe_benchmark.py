@@ -46,7 +46,7 @@ def assert_benchmark(result, case):
         "cpu_count": None,
         "use_legacy_dataset": case[0],
     }
-    _asserts.assert_context(munged)
+    _asserts.assert_info_and_context(munged)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)

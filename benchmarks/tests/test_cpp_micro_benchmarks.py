@@ -112,7 +112,7 @@ def test_get_run_command():
 
 def assert_benchmark(result):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged, language="C++")
+    _asserts.assert_info_and_context(munged, language="C++")
     assert munged["tags"] == {
         "name": "TakeStringRandomIndicesWithNulls",
         "params": "262144/1000",

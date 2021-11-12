@@ -54,7 +54,7 @@ def assert_run(run, index, case, source):
         "compression": case[1],
     }
     assert munged["tags"] == expected
-    _asserts.assert_context(munged)
+    _asserts.assert_info_and_context(munged)
     _asserts.assert_table_output(source.name, output)
 
 

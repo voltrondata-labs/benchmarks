@@ -27,7 +27,7 @@ Options:
 
 def assert_benchmark(result):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged, language="Java")
+    _asserts.assert_info_and_context(munged, language="Java")
     assert munged["tags"] == {
         "name": "setZero",
         "source": "java-micro",

@@ -122,25 +122,44 @@ def assert_benchmark(result, source, name, language="Python"):
     if language == "R":
         expected["language"] = "R"
     assert munged["tags"] == expected
-    assert_context(munged, language=language)
+    assert_info_and_context(munged, language=language)
 
 
-def assert_context(munged, language="Python"):
-    context = list(munged["context"].keys())
-    assert "arrow_version" in context
-    assert "arrow_git_revision" not in context
-    if language == "R":
-        assert "arrow_version_r" in munged["context"]
-    for c in context:
-        if c.startswith("arrow"):
-            munged["context"].pop(c)
-    assert "benchmark_language" in munged["context"]
+def assert_info_and_context(munged, language="Python"):
+    assert "name" in munged["tags"]
+    assert "cpu_count" in munged["tags"]
+    assert list(munged["context"].keys()) == [
+        "arrow_compiler_flags",
+        "benchmark_language",
+    ]
     if language == "Python":
-        version = munged["context"].pop("benchmark_language_version")
+        assert list(munged["info"].keys()) == [
+            "arrow_version",
+            "arrow_compiler_id",
+            "arrow_compiler_version",
+            "benchmark_language_version",
+        ]
+    elif language == "R":
+        assert list(munged["info"].keys()) == [
+            "arrow_version",
+            "arrow_compiler_id",
+            "arrow_compiler_version",
+            "benchmark_language_version",
+            "arrow_version_r",
+        ]
+    else:
+        assert list(munged["info"].keys()) == [
+            "arrow_version",
+            "arrow_compiler_id",
+            "arrow_compiler_version",
+        ]
+    del munged["context"]["arrow_compiler_flags"]
+    if language == "Python":
+        version = munged["info"].pop("benchmark_language_version")
         assert version.startswith("Python")
         assert munged["context"] == {"benchmark_language": "Python"}
     elif language == "R":
-        version = munged["context"].pop("benchmark_language_version")
+        version = munged["info"].pop("benchmark_language_version")
         assert version.startswith("R version")
         assert munged["context"] == {"benchmark_language": "R"}
     elif language == "C++":

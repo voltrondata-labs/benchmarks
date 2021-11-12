@@ -166,6 +166,7 @@ STORE = {
     },
 }
 
+# diana apologies for this hot mess
 EXPECTED_SIZES = {
     "chi_traffic_2020_Q1.parquet": 182895135,
     "chi_traffic_sample.parquet": 116984,

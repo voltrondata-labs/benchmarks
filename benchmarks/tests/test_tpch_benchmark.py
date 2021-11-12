@@ -107,10 +107,10 @@ def assert_benchmark(result, name, language="Python"):
     assert munged["tags"] == expected
     assert result["run_id"] == "some-run-id"
     assert result["batch_id"] == "some-run-id-1n"
-    _asserts.assert_context(munged, language=language)
+    _asserts.assert_info_and_context(munged, language=language)
 
 
-def test_benchmark():
+def test_benchmark_r():
     benchmark = tpch_benchmark.TpchBenchmark()
     run_id = "some-run-id"
     [(result, output)] = benchmark.run(iterations=1, run_id=run_id)

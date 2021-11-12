@@ -22,7 +22,7 @@ Options:
 
 def assert_benchmark(result):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged, language="JavaScript")
+    _asserts.assert_info_and_context(munged, language="JavaScript")
     assert munged["tags"] == {}  # TODO
     assert munged["stats"]["unit"] == "s"
     assert munged["stats"]["time_unit"] == "s"

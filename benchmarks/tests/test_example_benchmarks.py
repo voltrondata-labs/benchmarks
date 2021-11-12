@@ -96,18 +96,16 @@ def assert_simple_benchmark(result):
         "name": "example-simple",
         "cpu_count": None,
     }
-    _asserts.assert_context(munged)
+    _asserts.assert_info_and_context(munged)
 
 
 def assert_simple_benchmark_exception(result):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged)
-    del munged["timestamp"]
-    del munged["context"]
-    assert munged == {
-        "error": "division by zero",
-        "tags": {"name": "example-simple-exception", "cpu_count": None},
-    }
+    _asserts.assert_info_and_context(munged)
+    assert "timestamp" in munged
+    assert munged["error"] == "division by zero"
+    expected_tags = {"name": "example-simple-exception", "cpu_count": None}
+    assert munged["tags"] == expected_tags
 
 
 def assert_r_only_benchmark(result):
@@ -117,12 +115,12 @@ def assert_r_only_benchmark(result):
         "language": "R",
         "cpu_count": None,
     }
-    _asserts.assert_context(munged, language="R")
+    _asserts.assert_info_and_context(munged, language="R")
 
 
 def assert_r_only_benchmark_exception(result):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged, language="R")
+    _asserts.assert_info_and_context(munged, language="R")
     assert munged["tags"] == {
         "name": "example-R-only-exception",
         "cpu_count": None,
@@ -135,7 +133,7 @@ def assert_r_only_benchmark_exception(result):
 
 def assert_r_only_benchmark_exception_no_result(result):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged, language="R")
+    _asserts.assert_info_and_context(munged, language="R")
     assert munged["tags"] == {
         "name": "example-R-only-no-result",
         "cpu_count": None,
@@ -148,7 +146,7 @@ def assert_r_only_benchmark_exception_no_result(result):
 
 def assert_external_benchmark(result):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged, language="C++")
+    _asserts.assert_info_and_context(munged, language="C++")
 
     # assert tags
     assert munged["tags"] == {
@@ -182,23 +180,21 @@ def assert_cases_benchmark(result, case):
         "rows": case[0],
         "columns": case[1],
     }
-    _asserts.assert_context(munged)
+    _asserts.assert_info_and_context(munged)
 
 
 def assert_cases_benchmark_exception(result, case):
     munged = copy.deepcopy(result)
-    _asserts.assert_context(munged)
-    del munged["context"]
-    del munged["timestamp"]
-    assert munged == {
-        "error": "division by zero",
-        "tags": {
-            "name": "example-cases-exception",
-            "cpu_count": None,
-            "rows": case[0],
-            "columns": case[1],
-        },
+    _asserts.assert_info_and_context(munged)
+    assert "timestamp" in munged
+    assert munged["error"] == "division by zero"
+    expected_tags = {
+        "name": "example-cases-exception",
+        "cpu_count": None,
+        "rows": case[0],
+        "columns": case[1],
     }
+    assert munged["tags"] == expected_tags
 
 
 def test_simple():
