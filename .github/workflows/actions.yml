@@ -3,8 +3,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: 
-      # Note, if ubuntu-latest changes to a different release, we will need to 
+    env:
+      # Note, if ubuntu-latest changes to a different release, we will need to
       # swap `focal` below to what that new name is for that release.
       RSPM: "https://packagemanager.rstudio.com/all/__linux__/focal/latest"
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -36,8 +36,19 @@ jobs:
       - name: Install libcurl (for R arrow)
         run: |
           sudo apt-get -y install libssl-dev libcurl4-openssl-dev
+      - name: Cache R packages
+        uses: actions/cache@v2
+        id: rlibcache
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-${{ hashFiles('setup.py') }}
       - name: Install R dependencies
         run: |
+          # build DuckDB from source, with tpch, but cannot use RSPM for source
+          Sys.setenv('DUCKDB_R_EXTENSIONS' = 'tpch')
+          install.packages('duckdb', type = 'source', repos = 'https://cloud.r-project.org/')
+
+          # install remotes, arrow (nightly), and arrowbench
           install.packages('remotes')
           install.packages('arrow', repos = c('https://arrow-r-nightly.s3.amazonaws.com', getOption('repos')))
           remotes::install_github('ursacomputing/arrowbench')
