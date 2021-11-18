@@ -44,10 +44,6 @@ jobs:
           key: ${{ runner.os }}-r-${{ hashFiles('setup.py') }}
       - name: Install R dependencies
         run: |
-          # build DuckDB from source, with tpch, but cannot use RSPM for source
-          Sys.setenv('DUCKDB_R_EXTENSIONS' = 'tpch')
-          install.packages('duckdb', type = 'source', repos = 'https://cloud.r-project.org/')
-
           # install remotes, arrow (nightly), and arrowbench
           install.packages('remotes')
           install.packages('arrow', repos = c('https://arrow-r-nightly.s3.amazonaws.com', getOption('repos')))
