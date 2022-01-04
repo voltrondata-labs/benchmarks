@@ -112,14 +112,17 @@ class Benchmark(conbench.runner.Benchmark):
         )
         return benchmark, output
 
-    def execute_command(self, command):
+    def execute_command(self, command, capture_output=True):
         try:
             print(command)
-            result = subprocess.run(command, capture_output=True, check=True)
+            result = subprocess.run(command, capture_output=capture_output, check=True)
         except subprocess.CalledProcessError as e:
             print(e.stderr.decode("utf-8"))
             raise e
-        return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
+        # Some benchmarks (e.g., java-micro) produce 12GB+ of stdout that can't be loaded into memory
+        # on benchmark machines with 16GB of RAM and without Swap
+        if capture_output:
+            return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
 
     def get_sources(self, source):
         if isinstance(source, list):

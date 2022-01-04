@@ -93,7 +93,7 @@ class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
     def run(self, **kwargs):
         with tempfile.NamedTemporaryFile(delete=False) as result_file:
             run_command = get_run_command(result_file.name, kwargs)
-            self.execute_command(run_command)
+            self.execute_command(run_command, capture_output=False)
             results = json.load(result_file)
 
             # bucket by suite
