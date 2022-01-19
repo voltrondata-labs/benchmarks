@@ -55,7 +55,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
         run_command = get_run_command()
         _, err = self.execute_command(run_command)
         # Ignore non-json stderr produced by JavaScript benchmarks
-        results = json.loads(err[err.find("\n["):])
+        results = json.loads(err[err.find("\n[") :])
 
         # bucket by suite
         suites = {}
