@@ -92,6 +92,12 @@
     }
   },
   {
+    "command": "r-csv-read --iterations=3 --all=true --drop-caches=true",
+    "flags": {
+      "language": "R"
+    }
+  },
+  {
     "command": "tpch --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "R"
