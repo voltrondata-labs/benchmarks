@@ -57,7 +57,7 @@ def assert_benchmark(result, name, language="Python"):
         expected["language"] = "R"
     assert munged["tags"] == expected
     assert result["run_id"] == "some-run-id"
-    assert result["batch_id"] == 'some-run-id-fanniemae_2016Q4-uncompressed-arrow_table'
+    assert result["batch_id"] == "some-run-id-fanniemae_2016Q4-uncompressed-arrow_table"
     _asserts.assert_info_and_context(munged, language=language)
 
 
