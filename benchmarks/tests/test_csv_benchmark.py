@@ -2,8 +2,8 @@ import copy
 
 import pytest
 
-from .. import _sources, csv_read_benchmark
-from ..tests import _asserts
+from .. import _sources, csv_benchmark
+from . import _asserts
 
 
 class TestCsvBenchmark:
@@ -39,7 +39,7 @@ class TestCsvBenchmark:
 
 
 class TestCsvReadBenchmark(TestCsvBenchmark):
-    benchmark = csv_read_benchmark.CsvReadBenchmark()
+    benchmark = csv_benchmark.CsvReadBenchmark()
     sources = [_sources.Source(s) for s in benchmark.sources_test]
     cases, case_ids = benchmark.cases, benchmark.case_ids
 
@@ -101,7 +101,7 @@ Options:
 
 
 class TestCsvWriteBenchmark(TestCsvBenchmark):
-    benchmark = csv_read_benchmark.CsvWriteBenchmark()
+    benchmark = csv_benchmark.CsvWriteBenchmark()
     sources = [_sources.Source(s) for s in benchmark.sources_test]
     cases, case_ids = benchmark.cases, benchmark.case_ids
 
