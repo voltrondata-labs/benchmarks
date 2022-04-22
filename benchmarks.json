@@ -12,6 +12,12 @@
     }
   },
   {
+    "command": "csv-read ALL --iterations=3 --all=true --drop-caches=true --language=R",
+    "flags": {
+      "language": "R"
+    }
+  },
+  {
     "command": "dataframe-to-table ALL --iterations=3 --drop-caches=true",
     "flags": {
       "language": "Python"

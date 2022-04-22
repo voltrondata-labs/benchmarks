@@ -216,14 +216,14 @@ def bytes_fmt(value):
         return None
     if value == 0:
         return "0"
-    if value < 1024 ** 2:
+    if value < 1024**2:
         return "small"
-    if value < 1024 ** 3:
-        return "{:.0f} Mi".format(value / 1024 ** 2)
-    if value < 1024 ** 4:
-        return "{:.1f} Gi".format(value / 1024 ** 3)
+    if value < 1024**3:
+        return "{:.0f} Mi".format(value / 1024**2)
+    if value < 1024**4:
+        return "{:.1f} Gi".format(value / 1024**3)
     else:
-        return "{:.1f} Ti".format(value / 1024 ** 4)
+        return "{:.1f} Ti".format(value / 1024**4)
 
 
 class Source:
