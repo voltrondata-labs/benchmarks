@@ -47,11 +47,11 @@ class CsvBenchmark(_benchmark.BenchmarkPythonR):
             io_type = "input"
 
         r_command = f"""
-            library(arrowbench); 
-            run_one({self.r_name}, 
-            cpu_count={self.r_cpu_count(options)}, 
-            source="{source.name}", 
-            {self.r_name[:4]}er='arrow', 
+            library(arrowbench);
+            run_one({self.r_name},
+            cpu_count={self.r_cpu_count(options)},
+            source="{source.name}",
+            {self.r_name[:4]}er='arrow',
             {compression}
             {io_type}=\"{params[io_type]}\")
         """
