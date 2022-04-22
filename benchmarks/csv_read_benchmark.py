@@ -1,34 +1,18 @@
 import itertools
+from typing import Callable
 
 import conbench.runner
 import pyarrow.csv
 
-from benchmarks import _benchmark
+from benchmarks import _benchmark, _sources
 
 
-@conbench.runner.register_benchmark
-class CsvReadBenchmark(_benchmark.BenchmarkPythonR):
-    """Read CSV file."""
+class CsvBenchmark(_benchmark.BenchmarkPythonR):
+    """Parent class for CSV reading/writing benchmarks"""
 
-    name = "csv-read"
-    r_name = "read_csv"
     arguments = ["source"]
     sources = ["fanniemae_2016Q4", "nyctaxi_2010-01"]
     sources_test = ["fanniemae_sample", "nyctaxi_sample"]
-    valid_python_cases = list(
-        itertools.product(
-            ["streaming", "file"], ["uncompressed", "gzip"], ["arrow_table"]
-        )
-    )
-    valid_r_cases = list(
-        itertools.product(
-            ["file"], ["uncompressed", "gzip"], ["arrow_table", "data_frame"]
-        )
-    )
-    valid_cases = [
-        ("streaming", "compression", "output"),
-        *sorted({*valid_python_cases, *valid_r_cases}),
-    ]
 
     def run(self, source, case=None, **kwargs):
         cases = self.get_cases(case, kwargs)
@@ -51,11 +35,67 @@ class CsvReadBenchmark(_benchmark.BenchmarkPythonR):
                         command=command, extra_tags=tags, options=kwargs, case=case
                     )
 
-    def _get_benchmark_function(self, source, streaming, compression, output):
+    def _get_r_command(self, source, case, options) -> str:
+        params = self._case_to_param_dict(case=case)
+
+        if self.name == "csv-read":
+            # TODO: remove once compression available for writing
+            compression = f"compression=\"{params['compression']}\", "
+            io_type = "output"
+        elif self.name == "csv-write":
+            compression = ""
+            io_type = "input"
+
+        r_command = f"""
+            library(arrowbench); 
+            run_one({self.r_name}, 
+            cpu_count={self.r_cpu_count(options)}, 
+            source="{source.name}", 
+            {self.r_name[:4]}er='arrow', 
+            {compression}
+            {io_type}=\"{params[io_type]}\")
+        """
+
+        return r_command
+
+    def _case_to_param_dict(self, case: tuple) -> dict:
+        params = {
+            parameter: argument
+            for parameter, argument in zip(self.valid_cases[0], case)
+        }
+
+        return params
+
+
+@conbench.runner.register_benchmark
+class CsvReadBenchmark(CsvBenchmark):
+    """Read CSV file."""
+
+    name = "csv-read"
+    r_name = "read_csv"
+
+    valid_python_cases = list(
+        itertools.product(
+            ["streaming", "file"], ["uncompressed", "gzip"], ["arrow_table"]
+        )
+    )
+    valid_r_cases = list(
+        itertools.product(
+            ["file"], ["uncompressed", "gzip"], ["arrow_table", "data_frame"]
+        )
+    )
+    valid_cases = [
+        ("streaming", "compression", "output"),
+        *sorted({*valid_python_cases, *valid_r_cases}),
+    ]
+
+    def _get_benchmark_function(
+        self, source, streaming, compression, output
+    ) -> Callable:
         # Note: this will write a comma separated csv with a header, even if
         # the original source file lacked a header and was pipe delimited.
         path = source.create_if_not_exists("csv", compression)
-        munged = compression if compression != "uncompressed" else None
+        munged = _sources.munge_compression(compression, file_type="csv")
         schema = source.table.schema
 
         def read_streaming():
@@ -74,23 +114,43 @@ class CsvReadBenchmark(_benchmark.BenchmarkPythonR):
 
         return read_streaming if streaming == "streaming" else read_file
 
-    def _get_r_command(self, source, case, options):
-        params = self._case_to_param_dict(case=case)
 
-        return (
-            f"library(arrowbench); "
-            f"run_one({self.r_name}, "
-            f"cpu_count={self.r_cpu_count(options)}, "
-            f'source="{source.name}", '
-            f"reader='arrow', "
-            f"compression=\"{params['compression']}\", "
-            f"output=\"{params['output']}\")"
+@conbench.runner.register_benchmark
+class CsvWriteBenchmark(CsvBenchmark):
+    """Write CSV file."""
+
+    name = "csv-write"
+    r_name = "write_csv"
+
+    valid_python_cases = list(
+        itertools.product(
+            ["streaming", "file"], ["uncompressed", "gzip"], ["arrow_table"]
         )
+    )
+    valid_r_cases = list(
+        itertools.product(["file"], ["uncompressed"], ["arrow_table", "data_frame"])
+    )
+    valid_cases = [
+        ("streaming", "compression", "input"),
+        *sorted({*valid_python_cases, *valid_r_cases}),
+    ]
 
-    def _case_to_param_dict(self, case):
-        params = {
-            parameter: argument
-            for parameter, argument in zip(self.valid_cases[0], case)
-        }
+    def _get_benchmark_function(
+        self, source, streaming, compression, input
+    ) -> Callable:
+        # Note: this will write a comma separated csv with a header, even if
+        # the original source file lacked a header and was pipe delimited.
+        compression = _sources.munge_compression(compression, file_type="csv")
+        path = source.temp_path("csv", compression)
+        schema = source.table.schema
+        data = source.table
+        out_stream = pyarrow.output_stream(path, compression=compression)
 
-        return params
+        def write_streaming():
+            with pyarrow.csv.CSVWriter(out_stream, schema) as writer:
+                writer.write_table(data)
+
+        def write_file():
+            pyarrow.csv.write_csv(data, out_stream)
+
+        return write_streaming if streaming == "streaming" else write_file

@@ -143,6 +143,8 @@ dmypy.json
 benchmarks/.conbench
 benchmarks/data/
 results/
+r_libs/
+data/
 
 # IDE
 .vscode/
