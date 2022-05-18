@@ -51,12 +51,12 @@ class TestCsvReadBenchmark(TestCsvBenchmark):
   For each benchmark option, the first option value is the default.
 
   Valid benchmark combinations:
-  --streaming=file --compression=gzip --output=arrow_table
-  --streaming=file --compression=gzip --output=data_frame
-  --streaming=file --compression=uncompressed --output=arrow_table
-  --streaming=file --compression=uncompressed --output=data_frame
-  --streaming=streaming --compression=gzip --output=arrow_table
-  --streaming=streaming --compression=uncompressed --output=arrow_table
+  --streaming=file --compression=gzip --output-format=arrow_table
+  --streaming=file --compression=gzip --output-format=data_frame
+  --streaming=file --compression=uncompressed --output-format=arrow_table
+  --streaming=file --compression=uncompressed --output-format=data_frame
+  --streaming=streaming --compression=gzip --output-format=arrow_table
+  --streaming=streaming --compression=uncompressed --output-format=arrow_table
 
   To run all combinations:
   $ conbench csv-read --all=true
@@ -64,7 +64,7 @@ class TestCsvReadBenchmark(TestCsvBenchmark):
 Options:
   --streaming [file|streaming]
   --compression [gzip|uncompressed]
-  --output [arrow_table|data_frame]
+  --output-format [arrow_table|data_frame]
   --all BOOLEAN                   [default: false]
   --language [Python|R]
   --cpu-count INTEGER

@@ -41,7 +41,7 @@ class CsvBenchmark(_benchmark.BenchmarkPythonR):
         if self.name == "csv-read":
             # TODO: remove once compression available for writing
             compression = f"compression=\"{params['compression']}\", "
-            io_type = "output"
+            io_type = "output_format"
         elif self.name == "csv-write":
             compression = ""
             io_type = "input"
@@ -85,12 +85,12 @@ class CsvReadBenchmark(CsvBenchmark):
         )
     )
     valid_cases = [
-        ("streaming", "compression", "output"),
+        ("streaming", "compression", "output_format"),
         *sorted({*valid_python_cases, *valid_r_cases}),
     ]
 
     def _get_benchmark_function(
-        self, source, streaming, compression, output
+        self, source, streaming, compression, output_format
     ) -> Callable:
         # Note: this will write a comma separated csv with a header, even if
         # the original source file lacked a header and was pipe delimited.
