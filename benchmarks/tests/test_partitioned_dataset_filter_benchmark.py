@@ -16,13 +16,13 @@ Usage: conbench partitioned-dataset-filter [OPTIONS]
   --query=vignette
   --query=payment_type_3
   --query=small_no_files
-  --query=count_rows
+  --query=dims
 
   To run all combinations:
   $ conbench partitioned-dataset-filter --all=true
 
 Options:
-  --query [count_rows|payment_type_3|small_no_files|vignette]
+  --query [dims|payment_type_3|small_no_files|vignette]
   --all BOOLEAN                   [default: false]
   --iterations INTEGER            [default: 1]
   --drop-caches BOOLEAN           [default: false]
