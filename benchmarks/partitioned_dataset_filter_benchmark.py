@@ -14,7 +14,7 @@ class PartitionedDatasetFilterBenchmark(_benchmark.BenchmarkR):
         ["vignette"],
         ["payment_type_3"],
         ["small_no_files"],
-        ["count_rows"],
+        ["dims"],
     )
 
     def run(self, case=None, **kwargs):
