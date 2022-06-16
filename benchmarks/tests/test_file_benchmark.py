@@ -39,7 +39,10 @@ Options:
   --show-result BOOLEAN           [default: true]
   --show-output BOOLEAN           [default: false]
   --run-id TEXT                   Group executions together with a run id.
-  --run-name TEXT                 Name of run (commit, pull request, etc).
+  --run-name TEXT                 Free-text name of run (commit ABC, pull
+                                  request 123, etc).
+  --run-reason TEXT               Low-cardinality reason for run (commit, pull
+                                  request, manual, etc).
   --help                          Show this message and exit.
 """
 
@@ -77,7 +80,10 @@ Options:
   --show-result BOOLEAN           [default: true]
   --show-output BOOLEAN           [default: false]
   --run-id TEXT                   Group executions together with a run id.
-  --run-name TEXT                 Name of run (commit, pull request, etc).
+  --run-name TEXT                 Free-text name of run (commit ABC, pull
+                                  request 123, etc).
+  --run-reason TEXT               Low-cardinality reason for run (commit, pull
+                                  request, manual, etc).
   --help                          Show this message and exit.
 """
 
