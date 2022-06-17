@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 import subprocess
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import conbench.runner
 import pyarrow
@@ -14,19 +15,19 @@ from benchmarks import _sources
 logging.basicConfig(format="%(levelname)s: %(message)s")
 
 
-def _now_formatted():
+def _now_formatted() -> str:
     now = datetime.datetime.now(datetime.timezone.utc)
     return now.isoformat()
 
 
-def github_info(arrow_info):
+def github_info(arrow_info: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "repository": "https://github.com/apache/arrow",
         "commit": arrow_info["arrow_git_revision"],
     }
 
 
-def arrow_info():
+def arrow_info() -> Dict[str, Any]:
     if pyarrow.__version__ > "0.17.1":
         build_info = pyarrow.cpp_build_info
         return {
@@ -51,21 +52,27 @@ class Benchmark(conbench.runner.Benchmark):
     options = {"cpu_count": {"type": int}}
 
     def __init__(self):
-        self.conbench = conbench.runner.Conbench()
+        super().__init__()
 
     @functools.cached_property
-    def arrow_info(self):
+    def arrow_info(self) -> Dict[str, Any]:
         return arrow_info()
 
     @functools.cached_property
-    def arrow_info_r(self):
+    def arrow_info_r(self) -> Dict[str, Any]:
         return self._get_arrow_info_r()
 
     @functools.cached_property
-    def github_info(self):
+    def github_info(self) -> Dict[str, Any]:
         return github_info(self.arrow_info)
 
-    def benchmark(self, f, extra_tags, options, case=None):
+    def benchmark(
+        self,
+        f,
+        extra_tags: Dict[str, Any],
+        options: Dict[str, Any],
+        case: Optional[tuple] = None,
+    ):
         cpu_count = options.get("cpu_count", None)
         if cpu_count is not None:
             pyarrow.set_cpu_count(cpu_count)
@@ -87,12 +94,12 @@ class Benchmark(conbench.runner.Benchmark):
     def record(
         self,
         result,
-        extra_tags,
+        extra_tags: Dict[str, Any],
         extra_info,
         extra_context,
-        options,
-        case=None,
-        name=None,
+        options: Dict[str, Any],
+        case: Optional[tuple] = None,
+        name: Optional[str] = None,
         output=None,
     ):
         if name is None:
@@ -124,7 +131,7 @@ class Benchmark(conbench.runner.Benchmark):
         if capture_output:
             return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
 
-    def get_sources(self, source):
+    def get_sources(self, source: Union[list, _sources.Source, str]) -> list:
         if isinstance(source, list):
             return source
         if isinstance(source, _sources.Source):
@@ -146,26 +153,58 @@ class Benchmark(conbench.runner.Benchmark):
 
         return [_sources.Source(source)]
 
-    def get_tags(self, options, source=None):
-        info = {"cpu_count": options.get("cpu_count", None)}
-        if source:
-            return {**source.tags, **info}
-        else:
-            return info
+    def version_case(self, case: tuple) -> Optional[int]:
+        """
+        A method that takes a case and returns a version int
 
-    def _get_tags_info_context(self, case, extra_tags):
+        :param case: A tuple with a value for each argument of the benchmark's parameters
+
+        Overwrite this method to version cases. Incrementing versions will break case history
+        because `case_version` will be appended to tags, which are considered in determining
+        history. Returning `None` corresponds to no versioning.
+        """
+        return None
+
+    def get_tags(
+        self, options: Dict[str, Any], source: Optional[_sources.Source] = None
+    ) -> Dict[str, Any]:
+        cpu_tag = {"cpu_count": options.get("cpu_count", None)}
+        if source:
+            return {**source.tags, **cpu_tag}
+        else:
+            return cpu_tag
+
+    def _get_tags_info_context(
+        self, case: tuple, extra_tags: Dict[str, Any]
+    ) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
         info = {**self.arrow_info}
         info.pop("arrow_git_revision")
+
         context = {"arrow_compiler_flags": info.pop("arrow_compiler_flags")}
+
         tags = {**extra_tags}
+
         if case:
             case_tags = dict(zip(self.fields, case))
             for key in case_tags:
                 if key not in tags:
                     tags[key] = case_tags[key]
+
+            case_version = self.version_case(case)
+            if case_version:
+                tags["case_version"] = case_version
+
         return tags, info, context
 
-    def _handle_error(self, e, name, tags, info, context, r_command=None):
+    def _handle_error(
+        self,
+        e: Exception,
+        name: str,
+        tags: Dict[str, Any],
+        info: Dict[str, Any],
+        context: Dict[str, Any],
+        r_command: Optional[str] = None,
+    ) -> Tuple[Dict[str, Any], None]:
         output = None
         tags["name"] = name
         error = {
@@ -189,10 +228,17 @@ class BenchmarkR(Benchmark):
         "cpu_count": {"type": int},
     }
 
-    def r_benchmark(self, command, extra_tags, options, case=None):
+    def r_benchmark(
+        self,
+        command: str,
+        extra_tags: Dict[str, Any],
+        options: Dict[str, Any],
+        case: Optional[tuple] = None,
+    ):
         tags, info, context = self._get_tags_info_context(case, extra_tags)
         self._add_r_tags_info_context(tags, info, context)
-        data, iterations = [], options.get("iterations", 1)
+        data = []
+        iterations = options.get("iterations", 1)
 
         for _ in range(iterations):
             if options.get("drop_caches", False):
@@ -213,11 +259,11 @@ class BenchmarkR(Benchmark):
             output=output,
         )
 
-    def r_cpu_count(self, options):
+    def r_cpu_count(self, options: Dict[str, Any]):
         cpu_count = options.get("cpu_count", None)
         return "NULL" if cpu_count is None else cpu_count
 
-    def _get_benchmark_result(self, command):
+    def _get_benchmark_result(self, command: str) -> Tuple[Dict[str, Any], str]:
         shutil.rmtree("results", ignore_errors=True)
         output, error = self.conbench.execute_r_command(command, quiet=False)
         try:
@@ -228,18 +274,20 @@ class BenchmarkR(Benchmark):
             raise Exception(error)
         return data, output
 
-    def _get_results_path(self):
+    def _get_results_path(self) -> str:
         for file in os.listdir(f"results/{self.r_name}"):
             return os.path.join(f"results/{self.r_name}", file)
 
-    def _add_r_tags_info_context(self, tags, info, context):
+    def _add_r_tags_info_context(
+        self, tags: Dict[str, Any], info: Dict[str, Any], context: Dict[str, Any]
+    ) -> None:
         tags["language"] = "R"
         r_info, r_context = self.conbench.get_r_info_and_context()
         info.update(**r_info)
         context.update(**r_context)
         info["arrow_version_r"] = self.arrow_info_r["arrow_version"]
 
-    def _get_arrow_info_r(self):
+    def _get_arrow_info_r(self) -> Dict[str, str]:
         r = "packageVersion('arrow')"
         output, _ = self.conbench.execute_r_command(r)
         version = output.split("[1] ")[1].strip("‘").strip("’")
@@ -256,10 +304,12 @@ class BenchmarkPythonR(BenchmarkR):
 
 @conbench.runner.register_list
 class BenchmarkList(conbench.runner.BenchmarkList):
-    def list(self, classes):
+    def list(self, classes: Dict[str, Benchmark]) -> List[Benchmark]:
         """List of benchmarks to run for all cases & all sources."""
 
-        def add(benchmarks, parts, flags, exclude):
+        def add(
+            benchmarks, parts: List[str], flags: Dict[str, Any], exclude: List[str]
+        ) -> None:
             if (
                 flags["language"] != "C++"
                 and flags["language"] != "Java"

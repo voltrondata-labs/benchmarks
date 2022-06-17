@@ -79,6 +79,9 @@ class CasesBenchmark(_benchmark.Benchmark):
         ("10", "2"),
     )
 
+    def version_case(self, case: tuple):
+        return 2 * int(case[0]) + int(case[1])
+
     def run(self, case=None, **kwargs):
         tags = self.get_tags(kwargs)
         for case in self.get_cases(case, kwargs):
@@ -138,6 +141,9 @@ class CasesBenchmarkException(_benchmark.Benchmark):
         ("2", "10"),
         ("10", "2"),
     )
+
+    def version_case(self, case: tuple):
+        return 2 * int(case[0]) + int(case[1])
 
     def run(self, case=None, **kwargs):
         tags = self.get_tags(kwargs)
