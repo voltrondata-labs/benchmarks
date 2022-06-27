@@ -80,7 +80,15 @@ class CasesBenchmark(_benchmark.Benchmark):
     )
 
     def version_case(self, case: tuple):
-        return 2 * int(case[0]) + int(case[1])
+        # A lookup like this might be a common way to store versions, but any logic here
+        # (e.g. `2 if case[0] == "2" else 1`) is fine!
+        case_versions = {
+            ("10", "10"): 1,
+            ("2", "10"): 2,
+            ("10", "2"): 1,
+        }
+
+        return case_versions[case]
 
     def run(self, case=None, **kwargs):
         tags = self.get_tags(kwargs)
@@ -143,7 +151,15 @@ class CasesBenchmarkException(_benchmark.Benchmark):
     )
 
     def version_case(self, case: tuple):
-        return 2 * int(case[0]) + int(case[1])
+        # A lookup like this might be a common way to store versions, but any logic here
+        # (e.g. `2 if case[0] == "2" else 1`) is fine!
+        case_versions = {
+            ("10", "10"): 1,
+            ("2", "10"): 2,
+            ("10", "2"): 1,
+        }
+
+        return case_versions[case]
 
     def run(self, case=None, **kwargs):
         tags = self.get_tags(kwargs)
