@@ -191,6 +191,7 @@ def assert_cases_benchmark(result, case):
         "cpu_count": None,
         "rows": case[0],
         "columns": case[1],
+        "case_version": 2 if case[0] == "2" else 1,
     }
     _asserts.assert_info_and_context(munged)
 
@@ -205,6 +206,7 @@ def assert_cases_benchmark_exception(result, case):
         "cpu_count": None,
         "rows": case[0],
         "columns": case[1],
+        "case_version": 2 if case[0] == "2" else 1,
     }
     assert munged["tags"] == expected_tags
 

@@ -6,7 +6,7 @@ from benchmarks import _benchmark
 def get_valid_cases():
     result = [["query_id", "scale_factor", "format"]]
     for query_id in range(1, 23):
-        for scale_factor in [1, 10]:
+        for scale_factor in [0.01, 0.1, 1, 10]:
             for _format in ["native", "parquet"]:
                 result.append([query_id, scale_factor, _format])
     return result
@@ -31,7 +31,7 @@ class TpchBenchmark(_benchmark.BenchmarkR):
 
     def _set_defaults(self, options):
         options["query_id"] = int(options.get("query_id", 1))
-        options["scale_factor"] = int(options.get("scale_factor", 1))
+        options["scale_factor"] = float(options.get("scale_factor", 1))
         options["format"] = options.get("format", "native")
 
     def _manually_batch(self, options, case):
