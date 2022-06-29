@@ -238,6 +238,7 @@ class BenchmarkR(Benchmark):
         tags, info, context = self._get_tags_info_context(case, extra_tags)
         self._add_r_tags_info_context(tags, info, context)
         data = []
+        case_version = None
         iterations = options.get("iterations", 1)
 
         for _ in range(iterations):
@@ -246,8 +247,13 @@ class BenchmarkR(Benchmark):
             try:
                 result, output = self._get_benchmark_result(command)
                 data.extend([row["real"] for row in result["result"]])
+                if not case_version and "case_version" in result["tags"]:
+                    case_version = result["tags"]["case_version"]
             except Exception as e:
                 return self._handle_error(e, self.name, tags, info, context, command)
+
+        if case_version:
+            tags["case_version"] = case_version
 
         return self.record(
             {"data": data, "unit": "s"},
