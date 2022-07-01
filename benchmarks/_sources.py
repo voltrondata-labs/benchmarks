@@ -9,7 +9,6 @@ import pyarrow.feather as feather
 import pyarrow.parquet as parquet
 import requests
 
-
 this_dir = os.path.dirname(os.path.abspath(__file__))
 local_data_dir = os.path.join(this_dir, "data")
 data_dir = os.getenv("BENCHMARKS_DATA_DIR", local_data_dir)
