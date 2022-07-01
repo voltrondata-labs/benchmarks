@@ -3,12 +3,12 @@ import os
 import pathlib
 from enum import Enum
 
-import pandas
 import pyarrow
 import pyarrow.csv
 import pyarrow.feather as feather
 import pyarrow.parquet as parquet
 import requests
+
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 local_data_dir = os.path.join(this_dir, "data")
@@ -45,11 +45,60 @@ class SourceFormat(Enum):
     FEATHER = "feather"
 
 
+# This is a reconstructed schema; it may not be completely accurate, but should
+# be serviceably so. For more information on variables, see the sources below
+# available from Fannie Mae. You may need to create an account first here:
+# https://datadynamics.fanniemae.com/data-dynamics/#/reportMenu;category=HP
+#
+# Data dictionary: https://capitalmarkets.fanniemae.com/resources/file/credit-risk/xls/crt-file-layout-and-glossary.xlsx
+# Names from R code here: https://capitalmarkets.fanniemae.com/media/document/zip/FNMA_SF_Loan_Performance_r_Primary.zip
+fannie_mae_schema = pyarrow.schema(
+    [
+        pyarrow.field("LOAN_ID", pyarrow.string()),
+        pyarrow.field("ACT_PERIOD", pyarrow.string()),  # date. Monthly reporting period
+        pyarrow.field("SERVICER", pyarrow.string()),
+        pyarrow.field("ORIG_RATE", pyarrow.float64()),
+        pyarrow.field("CURRENT_UPB", pyarrow.float64()),
+        pyarrow.field("LOAN_AGE", pyarrow.int32()),
+        pyarrow.field("REM_MONTHS", pyarrow.int32()),
+        pyarrow.field("ADJ_REM_MONTHS", pyarrow.int32()),
+        pyarrow.field("MATR_DT", pyarrow.string()),  # maturity date
+        pyarrow.field("MSA", pyarrow.string()),  # Metropolitan Statistical Area code
+        pyarrow.field(
+            "DLQ_STATUS", pyarrow.string()
+        ),  # Int of months, but `X` is a valid value. New versions pad with `0`/`X` to two characters
+        pyarrow.field("RELOCATION_MORTGAGE_INDICATOR", pyarrow.string()),
+        pyarrow.field(
+            "Zero_Bal_Code", pyarrow.string()
+        ),  # 0-padded 2 digit ints representing categorical levels, e.g. "01" -> "Prepaid or Matured"
+        pyarrow.field("ZB_DTE", pyarrow.string()),  # date
+        pyarrow.field("LAST_PAID_INSTALLMENT_DATE", pyarrow.string()),
+        pyarrow.field("FORECLOSURE_DATE", pyarrow.string()),
+        pyarrow.field("DISPOSITION_DATE", pyarrow.string()),
+        pyarrow.field("FORECLOSURE_COSTS", pyarrow.float64()),
+        pyarrow.field("PROPERTY_PRESERVATION_AND_REPAIR_COSTS", pyarrow.float64()),
+        pyarrow.field("ASSET_RECOVERY_COSTS", pyarrow.float64()),
+        pyarrow.field("MISCELLANEOUS_HOLDING_EXPENSES_AND_CREDITS", pyarrow.float64()),
+        pyarrow.field("ASSOCIATED_TAXES_FOR_HOLDING_PROPERTY", pyarrow.float64()),
+        pyarrow.field("NET_SALES_PROCEEDS", pyarrow.float64()),
+        pyarrow.field("CREDIT_ENHANCEMENT_PROCEEDS", pyarrow.float64()),
+        pyarrow.field("REPURCHASES_MAKE_WHOLE_PROCEEDS", pyarrow.float64()),
+        pyarrow.field("OTHER_FORECLOSURE_PROCEEDS", pyarrow.float64()),
+        pyarrow.field("NON_INTEREST_BEARING_UPB", pyarrow.float64()),
+        pyarrow.field("MI_CANCEL_FLAG", pyarrow.string()),  # all null
+        pyarrow.field("RE_PROCS_FLAG", pyarrow.string()),
+        pyarrow.field("LOAN_HOLDBACK_INDICATOR", pyarrow.string()),  # all null
+        pyarrow.field("SERV_IND", pyarrow.string()),
+    ]
+)
+
+
 STORE = {
     "fanniemae_sample": {
         "path": _local("fanniemae_sample.csv"),
         "sep": "|",
         "header": None,
+        "schema": fannie_mae_schema,
         "format": SourceFormat.CSV,
     },
     "nyctaxi_sample": {
@@ -67,6 +116,7 @@ STORE = {
         "source": "https://ursa-qa.s3.amazonaws.com/fanniemae_loanperf/2016Q4.csv.gz",
         "sep": "|",
         "header": None,
+        "schema": fannie_mae_schema,
         "format": SourceFormat.CSV,
     },
     "nyctaxi_2010-01": {
@@ -180,13 +230,12 @@ EXPECTED_SIZES = {
     "type_nested.parquet": 130538033,
     "type_simple_features.parquet": 28637722,
     "type_strings.parquet": 87174822,
-    "fanniemae_2016Q4.gzip.csv": 268948693,
-    "fanniemae_2016Q4.lz4.feather": 638411666,
-    "fanniemae_2016Q4.snappy.parquet": 143174389,
-    "fanniemae_2016Q4.uncompressed.csv": 2159525881,
-    "fanniemae_2016Q4.uncompressed.feather": 5045764162,
-    "fanniemae_2016Q4.uncompressed.parquet": 390114276,
-    "fanniemae_2016Q4.uncompressed.parquet.schema": 390122613,
+    "fanniemae_2016Q4.gzip.csv": 278668126,
+    "fanniemae_2016Q4.lz4.feather": 817112994,
+    "fanniemae_2016Q4.snappy.parquet": 153999953,
+    "fanniemae_2016Q4.uncompressed.csv": 2652731759,
+    "fanniemae_2016Q4.uncompressed.feather": 4686393634,
+    "fanniemae_2016Q4.uncompressed.parquet": 570952947,
     "fanniemae_sample.gzip.csv": 12390,
     "fanniemae_sample.lz4.feather": 44442,
     "fanniemae_sample.snappy.parquet": 18743,
@@ -285,8 +334,23 @@ class Source:
     @property
     def csv_read_options(self):
         if self.store["header"] is None:
-            return pyarrow.csv.ReadOptions(autogenerate_column_names=True)
+            autogenerate_column_names = self.store["header"] is None
+
+            if "schema" in self.store:
+                column_names = self.store["schema"].names
+                autogenerate_column_names = False
+            else:
+                column_names = None
+
+            return pyarrow.csv.ReadOptions(
+                autogenerate_column_names=autogenerate_column_names,
+                column_names=column_names,
+            )
         return None
+
+    @property
+    def csv_convert_options(self):
+        return pyarrow.csv.ConvertOptions(column_types=self.store.get("schema"))
 
     @property
     def source_path(self):
@@ -348,17 +412,8 @@ class Source:
 
     @functools.cached_property
     def dataframe(self):
-        if self._table is not None:
-            # this takes ~ 7 seconds for fanniemae_2016Q4
-            return self.table.to_pandas()
-        else:
-            # this takes ~ 199 seconds for fanniemae_2016Q4
-            return pandas.read_csv(
-                self.store["path"],
-                sep=self.store["sep"],
-                header=self.store["header"],
-                low_memory=False,
-            )
+        # this takes ~ 7 seconds for fanniemae_2016Q4
+        return self.table.to_pandas()
 
     @functools.cached_property
     def table(self):
@@ -367,11 +422,12 @@ class Source:
             # this takes ~ 3 seconds for fanniemae_2016Q4
             self._table = feather.read_table(path, memory_map=False)
         else:
-            # this takes ~ 205 seconds for fanniemae_2016Q4
-            self._table = pyarrow.Table.from_pandas(
-                self.dataframe,
-                preserve_index=False,
-            ).replace_schema_metadata(None)
+            self._table = pyarrow.csv.read_csv(
+                self.store["path"],
+                read_options=self.csv_read_options,
+                parse_options=self.csv_parse_options,
+                convert_options=self.csv_convert_options,
+            )
         return self._table
 
     def _get_object_url(self, idx=0):
