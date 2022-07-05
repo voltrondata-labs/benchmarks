@@ -71,7 +71,7 @@ class FileReadBenchmark(FileBenchmark):
         if file_type == "parquet" and output_type == "table":
             f = lambda: parquet.read_table(path, memory_map=False)
         elif file_type == "parquet" and output_type == "dataframe":
-            f = lambda: parquet.read_table(path, memory_map=False).to_pandas()
+            f = lambda: parquet.read_pandas(path, memory_map=False)
         elif file_type == "feather" and output_type == "table":
             f = lambda: feather.read_table(path, memory_map=False)
         elif file_type == "feather" and output_type == "dataframe":

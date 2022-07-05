@@ -5,8 +5,8 @@ R_CLI = "The R Foundation for Statistical Computing"
 
 NYCTAXI_TABLE = """pyarrow.Table
 vendor_id: string
-pickup_datetime: string
-dropoff_datetime: string
+pickup_datetime: timestamp[ns]
+dropoff_datetime: timestamp[ns]
 passenger_count: int64
 trip_distance: double
 pickup_longitude: double
@@ -91,17 +91,23 @@ LOAN_HOLDBACK_INDICATOR: string
 SERV_IND: string"""
 
 
-def assert_table_output(source, output, nyc_ts=False, nyc_select=False):
-    out = str(output)
+def assert_table_output(
+    source, output, nyc_ts=False, nyc_select=False, ts_precision="ns"
+):
     if source.startswith("nyctaxi"):
         if nyc_ts:
-            assert NYCTAXI_TABLE_TIMESTAMP in out
+            text = NYCTAXI_TABLE_TIMESTAMP
         elif nyc_select:
-            assert NYCTAXI_TABLE_SELECT in out
+            text = NYCTAXI_TABLE_SELECT
         else:
-            assert NYCTAXI_TABLE in out
+            text = NYCTAXI_TABLE
     else:
-        assert FANNIEMAE_TABLE in out
+        text = FANNIEMAE_TABLE
+
+    text = text.replace("[ns]", f"[{ts_precision}]")
+    out = str(output)
+
+    assert text in out
 
 
 def assert_dimensions_output(source, output):

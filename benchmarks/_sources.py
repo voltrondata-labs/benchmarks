@@ -54,22 +54,23 @@ class SourceFormat(Enum):
 fannie_mae_schema = pyarrow.schema(
     [
         pyarrow.field("LOAN_ID", pyarrow.string()),
-        pyarrow.field("ACT_PERIOD", pyarrow.string()),  # date. Monthly reporting period
+        # date. Monthly reporting period
+        pyarrow.field("ACT_PERIOD", pyarrow.string()),
         pyarrow.field("SERVICER", pyarrow.string()),
         pyarrow.field("ORIG_RATE", pyarrow.float64()),
         pyarrow.field("CURRENT_UPB", pyarrow.float64()),
         pyarrow.field("LOAN_AGE", pyarrow.int32()),
         pyarrow.field("REM_MONTHS", pyarrow.int32()),
         pyarrow.field("ADJ_REM_MONTHS", pyarrow.int32()),
-        pyarrow.field("MATR_DT", pyarrow.string()),  # maturity date
-        pyarrow.field("MSA", pyarrow.string()),  # Metropolitan Statistical Area code
-        pyarrow.field(
-            "DLQ_STATUS", pyarrow.string()
-        ),  # Int of months, but `X` is a valid value. New versions pad with `0`/`X` to two characters
+        # maturity date
+        pyarrow.field("MATR_DT", pyarrow.string()),
+        # Metropolitan Statistical Area code
+        pyarrow.field("MSA", pyarrow.string()),
+        # Int of months, but `X` is a valid value. New versions pad with `0`/`X` to two characters
+        pyarrow.field("DLQ_STATUS", pyarrow.string()),
         pyarrow.field("RELOCATION_MORTGAGE_INDICATOR", pyarrow.string()),
-        pyarrow.field(
-            "Zero_Bal_Code", pyarrow.string()
-        ),  # 0-padded 2 digit ints representing categorical levels, e.g. "01" -> "Prepaid or Matured"
+        # 0-padded 2 digit ints representing categorical levels, e.g. "01" -> "Prepaid or Matured"
+        pyarrow.field("Zero_Bal_Code", pyarrow.string()),
         pyarrow.field("ZB_DTE", pyarrow.string()),  # date
         pyarrow.field("LAST_PAID_INSTALLMENT_DATE", pyarrow.string()),
         pyarrow.field("FORECLOSURE_DATE", pyarrow.string()),
@@ -84,10 +85,35 @@ fannie_mae_schema = pyarrow.schema(
         pyarrow.field("REPURCHASES_MAKE_WHOLE_PROCEEDS", pyarrow.float64()),
         pyarrow.field("OTHER_FORECLOSURE_PROCEEDS", pyarrow.float64()),
         pyarrow.field("NON_INTEREST_BEARING_UPB", pyarrow.float64()),
-        pyarrow.field("MI_CANCEL_FLAG", pyarrow.string()),  # all null
+        # all null
+        pyarrow.field("MI_CANCEL_FLAG", pyarrow.string()),
         pyarrow.field("RE_PROCS_FLAG", pyarrow.string()),
-        pyarrow.field("LOAN_HOLDBACK_INDICATOR", pyarrow.string()),  # all null
+        # all null
+        pyarrow.field("LOAN_HOLDBACK_INDICATOR", pyarrow.string()),
         pyarrow.field("SERV_IND", pyarrow.string()),
+    ]
+)
+
+nyctaxi_schema = pyarrow.schema(
+    [
+        pyarrow.field("vendor_id", pyarrow.string()),
+        pyarrow.field("pickup_datetime", pyarrow.timestamp("ns")),
+        pyarrow.field("dropoff_datetime", pyarrow.timestamp("ns")),
+        pyarrow.field("passenger_count", pyarrow.int64()),
+        pyarrow.field("trip_distance", pyarrow.float64()),
+        pyarrow.field("pickup_longitude", pyarrow.float64()),
+        pyarrow.field("pickup_latitude", pyarrow.float64()),
+        pyarrow.field("rate_code", pyarrow.int64()),
+        pyarrow.field("store_and_fwd_flag", pyarrow.float64()),
+        pyarrow.field("dropoff_longitude", pyarrow.float64()),
+        pyarrow.field("dropoff_latitude", pyarrow.float64()),
+        pyarrow.field("payment_type", pyarrow.string()),
+        pyarrow.field("fare_amount", pyarrow.float64()),
+        pyarrow.field("surcharge", pyarrow.float64()),
+        pyarrow.field("mta_tax", pyarrow.float64()),
+        pyarrow.field("tip_amount", pyarrow.float64()),
+        pyarrow.field("tolls_amount", pyarrow.float64()),
+        pyarrow.field("total_amount", pyarrow.float64()),
     ]
 )
 
@@ -104,6 +130,7 @@ STORE = {
         "path": _local("nyctaxi_sample.csv"),
         "sep": ",",
         "header": 0,
+        "schema": nyctaxi_schema,
         "format": SourceFormat.CSV,
     },
     "chi_traffic_sample": {
@@ -123,6 +150,7 @@ STORE = {
         "source": "https://ursa-qa.s3.amazonaws.com/nyctaxi/yellow_tripdata_2010-01.csv.gz",
         "sep": ",",
         "header": 0,
+        "schema": nyctaxi_schema,
         "format": SourceFormat.CSV,
     },
     "chi_traffic_2020_Q1": {
@@ -169,6 +197,7 @@ STORE = {
             "ursa-labs-taxi-data/2009/04/data.parquet",
         ],
         "region": "us-east-2",
+        "schema": nyctaxi_schema,
         "format": SourceFormat.PARQUET,
     },
     "nyctaxi_multi_ipc_s3": {
@@ -180,6 +209,7 @@ STORE = {
             "ursa-labs-taxi-data-ipc/2013/04/data.feather",
         ],
         "region": "us-east-2",
+        "schema": nyctaxi_schema,
         "format": SourceFormat.FEATHER,
     },
     "nyctaxi_multi_parquet_s3_sample": {
@@ -189,6 +219,7 @@ STORE = {
             "ursa-labs-taxi-data-sample/2009/01/data.parquet",
         ],
         "region": "us-east-2",
+        "schema": nyctaxi_schema,
         "format": SourceFormat.PARQUET,
     },
     "nyctaxi_multi_ipc_s3_sample": {
@@ -198,6 +229,7 @@ STORE = {
             "ursa-labs-taxi-data-sample-ipc/2009/01/data.feather",
         ],
         "region": "us-east-2",
+        "schema": nyctaxi_schema,
         "format": SourceFormat.FEATHER,
     },
     "nyctaxi_multi_parquet_s3_repartitioned": {
@@ -211,6 +243,7 @@ STORE = {
             and not (year == 2010 and month == 3)  # Data is missing in 2010/03
         ],
         "region": "us-east-2",
+        "schema": nyctaxi_schema,
         "format": SourceFormat.PARQUET,
     },
 }
