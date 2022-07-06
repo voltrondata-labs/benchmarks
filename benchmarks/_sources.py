@@ -366,13 +366,12 @@ class Source:
     @property
     def csv_read_options(self):
         if self.store["header"] is None:
-            autogenerate_column_names = self.store["header"] is None
-
             if "schema" in self.store:
                 column_names = self.store["schema"].names
                 autogenerate_column_names = False
             else:
                 column_names = None
+                autogenerate_column_names = True
 
             return pyarrow.csv.ReadOptions(
                 autogenerate_column_names=autogenerate_column_names,
