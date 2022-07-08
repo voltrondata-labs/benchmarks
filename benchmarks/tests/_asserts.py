@@ -1,4 +1,3 @@
-import copy
 import subprocess
 
 R_CLI = "The R Foundation for Statistical Computing"
@@ -119,7 +118,6 @@ def assert_dimensions_output(source, output):
 
 
 def assert_benchmark(result, source, name, language="Python"):
-    munged = copy.deepcopy(result)
     expected = {
         "name": name,
         "dataset": source,
@@ -127,26 +125,26 @@ def assert_benchmark(result, source, name, language="Python"):
     }
     if language == "R":
         expected["language"] = "R"
-    assert munged["tags"] == expected
-    assert_info_and_context(munged, language=language)
+    assert result.tags == expected
+    assert_info_and_context(result, language=language)
 
 
 def assert_info_and_context(munged, language="Python"):
-    assert "name" in munged["tags"]
-    assert "cpu_count" in munged["tags"]
-    assert list(munged["context"].keys()) == [
+    assert "name" in munged.tags
+    assert "cpu_count" in munged.tags
+    assert list(munged.context.keys()) == [
         "arrow_compiler_flags",
         "benchmark_language",
     ]
     if language == "Python":
-        assert list(munged["info"].keys()) == [
+        assert list(munged.info.keys()) == [
             "arrow_version",
             "arrow_compiler_id",
             "arrow_compiler_version",
             "benchmark_language_version",
         ]
     elif language == "R":
-        assert list(munged["info"].keys()) == [
+        assert list(munged.info.keys()) == [
             "arrow_version",
             "arrow_compiler_id",
             "arrow_compiler_version",
@@ -154,26 +152,26 @@ def assert_info_and_context(munged, language="Python"):
             "arrow_version_r",
         ]
     else:
-        assert list(munged["info"].keys()) == [
+        assert list(munged.info.keys()) == [
             "arrow_version",
             "arrow_compiler_id",
             "arrow_compiler_version",
         ]
-    del munged["context"]["arrow_compiler_flags"]
+    del munged.context["arrow_compiler_flags"]
     if language == "Python":
-        version = munged["info"].pop("benchmark_language_version")
+        version = munged.info["benchmark_language_version"]
         assert version.startswith("Python")
-        assert munged["context"] == {"benchmark_language": "Python"}
+        assert munged.context == {"benchmark_language": "Python"}
     elif language == "R":
-        version = munged["info"].pop("benchmark_language_version")
+        version = munged.info["benchmark_language_version"]
         assert version.startswith("R version")
-        assert munged["context"] == {"benchmark_language": "R"}
+        assert munged.context == {"benchmark_language": "R"}
     elif language == "C++":
-        assert munged["context"] == {"benchmark_language": "C++"}
+        assert munged.context == {"benchmark_language": "C++"}
     elif language == "Java":
-        assert munged["context"] == {"benchmark_language": "Java"}
+        assert munged.context == {"benchmark_language": "Java"}
     elif language == "JavaScript":
-        assert munged["context"] == {"benchmark_language": "JavaScript"}
+        assert munged.context == {"benchmark_language": "JavaScript"}
 
 
 def get_cli_output(command):

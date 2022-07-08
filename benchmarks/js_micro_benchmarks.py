@@ -84,6 +84,7 @@ class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
             options=options,
             output=result,
             name=result["suite"],
+            publish=os.environ.get("DRY_RUN") is None,
         )
 
     def _get_values(self, result):

@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 import subprocess
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import conbench.runner
@@ -47,9 +48,27 @@ def arrow_info() -> Dict[str, Any]:
     }
 
 
+@dataclass
+class BenchmarkResult:
+    name: str
+    run_id: str = None
+    batch_id: str = None
+    result: Dict = None
+    # `params` (i.e. case) is currently a subset of `tags`, but we often need it separately
+    params: Dict[str, Any] = None
+    tags: Dict[str, str] = None
+    info: Dict[str, Any] = None
+    context: Dict[str, Any] = None
+    github: Dict[str, Any] = None
+    options: Dict[str, Any] = None
+    output: str = None
+    error: str = None
+
+
 class Benchmark(conbench.runner.Benchmark):
     arguments = []
     options = {"cpu_count": {"type": int}}
+    valid_cases = [()]
 
     def __init__(self):
         super().__init__()
@@ -72,11 +91,14 @@ class Benchmark(conbench.runner.Benchmark):
         extra_tags: Dict[str, Any],
         options: Dict[str, Any],
         case: Optional[tuple] = None,
-    ):
+    ) -> BenchmarkResult:
         cpu_count = options.get("cpu_count", None)
         if cpu_count is not None:
             pyarrow.set_cpu_count(cpu_count)
+
         tags, info, context = self._get_tags_info_context(case, extra_tags)
+        params = dict(zip(self.valid_cases[0], case)) if case else dict()
+
         try:
             benchmark, output = self.conbench.benchmark(
                 f,
@@ -86,10 +108,27 @@ class Benchmark(conbench.runner.Benchmark):
                 context=context,
                 github=self.github_info,
                 options=options,
+                publish=os.environ.get("DRY_RUN") is None,
+            )
+
+            res = BenchmarkResult(
+                name=benchmark["tags"]["name"],
+                run_id=benchmark.get("run_id"),
+                batch_id=benchmark.get("batch_id"),
+                result=benchmark.get("stats"),
+                params=params,
+                tags=benchmark.get("tags"),
+                info=benchmark.get("info"),
+                context=benchmark.get("context"),
+                github=benchmark.get("github"),
+                options=benchmark.get("options"),
+                output=output,
+                error=benchmark.get("error"),
             )
         except Exception as e:
-            benchmark, output = self._handle_error(e, self.name, tags, info, context)
-        return benchmark, output
+            res = self._handle_error(e, self.name, tags, info, context)
+
+        return res
 
     def record(
         self,
@@ -101,7 +140,8 @@ class Benchmark(conbench.runner.Benchmark):
         case: Optional[tuple] = None,
         name: Optional[str] = None,
         output=None,
-    ):
+        publish=True,
+    ) -> BenchmarkResult:
         if name is None:
             name = self.name
         tags, info, context = self._get_tags_info_context(case, extra_tags)
@@ -116,8 +156,25 @@ class Benchmark(conbench.runner.Benchmark):
             github=self.github_info,
             options=options,
             output=output,
+            publish=publish,
         )
-        return benchmark, output
+
+        res = BenchmarkResult(
+            name=benchmark["tags"]["name"],
+            run_id=benchmark.get("run_id"),
+            batch_id=benchmark.get("batch_id"),
+            result=benchmark.get("stats"),
+            params=dict(zip(self.valid_cases[0], case)) if case else dict(),
+            tags=benchmark.get("tags"),
+            info=benchmark.get("info"),
+            context=benchmark.get("context"),
+            github=benchmark.get("github"),
+            options=benchmark.get("options"),
+            output=output,
+            error=benchmark.get("error"),
+        )
+
+        return res
 
     def execute_command(self, command, capture_output=True):
         try:
@@ -204,7 +261,7 @@ class Benchmark(conbench.runner.Benchmark):
         info: Dict[str, Any],
         context: Dict[str, Any],
         r_command: Optional[str] = None,
-    ) -> Tuple[Dict[str, Any], None]:
+    ) -> BenchmarkResult:
         output = None
         tags["name"] = name
         error = {
@@ -217,7 +274,17 @@ class Benchmark(conbench.runner.Benchmark):
         if r_command is not None:
             error["command"] = r_command
         logging.exception(json.dumps(error))
-        return error, output
+
+        res = BenchmarkResult(
+            name=self.name,
+            tags=tags,
+            info=info,
+            context=context,
+            output=output,
+            error=error["error"],
+        )
+
+        return res
 
 
 class BenchmarkR(Benchmark):
@@ -234,7 +301,7 @@ class BenchmarkR(Benchmark):
         extra_tags: Dict[str, Any],
         options: Dict[str, Any],
         case: Optional[tuple] = None,
-    ):
+    ) -> BenchmarkResult:
         tags, info, context = self._get_tags_info_context(case, extra_tags)
         self._add_r_tags_info_context(tags, info, context)
         data = []
@@ -263,6 +330,7 @@ class BenchmarkR(Benchmark):
             options,
             case=case,
             output=output,
+            publish=os.environ.get("DRY_RUN") is None,
         )
 
     def r_cpu_count(self, options: Dict[str, Any]):

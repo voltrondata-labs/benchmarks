@@ -1,5 +1,3 @@
-import copy
-
 from .. import tpch_benchmark
 from ..tests import _asserts
 
@@ -211,7 +209,6 @@ Options:
 
 
 def assert_benchmark(result, name, language="Python"):
-    munged = copy.deepcopy(result)
     expected = {
         "name": name,
         "cpu_count": None,
@@ -223,18 +220,18 @@ def assert_benchmark(result, name, language="Python"):
     }
     if language == "R":
         expected["language"] = "R"
-    assert munged["tags"] == expected
-    assert result["run_id"] == "some-run-id"
-    assert result["batch_id"] == "some-run-id-0.01n"
-    _asserts.assert_info_and_context(munged, language=language)
+    assert result.tags == expected
+    assert result.run_id == "some-run-id"
+    assert result.batch_id == "some-run-id-0.01n"
+    _asserts.assert_info_and_context(result, language=language)
 
 
 def test_benchmark_r():
     benchmark = tpch_benchmark.TpchBenchmark()
     run_id = "some-run-id"
-    [(result, output)] = benchmark.run(iterations=1, run_id=run_id, scale_factor=0.01)
+    result = next(benchmark.run(iterations=1, run_id=run_id, scale_factor=0.01))
     assert_benchmark(result, benchmark.name, language="R")
-    assert _asserts.R_CLI in str(output)
+    assert _asserts.R_CLI in str(result.output)
 
 
 def test_cli():

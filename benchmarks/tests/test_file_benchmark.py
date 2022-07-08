@@ -1,5 +1,3 @@
-import copy
-
 import pytest
 
 from .. import _sources, file_benchmark
@@ -96,35 +94,36 @@ sources = [_sources.Source(s) for s in read_benchmark.sources_test]
 
 
 def assert_run_write(run, index, case, source):
-    result, output = run[index]
+    result = run[index]
     assert_benchmark(result, case, source.name, "write", "input_type")
-    assert output is None
+    assert result.output is None
 
 
 def assert_run_read(run, index, case, source):
-    result, output = run[index]
+    result = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type")
-    if "pyarrow.Table" in str(output):
+    if "pyarrow.Table" in str(result.output):
         ts_precision = "ns" if case[0] == "feather" else "us"
-        _asserts.assert_table_output(source.name, output, ts_precision=ts_precision)
+        _asserts.assert_table_output(
+            source.name, result.output, ts_precision=ts_precision
+        )
     else:
-        _asserts.assert_dimensions_output(source.name, output)
+        _asserts.assert_dimensions_output(source.name, result.output)
 
 
 def assert_run_write_r(run, index, case, source):
-    result, output = run[index]
+    result = run[index]
     assert_benchmark(result, case, source.name, "write", "input_type", language="R")
-    assert _asserts.R_CLI in str(output)
+    assert _asserts.R_CLI in str(result.output)
 
 
 def assert_run_read_r(run, index, case, source):
-    result, output = run[index]
+    result = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type", language="R")
-    assert _asserts.R_CLI in str(output)
+    assert _asserts.R_CLI in str(result.output)
 
 
 def assert_benchmark(result, case, source, action, type_tag, language="Python"):
-    munged = copy.deepcopy(result)
     name = "file-write" if action == "write" else "file-read"
     expected = {
         "name": name,
@@ -136,8 +135,8 @@ def assert_benchmark(result, case, source, action, type_tag, language="Python"):
     }
     if language == "R":
         expected["language"] = "R"
-    assert munged["tags"] == expected
-    _asserts.assert_info_and_context(munged, language=language)
+    assert result.tags == expected
+    _asserts.assert_info_and_context(result, language=language)
 
 
 @pytest.mark.parametrize("case", read_cases, ids=read_case_ids)

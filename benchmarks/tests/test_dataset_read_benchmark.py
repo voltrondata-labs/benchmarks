@@ -1,5 +1,3 @@
-import copy
-
 import pytest
 
 from .. import _sources, dataset_read_benchmark
@@ -44,8 +42,6 @@ cases, case_ids = benchmark.cases, benchmark.case_ids
 
 
 def assert_benchmark(result, case, source):
-    munged = copy.deepcopy(result)
-
     legacy = {
         "name": "dataset-read",
         "dataset": source,
@@ -62,17 +58,17 @@ def assert_benchmark(result, case, source):
     }
 
     try:
-        assert munged["tags"] == pre_buffer
+        assert result.tags == pre_buffer
     except AssertionError:
-        assert munged["tags"] == legacy
+        assert result.tags == legacy
 
-    _asserts.assert_info_and_context(munged)
+    _asserts.assert_info_and_context(result)
 
 
 def assert_run(run, index, case, source):
-    result, output = run[index]
+    result = run[index]
     assert_benchmark(result, case, source.name)
-    _asserts.assert_table_output(source.name, output, nyc_ts=True)
+    _asserts.assert_table_output(source.name, result.output, nyc_ts=True)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)

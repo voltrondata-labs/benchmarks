@@ -1,5 +1,3 @@
-import copy
-
 import pytest
 
 from .. import _sources, csv_benchmark
@@ -8,7 +6,6 @@ from . import _asserts
 
 class TestCsvBenchmark:
     def assert_benchmark(self, result, case, source, language):
-        munged = copy.deepcopy(result)
         expected = {
             "name": self.benchmark.name,
             "dataset": source,
@@ -17,25 +14,25 @@ class TestCsvBenchmark:
         }
         if language == "R":
             expected["language"] = "R"
-        assert munged["tags"] == expected
-        _asserts.assert_info_and_context(munged, language=language)
+        assert result.tags == expected
+        _asserts.assert_info_and_context(result, language=language)
 
     def assert_run_py(self, run, index, case, source):
         if "data_frame" not in case:
-            result, output = run[index]
+            result = run[index]
             self.assert_benchmark(
                 result=result, case=case, source=source.name, language="Python"
             )
             if self.benchmark.name == "csv-read":
-                _asserts.assert_table_output(source.name, output)
+                _asserts.assert_table_output(source.name, result.output)
 
     def assert_run_r(self, run, index, case, source):
         if "streaming" not in case:
-            result, output = run[index]
+            result = run[index]
             self.assert_benchmark(
                 result=result, case=case, source=source.name, language="R"
             )
-            assert _asserts.R_CLI in str(output)
+            assert _asserts.R_CLI in str(result.output)
 
 
 class TestCsvReadBenchmark(TestCsvBenchmark):

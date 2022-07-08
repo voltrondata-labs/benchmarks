@@ -1,5 +1,6 @@
 import copy
 import json
+import os
 import tempfile
 
 import conbench.runner
@@ -142,6 +143,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
             options=options,
             output=result,
             name=name,
+            publish=os.environ.get("DRY_RUN") is None,
         )
 
     def _get_values(self, result):

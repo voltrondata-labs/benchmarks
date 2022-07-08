@@ -1,5 +1,3 @@
-import copy
-
 import pytest
 
 from .. import wide_dataframe_benchmark
@@ -43,20 +41,19 @@ cases, case_ids = benchmark.cases, benchmark.case_ids
 
 
 def assert_benchmark(result, case):
-    munged = copy.deepcopy(result)
-    assert munged["tags"] == {
+    assert result.tags == {
         "name": "wide-dataframe",
         "cpu_count": None,
         "use_legacy_dataset": case[0],
     }
-    _asserts.assert_info_and_context(munged)
+    _asserts.assert_info_and_context(result)
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)
 def test_wide_dataframe(case):
-    [(result, output)] = benchmark.run(case, iterations=1)
+    result = next(benchmark.run(case, iterations=1))
     assert_benchmark(result, case)
-    assert "100 rows x 10000 columns" in str(output)
+    assert "100 rows x 10000 columns" in str(result.output)
 
 
 def test_wide_dataframe_cli():

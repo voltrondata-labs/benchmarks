@@ -1,5 +1,3 @@
-import copy
-
 import pytest
 
 from .. import _sources, dataset_selectivity_benchmark
@@ -45,22 +43,20 @@ cases, case_ids = benchmark.cases, benchmark.case_ids
 
 
 def assert_benchmark(result, case, source):
-    munged = copy.deepcopy(result)
-
     expected = {
         "cpu_count": None,
         "dataset": source,
         "name": "dataset-selectivity",
         "selectivity": case[0],
     }
-    assert munged["tags"] == expected
-    _asserts.assert_info_and_context(munged)
+    assert result.tags == expected
+    _asserts.assert_info_and_context(result)
 
 
 def assert_run(run, index, case, source):
-    result, output = run[index]
+    result = run[index]
     assert_benchmark(result, case, source.name)
-    assert output > 0
+    assert result.output > 0
 
 
 @pytest.mark.parametrize("case", cases, ids=case_ids)

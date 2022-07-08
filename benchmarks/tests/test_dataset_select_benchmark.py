@@ -24,9 +24,9 @@ Options:
 
 
 def assert_run(run, index, benchmark, source):
-    result, output = run[index]
+    result = run[index]
     _asserts.assert_benchmark(result, source.name, benchmark.name)
-    _asserts.assert_table_output(source.name, output, nyc_select=True)
+    _asserts.assert_table_output(source.name, result.output, nyc_select=True)
 
 
 def test_dataset_read():

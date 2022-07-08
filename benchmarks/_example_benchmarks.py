@@ -44,6 +44,7 @@ class ExternalBenchmark(_benchmark.Benchmark):
             context,
             options=kwargs,
             output=result["data"],
+            publish=False,
         )
 
 

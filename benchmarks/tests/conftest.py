@@ -1,4 +1,12 @@
+import os
+
 import pytest
+
+
+def pytest_generate_tests(metafunc):
+    # set this to not try to send anything to conbench
+    os.environ["DRY_RUN"] = "1"
+
 
 pytest.register_assert_rewrite("benchmarks.tests._asserts")
 
