@@ -5,8 +5,8 @@ R_CLI = "The R Foundation for Statistical Computing"
 
 NYCTAXI_TABLE = """pyarrow.Table
 vendor_id: string
-pickup_datetime: string
-dropoff_datetime: string
+pickup_datetime: timestamp[ns]
+dropoff_datetime: timestamp[ns]
 passenger_count: int64
 trip_distance: double
 pickup_longitude: double
@@ -58,50 +58,56 @@ NYCTAXI_TABLE_SELECT = _TEMP.replace(
 )
 
 FANNIEMAE_TABLE = """pyarrow.Table
-0: int64
-1: string
-2: string
-3: double
-4: double
-5: int64
-6: int64
-7: int64
-8: string
-9: int64
-10: string
-11: string
-12: double
-13: string
-14: double
-15: double
-16: double
-17: double
-18: double
-19: double
-20: double
-21: double
-22: double
-23: double
-24: double
-25: double
-26: double
-27: double
-28: string
-29: double
-30: string"""
+LOAN_ID: string
+ACT_PERIOD: string
+SERVICER: string
+ORIG_RATE: double
+CURRENT_UPB: double
+LOAN_AGE: int32
+REM_MONTHS: int32
+ADJ_REM_MONTHS: int32
+MATR_DT: string
+MSA: string
+DLQ_STATUS: string
+RELOCATION_MORTGAGE_INDICATOR: string
+Zero_Bal_Code: string
+ZB_DTE: string
+LAST_PAID_INSTALLMENT_DATE: string
+FORECLOSURE_DATE: string
+DISPOSITION_DATE: string
+FORECLOSURE_COSTS: double
+PROPERTY_PRESERVATION_AND_REPAIR_COSTS: double
+ASSET_RECOVERY_COSTS: double
+MISCELLANEOUS_HOLDING_EXPENSES_AND_CREDITS: double
+ASSOCIATED_TAXES_FOR_HOLDING_PROPERTY: double
+NET_SALES_PROCEEDS: double
+CREDIT_ENHANCEMENT_PROCEEDS: double
+REPURCHASES_MAKE_WHOLE_PROCEEDS: double
+OTHER_FORECLOSURE_PROCEEDS: double
+NON_INTEREST_BEARING_UPB: double
+MI_CANCEL_FLAG: string
+RE_PROCS_FLAG: string
+LOAN_HOLDBACK_INDICATOR: string
+SERV_IND: string"""
 
 
-def assert_table_output(source, output, nyc_ts=False, nyc_select=False):
-    out = str(output)
+def assert_table_output(
+    source, output, nyc_ts=False, nyc_select=False, ts_precision="ns"
+):
     if source.startswith("nyctaxi"):
         if nyc_ts:
-            assert NYCTAXI_TABLE_TIMESTAMP in out
+            text = NYCTAXI_TABLE_TIMESTAMP
         elif nyc_select:
-            assert NYCTAXI_TABLE_SELECT in out
+            text = NYCTAXI_TABLE_SELECT
         else:
-            assert NYCTAXI_TABLE in out
+            text = NYCTAXI_TABLE
     else:
-        assert FANNIEMAE_TABLE in out
+        text = FANNIEMAE_TABLE
+
+    text = text.replace("[ns]", f"[{ts_precision}]")
+    out = str(output)
+
+    assert text in out
 
 
 def assert_dimensions_output(source, output):
@@ -109,7 +115,7 @@ def assert_dimensions_output(source, output):
     if source.startswith("nyctaxi"):
         assert "[998 rows x 18 columns]" in out
     else:
-        assert "[1000 rows x 31 columns]" in out
+        assert "[100 rows x 31 columns]" in out
 
 
 def assert_benchmark(result, source, name, language="Python"):

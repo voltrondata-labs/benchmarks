@@ -26,7 +26,7 @@ Options:
 def assert_run(run, index, benchmark, source):
     result, output = run[index]
     _asserts.assert_benchmark(result, source.name, benchmark.name)
-    _asserts.assert_table_output(source.name, output)
+    _asserts.assert_table_output(source.name, output, ts_precision="us")
 
 
 def test_dataset_filter():

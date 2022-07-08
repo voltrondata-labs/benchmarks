@@ -105,7 +105,8 @@ def assert_run_read(run, index, case, source):
     result, output = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type")
     if "pyarrow.Table" in str(output):
-        _asserts.assert_table_output(source.name, output)
+        ts_precision = "ns" if case[0] == "feather" else "us"
+        _asserts.assert_table_output(source.name, output, ts_precision=ts_precision)
     else:
         _asserts.assert_dimensions_output(source.name, output)
 
