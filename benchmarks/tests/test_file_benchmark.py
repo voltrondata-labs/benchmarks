@@ -114,13 +114,13 @@ def assert_run_read(run, index, case, source):
 def assert_run_write_r(run, index, case, source):
     result = run[index]
     assert_benchmark(result, case, source.name, "write", "input_type", language="R")
-    assert _asserts.R_CLI in str(result.output)
+    assert _asserts.R_CLI in str(result.output), f"No R output. Error: {result.error}"
 
 
 def assert_run_read_r(run, index, case, source):
     result = run[index]
     assert_benchmark(result, case, source.name, "read", "output_type", language="R")
-    assert _asserts.R_CLI in str(result.output)
+    assert _asserts.R_CLI in str(result.output), f"No R output. Error: {result.error}"
 
 
 def assert_benchmark(result, case, source, action, type_tag, language="Python"):
