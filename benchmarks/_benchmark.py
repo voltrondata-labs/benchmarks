@@ -65,7 +65,8 @@ class BenchmarkResult:
     result : Dict[str, Any]
         Actual measurement data. Currently of the form ``{"data": <<data>>, "unit": "s"}``
     params : Dict[str, Any]
-        Parameter names and arguments supplied for the run
+        Parameter names and arguments (i.e. the case) supplied for the run. Currently a
+        subset of ``tags``, but often needed separately.
     tags : Dict[str, Any]
         Many things. Determines history runs
     info : Dict[str, Any]
@@ -87,7 +88,6 @@ class BenchmarkResult:
     run_id: str = None
     batch_id: str = None
     result: Dict[str, Any] = None
-    # `params` (i.e. case) is currently a subset of `tags`, but we often need it separately
     params: Dict[str, Any] = None
     tags: Dict[str, Any] = None
     info: Dict[str, Any] = None
