@@ -96,19 +96,18 @@ class CsvReadBenchmark(CsvBenchmark):
         # the original source file lacked a header and was pipe delimited.
         path = source.create_if_not_exists("csv", compression)
         munged = _sources.munge_compression(compression, file_type="csv")
-        schema = source.table.schema
 
         def read_streaming():
             table = pyarrow.csv.open_csv(
                 pyarrow.input_stream(path, compression=munged),
-                convert_options=pyarrow.csv.ConvertOptions(column_types=schema),
+                convert_options=source.csv_convert_options,
             ).read_all()
             return table
 
         def read_file():
             table = pyarrow.csv.read_csv(
                 pyarrow.input_stream(path, compression=munged),
-                convert_options=pyarrow.csv.ConvertOptions(column_types=schema),
+                convert_options=source.csv_convert_options,
             )
             return table
 

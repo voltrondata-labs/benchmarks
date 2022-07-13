@@ -12,7 +12,7 @@ trip_distance: double
 pickup_longitude: double
 pickup_latitude: double
 rate_code: int64
-store_and_fwd_flag: double
+store_and_fwd_flag: string
 dropoff_longitude: double
 dropoff_latitude: double
 payment_type: string
