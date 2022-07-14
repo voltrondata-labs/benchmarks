@@ -51,71 +51,77 @@ class SourceFormat(Enum):
 #
 # Data dictionary: https://capitalmarkets.fanniemae.com/resources/file/credit-risk/xls/crt-file-layout-and-glossary.xlsx
 # Names from R code here: https://capitalmarkets.fanniemae.com/media/document/zip/FNMA_SF_Loan_Performance_r_Primary.zip
-fannie_mae_schema = pyarrow.schema(
-    [
-        pyarrow.field("LOAN_ID", pyarrow.string()),
-        # date. Monthly reporting period
-        pyarrow.field("ACT_PERIOD", pyarrow.string()),
-        pyarrow.field("SERVICER", pyarrow.string()),
-        pyarrow.field("ORIG_RATE", pyarrow.float64()),
-        pyarrow.field("CURRENT_UPB", pyarrow.float64()),
-        pyarrow.field("LOAN_AGE", pyarrow.int32()),
-        pyarrow.field("REM_MONTHS", pyarrow.int32()),
-        pyarrow.field("ADJ_REM_MONTHS", pyarrow.int32()),
-        # maturity date
-        pyarrow.field("MATR_DT", pyarrow.string()),
-        # Metropolitan Statistical Area code
-        pyarrow.field("MSA", pyarrow.string()),
-        # Int of months, but `X` is a valid value. New versions pad with `0`/`X` to two characters
-        pyarrow.field("DLQ_STATUS", pyarrow.string()),
-        pyarrow.field("RELOCATION_MORTGAGE_INDICATOR", pyarrow.string()),
-        # 0-padded 2 digit ints representing categorical levels, e.g. "01" -> "Prepaid or Matured"
-        pyarrow.field("Zero_Bal_Code", pyarrow.string()),
-        pyarrow.field("ZB_DTE", pyarrow.string()),  # date
-        pyarrow.field("LAST_PAID_INSTALLMENT_DATE", pyarrow.string()),
-        pyarrow.field("FORECLOSURE_DATE", pyarrow.string()),
-        pyarrow.field("DISPOSITION_DATE", pyarrow.string()),
-        pyarrow.field("FORECLOSURE_COSTS", pyarrow.float64()),
-        pyarrow.field("PROPERTY_PRESERVATION_AND_REPAIR_COSTS", pyarrow.float64()),
-        pyarrow.field("ASSET_RECOVERY_COSTS", pyarrow.float64()),
-        pyarrow.field("MISCELLANEOUS_HOLDING_EXPENSES_AND_CREDITS", pyarrow.float64()),
-        pyarrow.field("ASSOCIATED_TAXES_FOR_HOLDING_PROPERTY", pyarrow.float64()),
-        pyarrow.field("NET_SALES_PROCEEDS", pyarrow.float64()),
-        pyarrow.field("CREDIT_ENHANCEMENT_PROCEEDS", pyarrow.float64()),
-        pyarrow.field("REPURCHASES_MAKE_WHOLE_PROCEEDS", pyarrow.float64()),
-        pyarrow.field("OTHER_FORECLOSURE_PROCEEDS", pyarrow.float64()),
-        pyarrow.field("NON_INTEREST_BEARING_UPB", pyarrow.float64()),
-        # all null
-        pyarrow.field("MI_CANCEL_FLAG", pyarrow.string()),
-        pyarrow.field("RE_PROCS_FLAG", pyarrow.string()),
-        # all null
-        pyarrow.field("LOAN_HOLDBACK_INDICATOR", pyarrow.string()),
-        pyarrow.field("SERV_IND", pyarrow.string()),
-    ]
-)
+def fanniemae_schema():
+    return pyarrow.schema(
+        [
+            pyarrow.field("LOAN_ID", pyarrow.string()),
+            # date. Monthly reporting period
+            pyarrow.field("ACT_PERIOD", pyarrow.string()),
+            pyarrow.field("SERVICER", pyarrow.string()),
+            pyarrow.field("ORIG_RATE", pyarrow.float64()),
+            pyarrow.field("CURRENT_UPB", pyarrow.float64()),
+            pyarrow.field("LOAN_AGE", pyarrow.int32()),
+            pyarrow.field("REM_MONTHS", pyarrow.int32()),
+            pyarrow.field("ADJ_REM_MONTHS", pyarrow.int32()),
+            # maturity date
+            pyarrow.field("MATR_DT", pyarrow.string()),
+            # Metropolitan Statistical Area code
+            pyarrow.field("MSA", pyarrow.string()),
+            # Int of months, but `X` is a valid value. New versions pad with `0`/`X` to two characters
+            pyarrow.field("DLQ_STATUS", pyarrow.string()),
+            pyarrow.field("RELOCATION_MORTGAGE_INDICATOR", pyarrow.string()),
+            # 0-padded 2 digit ints representing categorical levels, e.g. "01" -> "Prepaid or Matured"
+            pyarrow.field("Zero_Bal_Code", pyarrow.string()),
+            pyarrow.field("ZB_DTE", pyarrow.string()),  # date
+            pyarrow.field("LAST_PAID_INSTALLMENT_DATE", pyarrow.string()),
+            pyarrow.field("FORECLOSURE_DATE", pyarrow.string()),
+            pyarrow.field("DISPOSITION_DATE", pyarrow.string()),
+            pyarrow.field("FORECLOSURE_COSTS", pyarrow.float64()),
+            pyarrow.field("PROPERTY_PRESERVATION_AND_REPAIR_COSTS", pyarrow.float64()),
+            pyarrow.field("ASSET_RECOVERY_COSTS", pyarrow.float64()),
+            pyarrow.field(
+                "MISCELLANEOUS_HOLDING_EXPENSES_AND_CREDITS", pyarrow.float64()
+            ),
+            pyarrow.field("ASSOCIATED_TAXES_FOR_HOLDING_PROPERTY", pyarrow.float64()),
+            pyarrow.field("NET_SALES_PROCEEDS", pyarrow.float64()),
+            pyarrow.field("CREDIT_ENHANCEMENT_PROCEEDS", pyarrow.float64()),
+            pyarrow.field("REPURCHASES_MAKE_WHOLE_PROCEEDS", pyarrow.float64()),
+            pyarrow.field("OTHER_FORECLOSURE_PROCEEDS", pyarrow.float64()),
+            pyarrow.field("NON_INTEREST_BEARING_UPB", pyarrow.float64()),
+            # all null
+            pyarrow.field("MI_CANCEL_FLAG", pyarrow.string()),
+            pyarrow.field("RE_PROCS_FLAG", pyarrow.string()),
+            # all null
+            pyarrow.field("LOAN_HOLDBACK_INDICATOR", pyarrow.string()),
+            pyarrow.field("SERV_IND", pyarrow.string()),
+        ]
+    )
 
-nyctaxi_schema = pyarrow.schema(
-    [
-        pyarrow.field("vendor_id", pyarrow.string()),
-        pyarrow.field("pickup_datetime", pyarrow.timestamp("ns")),
-        pyarrow.field("dropoff_datetime", pyarrow.timestamp("ns")),
-        pyarrow.field("passenger_count", pyarrow.int64()),
-        pyarrow.field("trip_distance", pyarrow.float64()),
-        pyarrow.field("pickup_longitude", pyarrow.float64()),
-        pyarrow.field("pickup_latitude", pyarrow.float64()),
-        pyarrow.field("rate_code", pyarrow.int64()),
-        pyarrow.field("store_and_fwd_flag", pyarrow.float64()),
-        pyarrow.field("dropoff_longitude", pyarrow.float64()),
-        pyarrow.field("dropoff_latitude", pyarrow.float64()),
-        pyarrow.field("payment_type", pyarrow.string()),
-        pyarrow.field("fare_amount", pyarrow.float64()),
-        pyarrow.field("surcharge", pyarrow.float64()),
-        pyarrow.field("mta_tax", pyarrow.float64()),
-        pyarrow.field("tip_amount", pyarrow.float64()),
-        pyarrow.field("tolls_amount", pyarrow.float64()),
-        pyarrow.field("total_amount", pyarrow.float64()),
-    ]
-)
+
+def nyctaxi_schema():
+    return pyarrow.schema(
+        [
+            pyarrow.field("vendor_id", pyarrow.string()),
+            pyarrow.field("pickup_datetime", pyarrow.timestamp("ns")),
+            pyarrow.field("dropoff_datetime", pyarrow.timestamp("ns")),
+            pyarrow.field("passenger_count", pyarrow.int64()),
+            pyarrow.field("trip_distance", pyarrow.float64()),
+            pyarrow.field("pickup_longitude", pyarrow.float64()),
+            pyarrow.field("pickup_latitude", pyarrow.float64()),
+            pyarrow.field("rate_code", pyarrow.int64()),
+            # int {0, 1, 2} but one row with "*"
+            pyarrow.field("store_and_fwd_flag", pyarrow.string()),
+            pyarrow.field("dropoff_longitude", pyarrow.float64()),
+            pyarrow.field("dropoff_latitude", pyarrow.float64()),
+            pyarrow.field("payment_type", pyarrow.string()),
+            pyarrow.field("fare_amount", pyarrow.float64()),
+            pyarrow.field("surcharge", pyarrow.float64()),
+            pyarrow.field("mta_tax", pyarrow.float64()),
+            pyarrow.field("tip_amount", pyarrow.float64()),
+            pyarrow.field("tolls_amount", pyarrow.float64()),
+            pyarrow.field("total_amount", pyarrow.float64()),
+        ]
+    )
 
 
 STORE = {
@@ -123,7 +129,7 @@ STORE = {
         "path": _local("fanniemae_sample.csv"),
         "sep": "|",
         "header": None,
-        "schema": fannie_mae_schema,
+        "schema": fanniemae_schema,
         "format": SourceFormat.CSV,
     },
     "nyctaxi_sample": {
@@ -142,7 +148,7 @@ STORE = {
         "source": "https://ursa-qa.s3.amazonaws.com/fanniemae_loanperf/2016Q4.csv.gz",
         "sep": "|",
         "header": None,
-        "schema": fannie_mae_schema,
+        "schema": fanniemae_schema,
         "format": SourceFormat.CSV,
     },
     "nyctaxi_2010-01": {
@@ -262,25 +268,25 @@ EXPECTED_SIZES = {
     "type_nested.parquet": 130538033,
     "type_simple_features.parquet": 28637722,
     "type_strings.parquet": 87174822,
-    "fanniemae_2016Q4.gzip.csv": 278668126,
-    "fanniemae_2016Q4.lz4.feather": 817112994,
-    "fanniemae_2016Q4.snappy.parquet": 153999953,
-    "fanniemae_2016Q4.uncompressed.csv": 2652731759,
+    "fanniemae_2016Q4.gzip.csv": 269925688,
+    "fanniemae_2016Q4.lz4.feather": 821646234,
+    "fanniemae_2016Q4.snappy.parquet": 153549194,
+    "fanniemae_2016Q4.uncompressed.csv": 2255698073,
     "fanniemae_2016Q4.uncompressed.feather": 4686393634,
-    "fanniemae_2016Q4.uncompressed.parquet": 570952947,
+    "fanniemae_2016Q4.uncompressed.parquet": 567274769,
     "fanniemae_sample.gzip.csv": 12390,
     "fanniemae_sample.lz4.feather": 44442,
     "fanniemae_sample.snappy.parquet": 18743,
     "fanniemae_sample.uncompressed.csv": 97592,
     "fanniemae_sample.uncompressed.feather": 250938,
     "fanniemae_sample.uncompressed.parquet": 24696,
-    "nyctaxi_2010-01.gzip.csv": 503844947,
-    "nyctaxi_2010-01.lz4.feather": 1175111122,
-    "nyctaxi_2010-01.lz4.parquet": 735273049,
-    "nyctaxi_2010-01.snappy.parquet": 754527953,
-    "nyctaxi_2010-01.uncompressed.csv": 2005778964,
-    "nyctaxi_2010-01.uncompressed.feather": 2505803578,
-    "nyctaxi_2010-01.uncompressed.parquet": 1246083270,
+    "nyctaxi_2010-01.gzip.csv": 505936462,
+    "nyctaxi_2010-01.lz4.feather": 1042797378,
+    "nyctaxi_2010-01.lz4.parquet": 739394431,
+    "nyctaxi_2010-01.snappy.parquet": 725690893,
+    "nyctaxi_2010-01.uncompressed.csv": 2126881751,
+    "nyctaxi_2010-01.uncompressed.feather": 2062406858,
+    "nyctaxi_2010-01.uncompressed.parquet": 800138274,
     "nyctaxi_2010-01.uncompressed.parquet.schema": 14386,
     "nyctaxi_sample.gzip.csv": 34506,
     "nyctaxi_sample.lz4.feather": 90738,
@@ -367,7 +373,7 @@ class Source:
     def csv_read_options(self):
         if self.store["header"] is None:
             if "schema" in self.store:
-                column_names = self.store["schema"].names
+                column_names = self.store["schema"]().names
                 autogenerate_column_names = False
             else:
                 column_names = None
@@ -381,7 +387,10 @@ class Source:
 
     @property
     def csv_convert_options(self):
-        return pyarrow.csv.ConvertOptions(column_types=self.store.get("schema"))
+        return pyarrow.csv.ConvertOptions(
+            column_types=self.store.get("schema")(),
+            strings_can_be_null=True,
+        )
 
     @property
     def source_path(self):
@@ -459,6 +468,9 @@ class Source:
                 parse_options=self.csv_parse_options,
                 convert_options=self.csv_convert_options,
             )
+
+            self._feather_write(self._table, path, compression="lz4")
+
         return self._table
 
     def _get_object_url(self, idx=0):
