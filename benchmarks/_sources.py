@@ -254,49 +254,6 @@ STORE = {
     },
 }
 
-# diana apologies for this hot mess
-EXPECTED_SIZES = {
-    "chi_traffic_2020_Q1.parquet": 182895135,
-    "chi_traffic_sample.parquet": 116984,
-    "fanniemae_2016Q4.csv.gz": 262125134,
-    "fanniemae_sample.csv": 87619,
-    "nyctaxi_2010-01.csv.gz": 591876633,
-    "nyctaxi_sample.csv": 182665,
-    "type_dict.parquet": 2890770,
-    "type_floats.parquet": 23851672,
-    "type_integers.parquet": 15882666,
-    "type_nested.parquet": 130538033,
-    "type_simple_features.parquet": 28637722,
-    "type_strings.parquet": 87174822,
-    "fanniemae_2016Q4.gzip.csv": 269925688,
-    "fanniemae_2016Q4.lz4.feather": 821646234,
-    "fanniemae_2016Q4.snappy.parquet": 153549194,
-    "fanniemae_2016Q4.uncompressed.csv": 2255698073,
-    "fanniemae_2016Q4.uncompressed.feather": 4686393634,
-    "fanniemae_2016Q4.uncompressed.parquet": 567274769,
-    "fanniemae_sample.gzip.csv": 12390,
-    "fanniemae_sample.lz4.feather": 44442,
-    "fanniemae_sample.snappy.parquet": 18743,
-    "fanniemae_sample.uncompressed.csv": 97592,
-    "fanniemae_sample.uncompressed.feather": 250938,
-    "fanniemae_sample.uncompressed.parquet": 24696,
-    "nyctaxi_2010-01.gzip.csv": 505936462,
-    "nyctaxi_2010-01.lz4.feather": 1042797378,
-    "nyctaxi_2010-01.lz4.parquet": 739394431,
-    "nyctaxi_2010-01.snappy.parquet": 725690893,
-    "nyctaxi_2010-01.uncompressed.csv": 2126881751,
-    "nyctaxi_2010-01.uncompressed.feather": 2062406858,
-    "nyctaxi_2010-01.uncompressed.parquet": 800138274,
-    "nyctaxi_2010-01.uncompressed.parquet.schema": 14386,
-    "nyctaxi_sample.gzip.csv": 34506,
-    "nyctaxi_sample.lz4.feather": 90738,
-    "nyctaxi_sample.lz4.parquet": 76861,
-    "nyctaxi_sample.snappy.parquet": 71533,
-    "nyctaxi_sample.uncompressed.csv": 133440,
-    "nyctaxi_sample.uncompressed.feather": 180018,
-    "nyctaxi_sample.uncompressed.parquet": 103892,
-}
-
 
 def bytes_fmt(value):
     if value is None:
@@ -350,6 +307,10 @@ class Source:
         self.name = name
         self.store = STORE[self.name]
         self._table = None
+
+        schema = self.store.get("schema")
+        self.schema = schema() if schema else None
+
         if self.store.get("download", True):
             self.download_source_if_not_exists()
 
@@ -440,14 +401,13 @@ class Source:
             data/nyctaxi_sample.csv
         """
         path = self.temp_path(file_type, compression)
-        if self._if_path_does_not_exist_or_not_expected_file_size(path):
+        if not path.exists():
             if file_type == "feather":
                 self._feather_write(self.table, path, compression)
             elif file_type == "parquet":
                 self._parquet_write(self.table, path, compression)
             elif file_type == "csv":
                 self._csv_write(self.table, path, compression)
-            self._assert_expected_file_size(path)
         return path
 
     @functools.cached_property
@@ -457,10 +417,9 @@ class Source:
 
     @functools.cached_property
     def table(self):
-        path = self.temp_path("feather", "lz4")
+        path = self.temp_path("parquet", "snappy")
         if path.exists():
-            # this takes ~ 3 seconds for fanniemae_2016Q4
-            self._table = feather.read_table(path, memory_map=False)
+            self._table = parquet.read_table(path, schema=self.schema)
         else:
             self._table = pyarrow.csv.read_csv(
                 self.store["path"],
@@ -469,7 +428,9 @@ class Source:
                 convert_options=self.csv_convert_options,
             )
 
-            self._feather_write(self._table, path, compression="lz4")
+            self._parquet_write(
+                self._table, path, compression="snappy", coerce_timestamps="us"
+            )
 
         return self._table
 
@@ -490,34 +451,13 @@ class Source:
     def download_source_if_not_exists(self):
         for idx, p in enumerate(self.source_paths):
             path = pathlib.Path(p)
-            if self._if_path_does_not_exist_or_not_expected_file_size(path):
+            if not path.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
                 source = self.store.get("source")
                 if not source:
                     source = self._get_object_url(idx)
                 r = requests.get(source)
                 open(path, "wb").write(r.content)
-                self._assert_expected_file_size(path)
-
-    def _if_path_does_not_exist_or_not_expected_file_size(self, path):
-        expected = bytes_fmt(EXPECTED_SIZES.get(path.name))
-        return not path.exists() or bytes_fmt(os.path.getsize(path)) != expected
-
-    def _assert_expected_file_size(self, path):
-        expected = EXPECTED_SIZES.get(path.name)
-        expected_formatted = bytes_fmt(expected)
-        actual = os.path.getsize(path)
-        actual_formatted = bytes_fmt(actual)
-        debug = [
-            path.name,
-            expected_formatted,
-            actual_formatted,
-            expected,
-            actual,
-        ]
-        skip = ["data.parquet", "data.feather"]  # TODO
-        if path.name not in skip:
-            assert expected_formatted == actual_formatted, debug
 
     def _csv_write(self, table, path, compression):
         # Note: this will write a comma separated csv with a header, even if
@@ -530,6 +470,6 @@ class Source:
         compression = munge_compression(compression, "feather")
         feather.write_feather(table, path, compression=compression)
 
-    def _parquet_write(self, table, path, compression):
+    def _parquet_write(self, table, path, compression, **kwargs):
         compression = munge_compression(compression, "parquet")
-        parquet.write_table(table, path, compression=compression)
+        parquet.write_table(table, path, compression=compression, **kwargs)

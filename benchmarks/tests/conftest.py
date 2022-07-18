@@ -1,6 +1,11 @@
+import os
+
 import pytest
 
 pytest.register_assert_rewrite("benchmarks.tests._asserts")
+
+# set to not try to send anything to conbench
+os.environ["DRY_RUN"] = "1"
 
 
 def pytest_addoption(parser):

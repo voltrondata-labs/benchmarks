@@ -69,11 +69,13 @@ class FileReadBenchmark(FileBenchmark):
         path = source.create_if_not_exists(file_type, compression)
 
         if file_type == "parquet" and output_type == "table":
-            f = lambda: parquet.read_table(path, memory_map=False)
+            f = lambda: parquet.read_table(path, memory_map=False, schema=source.schema)
         elif file_type == "parquet" and output_type == "dataframe":
-            f = lambda: parquet.read_pandas(path, memory_map=False)
+            f = lambda: parquet.read_pandas(
+                path, memory_map=False, schema=source.schema
+            )
         elif file_type == "feather" and output_type == "table":
-            f = lambda: feather.read_table(path, memory_map=False)
+            f = lambda: feather.read_table(path, memory_map=False).cast(source.schema)
         elif file_type == "feather" and output_type == "dataframe":
             f = lambda: feather.read_feather(path, memory_map=False)
 
