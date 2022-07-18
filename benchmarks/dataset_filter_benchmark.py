@@ -16,7 +16,9 @@ class DatasetFilterBenchmark(_benchmark.Benchmark):
     def run(self, source, **kwargs):
         for source in self.get_sources(source):
             path = source.create_if_not_exists("parquet", "lz4")
-            dataset = pyarrow.dataset.dataset(path, format="parquet")
+            dataset = pyarrow.dataset.dataset(
+                path, schema=source.schema, format="parquet"
+            )
             f = self._get_benchmark_function(dataset)
             tags = self.get_tags(kwargs, source)
             yield self.benchmark(f, tags, kwargs)

@@ -86,6 +86,7 @@ class Benchmark(conbench.runner.Benchmark):
                 context=context,
                 github=self.github_info,
                 options=options,
+                publish=os.environ.get("DRY_RUN") is None,
             )
         except Exception as e:
             benchmark, output = self._handle_error(e, self.name, tags, info, context)
@@ -116,6 +117,7 @@ class Benchmark(conbench.runner.Benchmark):
             github=self.github_info,
             options=options,
             output=output,
+            publish=os.environ.get("DRY_RUN") is None,
         )
         return benchmark, output
 

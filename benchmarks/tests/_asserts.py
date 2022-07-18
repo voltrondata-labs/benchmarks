@@ -91,9 +91,7 @@ LOAN_HOLDBACK_INDICATOR: string
 SERV_IND: string"""
 
 
-def assert_table_output(
-    source, output, nyc_ts=False, nyc_select=False, ts_precision="ns"
-):
+def assert_table_output(source, output, nyc_ts=False, nyc_select=False):
     if source.startswith("nyctaxi"):
         if nyc_ts:
             text = NYCTAXI_TABLE_TIMESTAMP
@@ -104,7 +102,6 @@ def assert_table_output(
     else:
         text = FANNIEMAE_TABLE
 
-    text = text.replace("[ns]", f"[{ts_precision}]")
     out = str(output)
 
     assert text in out
