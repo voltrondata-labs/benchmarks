@@ -1,6 +1,6 @@
 <p align="right">
-<a href="https://github.com/ursacomputing/benchmarks/blob/main/.github/workflows/actions.yml"><img alt="Build Status" src="https://github.com/ursacomputing/benchmarks/actions/workflows/actions.yml/badge.svg?branch=main"></a>
-<a href="https://coveralls.io/github/ursacomputing/benchmarks?branch=main"><img src="https://coveralls.io/repos/github/ursacomputing/benchmarks/badge.svg?branch=main&kill_cache=b6152efa2cc8d108c18e6f8688fa01aeba8b5b3b" alt="Coverage Status" /></a>
+<a href="https://github.com/voltrondata-labs/benchmarks/blob/main/.github/workflows/actions.yml"><img alt="Build Status" src="https://github.com/voltrondata-labs/benchmarks/actions/workflows/actions.yml/badge.svg?branch=main"></a>
+<a href="https://coveralls.io/github/voltrondata-labs/benchmarks?branch=main"><img src="https://coveralls.io/repos/github/voltrondata-labs/benchmarks/badge.svg?branch=main&kill_cache=b6152efa2cc8d108c18e6f8688fa01aeba8b5b3b" alt="Coverage Status" /></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
@@ -16,7 +16,7 @@ as external benchmark wrappers that execute and record the results for both the
 Arrow C++, Java, and JavaScript micro benchmarks (which are found in the
 [arrow](https://github.com/apache/arrow) repository), and the Arrow R macro
 benchmarks (which are found in the
-[arrowbench](https://github.com/ursacomputing/arrowbench) repository). These
+[arrowbench](https://github.com/voltrondata-labs/arrowbench) repository). These
 benchmarks use the [Conbench runner](https://github.com/ursacomputing/conbench)
 for benchmark execution, and the results are published to Arrow's public
 [Conbench server](https://conbench.ursa.dev/).
@@ -50,20 +50,20 @@ ursabot benchmark commands.
 ```
 
 Benchmarks added to this repository and declared in
-[benchmarks.json](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks.json)
+[benchmarks.json](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks.json)
 will automatically be picked up by by Arrow's Continuous Benchmarking
 pipeline. This file is regenerated each time the unit tests are run
 based on the various benchmark class attributes. See the
-[`BenchmarkList`](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/_benchmark.py)
+[`BenchmarkList`](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/_benchmark.py)
 class for more information on how to override any of the benchmark
 defaults or to disable a particular benchmark.
 
 
 ## Index
 
-* [Contributing](https://github.com/ursacomputing/benchmarks#contributing)
-* [Running benchmarks](https://github.com/ursacomputing/benchmarks#running-benchmarks)
-* [Authoring benchmarks](https://github.com/ursacomputing/benchmarks#authoring-benchmarks)
+* [Contributing](https://github.com/voltrondata-labs/benchmarks#contributing)
+* [Running benchmarks](https://github.com/voltrondata-labs/benchmarks#running-benchmarks)
+* [Authoring benchmarks](https://github.com/voltrondata-labs/benchmarks#authoring-benchmarks)
 
 
 ## Contributing
@@ -86,7 +86,7 @@ defaults or to disable a particular benchmark.
 
 ### Clone repos
     (qa) $ cd ~/workspace/
-    (qa) $ git clone https://github.com/ursacomputing/benchmarks.git
+    (qa) $ git clone https://github.com/voltrondata-labs/benchmarks.git
     (qa) $ git clone https://github.com/ursacomputing/conbench.git
     (qa) $ git clone https://github.com/apache/arrow.git
     (qa) $ export ARROW_SRC=$(pwd)/arrow
@@ -102,7 +102,7 @@ defaults or to disable a particular benchmark.
 ### Install arrowbench (to run R benchmarks)
     $ R
     > install.packages('remotes')
-    > remotes::install_github("ursacomputing/arrowbench")
+    > remotes::install_github("voltrondata-labs/arrowbench")
 
 
 ### Install archery (to run C++ & Java micro benchmarks)
@@ -353,8 +353,8 @@ Included in this repository are contrived, minimal examples of these
 different kinds of benchmarks to be used as templates for benchmark
 authoring. These example benchmarks and their tests can be found here:
 
-* [_example_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/_example_benchmarks.py)
-* [test_example_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/tests/test_example_benchmarks.py)
+* [_example_benchmarks.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/_example_benchmarks.py)
+* [test_example_benchmarks.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/tests/test_example_benchmarks.py)
 
 
 ### Example simple benchmarks
@@ -405,9 +405,9 @@ Options:
 
 More simple benchmark examples that have minimal scaffolding:
 
-* [csv_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
-* [dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
-* [dataset_select_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_select_benchmark.py)
+* [csv_read_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
+* [dataset_filter_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
+* [dataset_select_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/dataset_select_benchmark.py)
 
 
 ### Example external benchmarks
@@ -514,11 +514,11 @@ Options:
 
 More external benchmark examples that record C++, Java, and R benchmark results:
 
-* [cpp_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
-* [dataframe_to_table_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataframe_to_table_benchmark.py)
-* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
-* [java_micro_benchmarks.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/java_micro_benchmarks.py)
-* [partitioned_dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
+* [cpp_micro_benchmarks.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/cpp_micro_benchmarks.py)
+* [dataframe_to_table_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/dataframe_to_table_benchmark.py)
+* [file_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [java_micro_benchmarks.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/java_micro_benchmarks.py)
+* [partitioned_dataset_filter_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
 
 
 ### Example case benchmarks
@@ -590,8 +590,8 @@ Options:
 
 More case benchmark examples:
 
-* [dataset_read_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_read_benchmark.py)
-* [dataset_selectivity_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/dataset_selectivity_benchmark.py)
-* [file_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/file_benchmark.py)
-* [partitioned_dataset_filter_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
-* [wide_dataframe_benchmark.py](https://github.com/ursacomputing/benchmarks/blob/main/benchmarks/wide_dataframe_benchmark.py)
+* [dataset_read_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/dataset_read_benchmark.py)
+* [dataset_selectivity_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/dataset_selectivity_benchmark.py)
+* [file_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/file_benchmark.py)
+* [partitioned_dataset_filter_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/partitioned_dataset_filter_benchmark.py)
+* [wide_dataframe_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/wide_dataframe_benchmark.py)

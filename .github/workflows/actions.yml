@@ -40,7 +40,7 @@ jobs:
         run: |
           install.packages('remotes')
           install.packages('arrow', repos = c('https://arrow-r-nightly.s3.amazonaws.com', getOption('repos')))
-          remotes::install_github('ursacomputing/arrowbench')
+          remotes::install_github('voltrondata-labs/arrowbench')
         shell: Rscript {0}
         env:
           LIBARROW_BINARY: TRUE
