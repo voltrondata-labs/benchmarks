@@ -3,8 +3,8 @@ import os
 from typing import List
 
 import conbench.runner
-
 from benchadapt.adapters import ArcheryAdapter
+
 from benchmarks import _benchmark
 
 RUN_OPTIONS = {
