@@ -1,9 +1,10 @@
 import copy
 import os
+from typing import List
 
 import conbench.runner
-from benchadapt.adapters import ArcheryAdapter
 
+from benchadapt.adapters import ArcheryAdapter
 from benchmarks import _benchmark
 
 RUN_OPTIONS = {
@@ -59,7 +60,17 @@ COMMON_OPTIONS = {
 }
 
 
-def _add_command_options(command, options):
+def _get_cli_options(options: dict) -> List[str]:
+    command_params = []
+    if options.get("iterations"):
+        command_params += ["--repetitions", str(options.get("iterations"))]
+
+    _add_command_options(command_params, options)
+
+    return command_params
+
+
+def _add_command_options(command: List[str], options: dict):
     for option in COMMON_OPTIONS.keys():
         value = options.get(option.replace("-", "_"), None)
         if value:
@@ -84,12 +95,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         super().__init__()
 
     def run(self, **kwargs):
-        command_params = []
-        if kwargs.get("iterations"):
-            command_params += ["--repetitions", str(kwargs.get("iterations"))]
-
-        _add_command_options(command_params, kwargs)
-
+        command_params = _get_cli_options(kwargs)
         results = self.adapter.run(command_params)
 
         if not os.environ.get("DRY_RUN"):
