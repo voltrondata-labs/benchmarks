@@ -1,8 +1,8 @@
 import copy
-import json
-import tempfile
+import os
 
 import conbench.runner
+from benchadapt.adapters import ArcheryAdapter
 
 from benchmarks import _benchmark
 
@@ -59,48 +59,11 @@ COMMON_OPTIONS = {
 }
 
 
-def get_run_command(filename, options):
-    command = [
-        "archery",
-        "benchmark",
-        "run",
-        "--output",
-        filename,
-    ]
-
-    iterations = options.get("iterations", None)
-    if iterations:
-        command.extend(["--repetitions", str(iterations)])
-
-    _add_command_options(command, options)
-    return command
-
-
 def _add_command_options(command, options):
     for option in COMMON_OPTIONS.keys():
         value = options.get(option.replace("-", "_"), None)
         if value:
             command.extend([f"--{option}", value])
-
-
-def _parse_benchmark_name(full_name):
-    parts = full_name.split("/", 1)
-    name, params = parts[0], ""
-    if len(parts) == 2:
-        params = parts[1]
-
-    parts = name.split("<", 1)
-    if len(parts) == 2:
-        if params:
-            name, params = parts[0], f"<{parts[1]}/{params}"
-        else:
-            name, params = parts[0], f"<{parts[1]}"
-
-    tags = {"name": name}
-    if params:
-        tags["params"] = params
-
-    return tags
 
 
 @conbench.runner.register_benchmark
@@ -114,47 +77,23 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     description = "Run the Arrow C++ micro benchmarks."
     iterations = 1
     flags = {"language": "C++"}
+    adapter = None
+
+    def __init__(self):
+        self.adapter = ArcheryAdapter()
+        super().__init__()
 
     def run(self, **kwargs):
-        with tempfile.NamedTemporaryFile(delete=False) as result_file:
-            run_command = get_run_command(result_file.name, kwargs)
-            self.execute_command(run_command)
-            results = json.load(result_file)
-            for suite in results["suites"]:
-                self.conbench.mark_new_batch()
-                for result in suite["benchmarks"]:
-                    yield self._record_result(suite, result, kwargs)
+        command_params = []
+        if kwargs.get("iterations"):
+            command_params += ["--repetitions", str(kwargs.get("iterations"))]
 
-    def _record_result(self, suite, result, options):
-        info, context = {}, {"benchmark_language": "C++"}
-        tags = _parse_benchmark_name(result["name"])
-        name = tags.pop("name")
-        tags["suite"] = suite["name"]
-        tags["source"] = self.name
+        _add_command_options(command_params, kwargs)
 
-        values = self._get_values(result)
+        results = self.adapter.run(command_params)
 
-        return self.record(
-            values,
-            tags,
-            info,
-            context,
-            options=options,
-            output=result,
-            name=name,
-        )
+        if not os.environ.get("DRY_RUN"):
+            self.adapter.post_results()
 
-    def _get_values(self, result):
-        return {
-            "data": result["values"],
-            "unit": self._format_unit(result["unit"]),
-            "times": result.get("times", []),
-            "time_unit": result.get("time_unit", "s"),
-        }
-
-    def _format_unit(self, x):
-        if x == "bytes_per_second":
-            return "B/s"
-        if x == "items_per_second":
-            return "i/s"
-        return x
+        results_json = [res.to_publishable_dict() for res in results]
+        return results_json, None
