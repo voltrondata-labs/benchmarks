@@ -95,9 +95,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
 
         self.adapter = ArcheryAdapter(
             result_fields_override={"github": self.github_info},
-            result_fields_append={
-                "tags": tags, "info": info, "context": context
-            }
+            result_fields_append={"tags": tags, "info": info, "context": context},
         )
         super().__init__()
 
