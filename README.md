@@ -94,7 +94,6 @@ defaults or to disable a particular benchmark.
 
 ### Install benchmarks dependencies
     (qa) $ cd ~/workspace/benchmarks/
-    (qa) $ pip install -r requirements.txt
     (qa) $ pip install -r requirements-dev.txt
     (qa) $ pip install -e .
 
