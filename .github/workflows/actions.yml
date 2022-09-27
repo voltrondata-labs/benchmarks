@@ -3,8 +3,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: 
-      # Note, if ubuntu-latest changes to a different release, we will need to 
+    env:
+      # Note, if ubuntu-latest changes to a different release, we will need to
       # swap `focal` below to what that new name is for that release.
       RSPM: "https://packagemanager.rstudio.com/all/__linux__/focal/latest"
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -23,8 +23,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           python setup.py develop
-          pip install -r requirements-test.txt
-          pip install -r requirements-build.txt
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
           pip install https://github.com/ursacomputing/conbench/archive/main.zip
           pip install coveralls
       - name: Lint (flake8)
