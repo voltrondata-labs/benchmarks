@@ -1,7 +1,25 @@
+import pathlib
+from typing import List
+
 import setuptools
 
-with open("README.md", "r") as readme:
-    long_description = readme.read()
+
+def read_requirements_file(filepath: pathlib.Path) -> List[str]:
+    """Parse a requirements.txt file into a list of package requirements"""
+    with open(filepath, "r") as f:
+        requirements = [
+            line.strip() for line in f if line.strip() and not line.startswith("#")
+        ]
+    return requirements
+
+
+repo_root = pathlib.Path(__file__).parent
+
+with open(repo_root / "README.md", "r") as f:
+    long_description = f.read()
+
+base_requirements = read_requirements_file(repo_root / "requirements.txt")
+dev_requirements = read_requirements_file(repo_root / "requirements-dev.txt")
 
 
 setuptools.setup(
@@ -20,4 +38,6 @@ setuptools.setup(
     maintainer="Apache Arrow Developers",
     maintainer_email="dev@arrow.apache.org",
     url="https://github.com/voltrondata-labs/benchmarks",
+    install_requires=base_requirements,
+    extras_require={"dev": dev_requirements},
 )
