@@ -100,6 +100,12 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         super().__init__()
 
     def run(self, **kwargs):
+        run_reason = kwargs.get("run_reason")
+        run_name = kwargs.get("run_name", f"{run_reason}: {self.github_info['commit']}")
+
+        self.adapter.result_fields_override.update(
+            run_reason=run_reason, run_name=run_name
+        )
         command_params = _get_cli_options(kwargs)
         results = self.adapter.run(command_params)
 
