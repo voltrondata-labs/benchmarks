@@ -108,7 +108,12 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
             run_reason=run_reason, run_name=run_name, run_id=run_id
         )
         command_params = _get_cli_options(kwargs)
-        results = self.adapter.run(command_params)
+
+        # don't rerun if generator called more than once
+        if not self.adapter.results:
+            self.adapter.run(command_params)
+
+        results = self.adapter.results
 
         if not os.environ.get("DRY_RUN"):
             self.adapter.post_results()
