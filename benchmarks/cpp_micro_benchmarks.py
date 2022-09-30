@@ -113,5 +113,6 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         if not os.environ.get("DRY_RUN"):
             self.adapter.post_results()
 
-        results_json = [res.to_publishable_dict() for res in results]
-        return results_json, None
+        for res in results:
+            res_json = res.to_publishable_dict()
+            yield res_json, None
