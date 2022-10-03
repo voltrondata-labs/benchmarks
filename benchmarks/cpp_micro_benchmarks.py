@@ -1,8 +1,9 @@
 import copy
-import json
-import tempfile
+import os
+from typing import List
 
 import conbench.runner
+from benchadapt.adapters import ArcheryAdapter
 
 from benchmarks import _benchmark
 
@@ -59,48 +60,21 @@ COMMON_OPTIONS = {
 }
 
 
-def get_run_command(filename, options):
-    command = [
-        "archery",
-        "benchmark",
-        "run",
-        "--output",
-        filename,
-    ]
+def _get_cli_options(options: dict) -> List[str]:
+    command_params = []
+    if options.get("iterations"):
+        command_params += ["--repetitions", str(options.get("iterations"))]
 
-    iterations = options.get("iterations", None)
-    if iterations:
-        command.extend(["--repetitions", str(iterations)])
+    _add_command_options(command_params, options)
 
-    _add_command_options(command, options)
-    return command
+    return command_params
 
 
-def _add_command_options(command, options):
+def _add_command_options(command: List[str], options: dict):
     for option in COMMON_OPTIONS.keys():
         value = options.get(option.replace("-", "_"), None)
         if value:
             command.extend([f"--{option}", value])
-
-
-def _parse_benchmark_name(full_name):
-    parts = full_name.split("/", 1)
-    name, params = parts[0], ""
-    if len(parts) == 2:
-        params = parts[1]
-
-    parts = name.split("<", 1)
-    if len(parts) == 2:
-        if params:
-            name, params = parts[0], f"<{parts[1]}/{params}"
-        else:
-            name, params = parts[0], f"<{parts[1]}"
-
-    tags = {"name": name}
-    if params:
-        tags["params"] = params
-
-    return tags
 
 
 @conbench.runner.register_benchmark
@@ -114,47 +88,38 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     description = "Run the Arrow C++ micro benchmarks."
     iterations = 1
     flags = {"language": "C++"}
+    adapter = None
+
+    def __init__(self):
+        # populates arrow metadata like compiler flags from pyarrow
+        tags, info, context = self._get_tags_info_context(case=None, extra_tags={})
+
+        self.adapter = ArcheryAdapter(
+            # populates commit and repo based on arrow info rather than current status
+            result_fields_override={"github": self.github_info},
+            result_fields_append={"tags": tags, "info": info, "context": context},
+        )
+        super().__init__()
 
     def run(self, **kwargs):
-        with tempfile.NamedTemporaryFile(delete=False) as result_file:
-            run_command = get_run_command(result_file.name, kwargs)
-            self.execute_command(run_command)
-            results = json.load(result_file)
-            for suite in results["suites"]:
-                self.conbench.mark_new_batch()
-                for result in suite["benchmarks"]:
-                    yield self._record_result(suite, result, kwargs)
+        run_reason = kwargs.get("run_reason")
+        run_name = kwargs.get("run_name", f"{run_reason}: {self.github_info['commit']}")
+        run_id = kwargs.get("run_id")
 
-    def _record_result(self, suite, result, options):
-        info, context = {}, {"benchmark_language": "C++"}
-        tags = _parse_benchmark_name(result["name"])
-        name = tags.pop("name")
-        tags["suite"] = suite["name"]
-        tags["source"] = self.name
-
-        values = self._get_values(result)
-
-        return self.record(
-            values,
-            tags,
-            info,
-            context,
-            options=options,
-            output=result,
-            name=name,
+        self.adapter.result_fields_override.update(
+            run_reason=run_reason, run_name=run_name, run_id=run_id
         )
+        command_params = _get_cli_options(kwargs)
 
-    def _get_values(self, result):
-        return {
-            "data": result["values"],
-            "unit": self._format_unit(result["unit"]),
-            "times": result.get("times", []),
-            "time_unit": result.get("time_unit", "s"),
-        }
+        # don't rerun if generator called more than once
+        if not self.adapter.results:
+            self.adapter.run(command_params)
 
-    def _format_unit(self, x):
-        if x == "bytes_per_second":
-            return "B/s"
-        if x == "items_per_second":
-            return "i/s"
-        return x
+        results = self.adapter.results
+
+        if not os.environ.get("DRY_RUN"):
+            self.adapter.post_results()
+
+        for res in results:
+            res_json = res.to_publishable_dict()
+            yield res_json, None

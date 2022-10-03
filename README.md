@@ -94,9 +94,8 @@ defaults or to disable a particular benchmark.
 
 ### Install benchmarks dependencies
     (qa) $ cd ~/workspace/benchmarks/
-    (qa) $ pip install -r requirements-test.txt
-    (qa) $ pip install -r requirements-build.txt
-    (qa) $ python setup.py develop
+    (qa) $ pip install -r requirements-dev.txt
+    (qa) $ pip install -e .
 
 
 ### Install arrowbench (to run R benchmarks)
@@ -115,7 +114,7 @@ defaults or to disable a particular benchmark.
     (qa) $ pip install -r requirements-test.txt
     (qa) $ pip install -r requirements-build.txt
     (qa) $ pip install -r requirements-cli.txt
-    (qa) $ python setup.py install
+    (qa) $ pip install .
 
 
 ### Conbench credentials default to this following (edit .conbench to configure)
