@@ -1,11 +1,15 @@
 import copy
+import logging
 import os
 from typing import List
 
 import conbench.runner
 from benchadapt.adapters import ArcheryAdapter
+from benchadapt.log import log
 
 from benchmarks import _benchmark
+
+log.setLevel(logging.DEBUG)
 
 RUN_OPTIONS = {
     "iterations": {
