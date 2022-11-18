@@ -252,7 +252,12 @@ class BenchmarkR(Benchmark):
                 self.conbench.sync_and_drop_caches()
             try:
                 result, output = self._get_benchmark_result(command)
-                data.extend([row["real"] for row in result["result"]])
+                if "stats" in result:
+                    # new arrowbench output aligned with conbench
+                    data += result["stats"]["data"]
+                else:
+                    # legacy arrowbench output
+                    data.extend([row["real"] for row in result["result"]])
                 if not case_version and "case_version" in result["tags"]:
                     case_version = result["tags"]["case_version"]
             except Exception as e:
