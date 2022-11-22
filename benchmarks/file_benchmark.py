@@ -49,11 +49,11 @@ class FileBenchmark(_benchmark.BenchmarkPythonR):
         file_type, compression, _type = case
         file_type_var = "file_type"
         _type = "arrow_table" if _type == "table" else "data_frame"
-        _name = "type"
+        _name = "input_type" if self.r_name == "write_file" else "output_type"
 
         if is_legacy:
             file_type_var = "format"
-            _name = "input" if self.r_name == "write_file" else "output"
+            _name = _name.split("_")[0]
 
         return (
             f"library(arrowbench); "
