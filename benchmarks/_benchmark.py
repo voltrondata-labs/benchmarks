@@ -284,12 +284,13 @@ class BenchmarkR(Benchmark):
     def _get_benchmark_result(self, command: str) -> Tuple[Dict[str, Any], str]:
         shutil.rmtree("results", ignore_errors=True)
         output, error = self.conbench.execute_r_command(command, quiet=False)
-        try:
-            result_path = self._get_results_path()
-            with open(result_path) as json_file:
-                data = json.load(json_file)
-        except FileNotFoundError:
+
+        result_path = self._get_results_path()
+        if not result_path:
             raise Exception(error)
+        with open(result_path) as json_file:
+            data = json.load(json_file)
+
         return data, output
 
     def _get_results_path(self) -> str:
