@@ -40,7 +40,7 @@ class FileBenchmark(_benchmark.BenchmarkPythonR):
                     yield self.r_benchmark(command, tags, kwargs, case)
 
     def _get_r_command(self, source, case, options):
-        # changed param names to align with Python in version 0.1.1
+        # changed param names to align with Python in version 0.2.0
         is_legacy_str, _ = self.conbench.execute_r_command(
             'cat(packageVersion("arrowbench") <= "0.1.0")'
         )
