@@ -40,14 +40,26 @@ class FileBenchmark(_benchmark.BenchmarkPythonR):
                     yield self.r_benchmark(command, tags, kwargs, case)
 
     def _get_r_command(self, source, case, options):
+        # changed param names to align with Python in version 0.2.0
+        is_legacy_str, _ = self.conbench.execute_r_command(
+            'cat(packageVersion("arrowbench") <= "0.1.0")'
+        )
+        is_legacy = is_legacy_str == "TRUE"
+
         file_type, compression, _type = case
+        file_type_var = "file_type"
         _type = "arrow_table" if _type == "table" else "data_frame"
-        _name = "input" if self.r_name == "write_file" else "output"
+        _name = "input_type" if self.r_name == "write_file" else "output_type"
+
+        if is_legacy:
+            file_type_var = "format"
+            _name = _name.split("_")[0]
+
         return (
             f"library(arrowbench); "
             f"run_one({self.r_name}, "
             f'source="{source.name}", '
-            f'format="{file_type}", '
+            f'{file_type_var}="{file_type}", '
             f'compression="{compression}", '
             f'{_name}="{_type}", '
             f"cpu_count={self.r_cpu_count(options)})"

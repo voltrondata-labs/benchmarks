@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 import subprocess
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import conbench.runner
@@ -252,7 +253,12 @@ class BenchmarkR(Benchmark):
                 self.conbench.sync_and_drop_caches()
             try:
                 result, output = self._get_benchmark_result(command)
-                data.extend([row["real"] for row in result["result"]])
+                if "stats" in result:
+                    # new arrowbench output aligned with conbench
+                    data += result["stats"]["data"]
+                else:
+                    # legacy arrowbench output
+                    data.extend([row["real"] for row in result["result"]])
                 if not case_version and "case_version" in result["tags"]:
                     case_version = result["tags"]["case_version"]
             except Exception as e:
@@ -278,17 +284,20 @@ class BenchmarkR(Benchmark):
     def _get_benchmark_result(self, command: str) -> Tuple[Dict[str, Any], str]:
         shutil.rmtree("results", ignore_errors=True)
         output, error = self.conbench.execute_r_command(command, quiet=False)
-        try:
-            result_path = self._get_results_path()
-            with open(result_path) as json_file:
-                data = json.load(json_file)
-        except FileNotFoundError:
+
+        result_path = self._get_results_path()
+        if not result_path:
             raise Exception(error)
+        with open(result_path) as json_file:
+            data = json.load(json_file)
+
         return data, output
 
     def _get_results_path(self) -> str:
-        for file in os.listdir(f"results/{self.r_name}"):
-            return os.path.join(f"results/{self.r_name}", file)
+        # R benchmark name can match object name (`r_name`) or Python name (`.name`)
+        for path in [Path("results", self.r_name), Path("results", self.name)]:
+            for file in path.resolve().glob("*"):
+                return file
 
     def _add_r_tags_info_context(
         self, tags: Dict[str, Any], info: Dict[str, Any], context: Dict[str, Any]
