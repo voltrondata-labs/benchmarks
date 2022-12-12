@@ -1,8 +1,11 @@
+import time
 import itertools
 import logging
 
 import pyarrow
 import pyarrow.dataset as ds
+
+from pyarrow.dataset import Dataset
 
 import conbench.runner
 from benchmarks import _benchmark
@@ -45,12 +48,12 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
     ]
 
     _params = {
-        "selectivity": ("1pc",),  # , "10pc"),
+        "selectivity": ("1pc", "10pc"),
         "format": (
             "parquet",
-            # "arrow",
-            # "ipc",
-            # "feather",
+            "arrow",
+            "ipc",
+            "feather",
             "csv",
         ),
     }
@@ -96,11 +99,22 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         import os
         import uuid
 
+        # Build simple prefix string to facilitate correlating directory names
+        # to test cases.
         pfx = "-".join(c.lower()[:9] for c in case)
-        pfx
         dirpath = os.path.join("/dev/shm", pfx + "-" + str(uuid.uuid4()))
         os.makedirs(dirpath, exist_ok=False)
         return dirpath
+
+    def _get_dataset_for_source(self, source) -> Dataset:
+
+        return pyarrow.dataset.dataset(
+            source.source_paths,
+            schema=pyarrow.dataset.dataset(
+                source.source_paths[0], format=source.format_str
+            ).schema,
+            format=source.format_str,
+        )
 
     def run(self, source, case=None, **kwargs):
 
@@ -108,40 +122,40 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
 
         for source in self.get_sources(source):
 
+            log.info("source %s: download, if required", source.name)
             source.download_source_if_not_exists()
-
             tags = self.get_tags(kwargs, source)
-            format_str = source.format_str
-            schema = ds.dataset(source.source_paths[0], format=format_str).schema
+
+            t0 = time.monotonic()
+            source_ds = self._get_dataset_for_source(source)
+            log.info(
+                "constructed Dataset object for source in %.4f s", time.monotonic() - t0
+            )
 
             for case in cases:
-                (selectivity, serialization_format) = case
-
-                log.info("case %s: create directory", case)
-                dirpath = self._create_tmpdir_in_ramdisk(case)
-                log.info("directory created, path: %s", dirpath)
-
-                dataset = ds.dataset(
-                    source.source_paths, schema=schema, format=format_str
+                yield self.benchmark(
+                    f=self._get_benchmark_function(case, source.name, source_ds),
+                    extra_tags=tags,
+                    options=kwargs,
+                    case=case,
                 )
 
-                f = self._get_benchmark_function(
-                    dataset, source.name, selectivity, serialization_format, dirpath
-                )
+    def _get_benchmark_function(self, case, source_name: str, source_ds: Dataset):
 
-                yield self.benchmark(f, tags, kwargs, case)
+        (selectivity, serialization_format) = case
 
-    def _get_benchmark_function(
-        self, dataset, source, selectivity, serialization_format, dirpath
-    ):
-        # TODO: filter this.
-        #
-        # e.g., filter=self.filters[source][selectivity]
-        #
-        # Maybe create a scanner instance and provide that as `data` argument?
-        # `data` is documented with "The data to write. This can be a Dataset
-        # instance or in-memory Arrow data. If an iterable is given, the schema
-        # must also be given."
+        log.info("case %s: create directory", case)
+        dirpath = self._create_tmpdir_in_ramdisk(case)
+        log.info("directory created, path: %s", dirpath)
+
+        # Use a Scanner() object to transparently filter the source dataset
+        # upon consumption.
+        t0 = time.monotonic()
+        filtered_ds = pyarrow.dataset.Scanner.from_dataset(
+            source_ds, filter=self.filters[source_name][selectivity]
+        )
+        log.info("constructed Scanner object for case in %.4f s", time.monotonic() - t0)
+
         return lambda: pyarrow.dataset.write_dataset(
-            data=dataset, format=serialization_format, base_dir=dirpath
+            data=filtered_ds, format=serialization_format, base_dir=dirpath
         )
