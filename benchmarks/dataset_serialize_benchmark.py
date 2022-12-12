@@ -63,7 +63,7 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         itertools.product(*[v for v in _params.values()])
     )
 
-    print(f"valid_cases: {valid_cases}")
+    # print(f"valid_cases: {valid_cases}")
 
     filters = {
         "nyctaxi_multi_parquet_s3": {
