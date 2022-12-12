@@ -1,9 +1,8 @@
 import functools
+import logging
 import os
 import pathlib
 from enum import Enum
-
-import logging
 
 import pyarrow
 import pyarrow.csv
