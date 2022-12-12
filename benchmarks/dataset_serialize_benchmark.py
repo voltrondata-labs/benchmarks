@@ -4,11 +4,11 @@ import os
 import time
 import uuid
 
+import conbench.runner
 import pyarrow
 import pyarrow.dataset as ds
 from pyarrow.dataset import Dataset
 
-import conbench.runner
 from benchmarks import _benchmark
 
 log = logging.getLogger(__name__)
