@@ -1,6 +1,8 @@
 import itertools
 import logging
+import os
 import time
+import uuid
 
 import pyarrow
 import pyarrow.dataset as ds
@@ -95,9 +97,6 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
     }
 
     def _create_tmpdir_in_ramdisk(self, case: tuple):
-        import os
-        import uuid
-
         # Build simple prefix string to facilitate correlating directory names
         # to test cases.
         pfx = "-".join(c.lower()[:9] for c in case)
