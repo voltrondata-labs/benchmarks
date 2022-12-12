@@ -1,10 +1,9 @@
-import time
 import itertools
 import logging
+import time
 
 import pyarrow
 import pyarrow.dataset as ds
-
 from pyarrow.dataset import Dataset
 
 import conbench.runner
