@@ -23,7 +23,8 @@ def _now_formatted() -> str:
 
 def github_info(arrow_info: Dict[str, Any]) -> Dict[str, Any]:
     pr_number_env = os.getenv("BENCHMARKABLE_PR_NUMBER", "")
-    pr_number = int(pr_number_env) if pr_number_env else None
+    is_pr = os.getenv("RUN_REASON", "") == "pull request"
+    pr_number = int(pr_number_env) if pr_number_env and is_pr else None
 
     return {
         "repository": "https://github.com/apache/arrow",
