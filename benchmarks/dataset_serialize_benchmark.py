@@ -2,6 +2,7 @@ import itertools
 import logging
 import os
 import shutil
+import subprocess
 import sys
 import time
 import uuid
@@ -13,6 +14,12 @@ import pyarrow.dataset as ds
 from benchmarks import _benchmark
 
 log = logging.getLogger(__name__)
+
+
+# All benchmark scnearios will write below /dev/shm/<SHM_DIR_PREFIX>. That
+# directory tree is removed upon completion (not necessarily in case of error
+# though).
+OUTPUT_DIR_PREFIX = os.path.join("/dev/shm/", "bench-" + str(uuid.uuid4())[:8])
 
 
 @conbench.runner.register_benchmark
@@ -128,10 +135,10 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
     _case_tmpdir_mapping = {}
 
     def _create_tmpdir_in_ramdisk(self, case: tuple):
-        # Build simple prefix string to facilitate correlating directory names
-        # to test cases.
+        # Build simple prefix string for specific test case to facilitate
+        # correlating directory names to test cases.
         pfx = "-".join(c.lower()[:9] for c in case)
-        dirpath = os.path.join("/dev/shm", pfx + "-" + str(uuid.uuid4()))
+        dirpath = os.path.join(OUTPUT_DIR_PREFIX, pfx + "-" + str(uuid.uuid4()))
 
         self._case_tmpdir_mapping[tuple(case)] = dirpath
 
@@ -148,6 +155,19 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
             ).schema,
             format=source.format_str,
         )
+
+    def _report_dirsize_and_wipe(self, dirpath: str):
+        """
+        This module already has a dependency on Linux so we can just as well
+        spawn `du` for correct recursive directory size reporting"""
+
+        ducmd = ["du", "-sh", dirpath]
+        p = subprocess.run(ducmd, capture_output=True)
+        log.info("stdout of %s: %s", ducmd, p.stdout.decode("utf-8").split()[0])
+        if p.returncode != 0:
+            log.info("stderr of %s: %s", ducmd, p.stderr)
+        log.info("removing directory: %s", dirpath)
+        shutil.rmtree(dirpath)
 
     def run(self, source, case=None, **kwargs):
 
@@ -186,9 +206,15 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
                 # Free up memory in the RAM disk (tmpfs), assuming that we're
                 # otherwise getting close to filling it (depending on the
                 # machine this is executed on, a single test might easily
-                # occupy 10 % or more of this tmpfs).
-                log.info("removing directory: %s", dirpath)
-                shutil.rmtree(dirpath)
+                # occupy 10 % or more of this tmpfs). Note that what
+                # accumulated in `dirpath` is the result of potentially
+                # multiple iterations.
+                self._report_dirsize_and_wipe(dirpath)
+
+        # Finally, remove outest directory. Should have no contents by now, but
+        # if an individual benchmark iteration was Ctrl+C'd then this here
+        # might still do useful cleanup.
+        self._report_dirsize_and_wipe(OUTPUT_DIR_PREFIX)
 
     def _get_benchmark_function(
         self, case, source_name: str, source_ds: ds.Dataset, dirpath: str
