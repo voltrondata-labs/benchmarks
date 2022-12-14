@@ -225,4 +225,7 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
                 data=data, format=serialization_format, base_dir=dp
             )
 
+            # The benchmark function returns `None` for now. If we need
+            # deeper inspection into the result maybe iterate on that.
+
         return benchfunc
