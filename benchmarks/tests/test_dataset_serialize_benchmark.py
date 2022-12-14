@@ -1,9 +1,15 @@
 import copy
+import sys
 
 import pytest
 
 from .. import _sources, dataset_serialize_benchmark
 from ..tests import _asserts
+
+
+if not sys.platform.startswith("darwin"):
+    pytest.skip("skipping on MacOS: no /dev/shm", allow_module_level=True)
+
 
 HELP = """
 Usage: conbench dataset-serialize [OPTIONS] SOURCE

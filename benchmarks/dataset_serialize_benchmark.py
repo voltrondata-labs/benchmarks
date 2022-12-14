@@ -2,6 +2,7 @@ import itertools
 import logging
 import os
 import shutil
+import sys
 import time
 import uuid
 
@@ -50,6 +51,16 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
 
         - serialization format
         - amount of the data being written, as set by a filter on the input
+
+    A note about /dev/shm: it's of great value because
+
+    - unprivileges users can write to it
+    - the `base_dir` arg to pyarrow.dataset.write_dataset() requires a path to
+      a directory. That is, one cannot inject a memory-backed Python file
+      object (a strategy that's elsewhere often used to simulate writing to an
+      actual file)
+    - it is not available on MacOS which is why we skip this test
+
     """
 
     name = "dataset-serialize"
@@ -58,7 +69,7 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
 
     sources = [
         "nyctaxi_multi_parquet_s3",
-        # "nyctaxi_multi_ipc_s3",
+        "nyctaxi_multi_ipc_s3",
         # "chi_traffic_2020_Q1",
     ]
 
@@ -139,6 +150,9 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         )
 
     def run(self, source, case=None, **kwargs):
+
+        if not os.path.exists("/dev/shm"):
+            sys.exit("/dev/shm not found but required (not available on Darwin). Exit.")
 
         cases = self.get_cases(case, kwargs)
 
