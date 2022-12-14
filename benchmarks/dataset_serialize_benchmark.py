@@ -16,9 +16,8 @@ from benchmarks import _benchmark
 log = logging.getLogger(__name__)
 
 
-# All benchmark scnearios will write below /dev/shm/<SHM_DIR_PREFIX>. That
-# directory tree is removed upon completion (not necessarily in case of error
-# though).
+# All case permutations write below /dev/shm/<SHM_DIR_PREFIX>. That directory
+# tree is removed upon completion, not always in case of error though.
 OUTPUT_DIR_PREFIX = os.path.join("/dev/shm/", "bench-" + str(uuid.uuid4())[:8])
 
 
@@ -87,7 +86,7 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
     ]
 
     _params = {
-        "selectivity": ("1pc", "10pc"),
+        "selectivity": ("1pc", "10pc", "100pc"),
         "format": (
             "parquet",
             "arrow",
@@ -242,16 +241,6 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         #     filter=self.filters[source_name][selectivity])
 
         def benchfunc():
-            # This is a hack to make each iteration work in a separate
-            # directory (otherwise some write operations would error out saying
-            # that the target directory is not empty). With `benchrun` it will
-            # be easier to cleanly hook into doing resource management before
-            # and after an iteration w/o affecting the timing measurement.
-            # Assume that creating a directory does not significantly add to
-            # the duration of the actual payload function.
-            dp = os.path.join(dirpath, str(uuid.uuid4())[:8])
-            os.makedirs(dp)
-
             # When dimensioning of benchmark parameters and execution
             # environment are not adjusted to each other, tmpfs quickly gets
             # full. In that case writing might fail with
@@ -263,7 +252,16 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
             #   28] No space left on device
 
             pyarrow.dataset.write_dataset(
-                data=data, format=serialization_format, base_dir=dp
+                data=data,
+                format=serialization_format,
+                base_dir=dirpath,
+                # Note(JP): This is important so that if iterations > 1 there
+                # is no error sayingthat the target directory is not empty. I
+                # have confirmed that this does not affect timing on my machine
+                # (as expected, a file system 'overwrite' is as expensive as a
+                # new write). Without this technique we can clean up only after
+                # n iterations, which consumes n times more space on /dev/shm.
+                existing_data_behavior="overwrite_or_ignore",
             )
 
             # The benchmark function returns `None` for now. If we need
