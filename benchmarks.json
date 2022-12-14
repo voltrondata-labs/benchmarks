@@ -68,6 +68,12 @@
     }
   },
   {
+    "command": "dataset-serialize ALL --iterations=3 --all=true --drop-caches=true",
+    "flags": {
+      "language": "Python"
+    }
+  },
+  {
     "command": "file-read ALL --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "Python"
