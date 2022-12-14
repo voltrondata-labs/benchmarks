@@ -8,7 +8,6 @@ import uuid
 import conbench.runner
 import pyarrow
 import pyarrow.dataset as ds
-from pyarrow.dataset import Dataset
 
 from benchmarks import _benchmark
 
@@ -26,23 +25,25 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
     of things, the data is read fully into memory before starting (and timing)
     the benchmark function. That is (believed to be) achieved with:
 
-        data = source_dataset.to_table(filter=somefilter)
+        data = source_dataset.to_table(filter=somefilter, ...)
 
     After data of interest has been read into memory, the following call is
     used for both serialization and writing-to-filesystem in one go:
 
-        pyarrow.dataset.write_dataset(format=someformat)
+        pyarrow.dataset.write_dataset(format=someformat, ...)
 
-    That operation is timed (and the duraiton is the major output of this
+    That operation is timed (and the duration is the major output of this
     benchmark).
 
     The data is written to `/dev/shm` (available on all Linux systems). This is
     a file system backed by RAM (tmpfs). The assumption is that writing to
-    tmpfs is fast, and most importantly _stable_.
+    tmpfs is fast (so fast that benchmark duration is significantly affected by
+    the serialization itself), and stable (so that its performance is ~constant
+    across runs on the same machine).
 
     This benchmark does not resolve how much time goes into the CPU work for
     serialization vs. the system calls for writing to tmpfs (that would be a
-    different question to answer, and interesting one, that is maybe more of a
+    different question to answer, an interesting one, that is maybe more of a
     task for profiling).
 
     There are two dimensions that are varied:
@@ -63,8 +64,8 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
 
     sources_test = [
         "nyctaxi_multi_parquet_s3_sample",
-        # "nyctaxi_multi_ipc_s3_sample",
-        # "chi_traffic_sample",
+        "nyctaxi_multi_ipc_s3_sample",
+        "chi_traffic_sample",
     ]
 
     _params = {
@@ -126,7 +127,7 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         os.makedirs(dirpath, exist_ok=False)
         return dirpath
 
-    def _get_dataset_for_source(self, source) -> Dataset:
+    def _get_dataset_for_source(self, source) -> ds.Dataset:
         """Helper to construct a Dataset object."""
 
         return pyarrow.dataset.dataset(
@@ -176,7 +177,7 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
                 shutil.rmtree(dirpath)
 
     def _get_benchmark_function(
-        self, case, source_name: str, source_ds: Dataset, dirpath: str
+        self, case, source_name: str, source_ds: ds.Dataset, dirpath: str
     ):
 
         (selectivity, serialization_format) = case
