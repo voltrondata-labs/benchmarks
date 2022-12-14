@@ -18,6 +18,12 @@ log = logging.getLogger(__name__)
 class DatasetSerializeBenchmark(_benchmark.Benchmark):
     """Serialize dataset to various file formats (parquet, arrow, ...).
 
+    What is the timing in this benchmark really dominated by?
+
+    As far as I understand, it reads, filters, serializes, and write.
+
+    If it's kind of equally affected by READING I/O performance
+
     The idea is that this transcoding happens in a streaming like fashion where
     `ds.dataset()` yields a consumable abstraction over a disk-backed data set.
 
@@ -96,11 +102,16 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         },
     }
 
+    _case_tmpdir_mapping = {}
+
     def _create_tmpdir_in_ramdisk(self, case: tuple):
         # Build simple prefix string to facilitate correlating directory names
         # to test cases.
         pfx = "-".join(c.lower()[:9] for c in case)
         dirpath = os.path.join("/dev/shm", pfx + "-" + str(uuid.uuid4()))
+
+        self._case_tmpdir_mapping[tuple(case)] = dirpath
+
         os.makedirs(dirpath, exist_ok=False)
         return dirpath
 
@@ -131,29 +142,85 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
             )
 
             for case in cases:
+
+                log.info("case %s: create directory", case)
+                dirpath = self._create_tmpdir_in_ramdisk(case)
+                log.info("directory created, path: %s", dirpath)
+
                 yield self.benchmark(
-                    f=self._get_benchmark_function(case, source.name, source_ds),
+                    f=self._get_benchmark_function(
+                        case, source.name, source_ds, dirpath
+                    ),
                     extra_tags=tags,
                     options=kwargs,
                     case=case,
                 )
 
-    def _get_benchmark_function(self, case, source_name: str, source_ds: Dataset):
+                # Free up memory in the RAM disk (tmpfs), assuming that we're
+                # otherwise getting close to filling it (depending on the
+                # machine this is executed on, a single test might easily
+                # occupy 10 % or more of this tmpfs).
+                import shutil
+
+                log.info("removing directory: %s", dirpath)
+                shutil.rmtree(dirpath)
+
+    def _get_benchmark_function(
+        self, case, source_name: str, source_ds: Dataset, dirpath: str
+    ):
 
         (selectivity, serialization_format) = case
 
-        log.info("case %s: create directory", case)
-        dirpath = self._create_tmpdir_in_ramdisk(case)
-        log.info("directory created, path: %s", dirpath)
-
-        # Use a Scanner() object to transparently filter the source dataset
-        # upon consumption.
+        # Option A: read-from-disk -> deserialize -> filter -> into memory
+        # before timing serialize -> write-to-tmpfs
         t0 = time.monotonic()
-        filtered_ds = pyarrow.dataset.Scanner.from_dataset(
-            source_ds, filter=self.filters[source_name][selectivity]
-        )
-        log.info("constructed Scanner object for case in %.4f s", time.monotonic() - t0)
+        data = source_ds.to_table(filter=self.filters[source_name][selectivity])
+        log.info("read source dataset into memory in %.4f s", time.monotonic() - t0)
 
-        return lambda: pyarrow.dataset.write_dataset(
-            data=filtered_ds, format=serialization_format, base_dir=dirpath
-        )
+        # Option B: use a Scanner() object to transparently filter the source
+        # dataset upon consumption, in which case what's timed is
+        # read-from-disk -> deserialize -> filter -> serialize ->
+        # write-to-tmpfs Note(JP): I have confirmed that for the data used in
+        # this benchmark this option is dominated by read-from-disk to the
+        # extent that no useful signal is generated for the write phase.
+        # t0 = time.monotonic()
+        # data = pyarrow.dataset.Scanner.from_dataset(
+        #     source_ds, filter=self.filters[source_name][selectivity]
+        # )
+        # log.info("constructed Scanner object for case in %.4f s", time.monotonic() - t0)
+
+        def benchfunc():
+            # This is a hack to make each iteration work in a separate
+            # directory. With `benchrun` it's easier to cleanly hook into doing
+            # resource management before and after an iteration w/o affecting
+            # the timing measurement. Assume that creating a directory does not
+            # significantly add to the duration of the actual payload function.
+            dp = os.path.join(dirpath, str(uuid.uuid4())[:8])
+            os.makedirs(dp)
+
+            # Writing might fail with
+            #   File "pyarrow/_dataset.pyx", line 2859, in pyarrow._dataset._filesystemdataset_write
+            #   File "pyarrow/error.pxi", line 113, in pyarrow.lib.check_status
+            #   OSError: [Errno 28] Error writing bytes to file. Detail: [errno 28] No space left on device
+
+            pyarrow.dataset.write_dataset(
+                data=data, format=serialization_format, base_dir=dp
+            )
+
+        return benchfunc
+
+        # return lambda: pyarrow.dataset.write_dataset(
+        #     data=table, format=serialization_format, base_dir=dirpath
+        # )
+
+        # # Use a Scanner() object to transparently filter the source dataset
+        # # upon consumption.
+        # t0 = time.monotonic()
+        # filtered_ds = pyarrow.dataset.Scanner.from_dataset(
+        #     source_ds, filter=self.filters[source_name][selectivity]
+        # )
+        # log.info("constructed Scanner object for case in %.4f s", time.monotonic() - t0)
+
+        # return lambda: pyarrow.dataset.write_dataset(
+        #     data=filtered_ds, format=serialization_format, base_dir=dirpath
+        # )
