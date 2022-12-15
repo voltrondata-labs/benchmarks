@@ -439,7 +439,6 @@ class Source:
         return self._table
 
     def _get_object_url(self, idx=0):
-        log.info("_get_object_url for idx %s", idx)
         if self.paths:
             s3_url = pathlib.Path(self.paths[idx])
             log.info("s3_url: %s", s3_url)
