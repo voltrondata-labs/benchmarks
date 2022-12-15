@@ -90,7 +90,9 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         "format": (
             "parquet",
             "arrow",
-            "ipc",
+            # Writing ORC? Is this supposed to work?
+            # So far, it segfaults: https://github.com/apache/arrow/issues/14968.
+            # "orc",
             "feather",
             "csv",
         ),
@@ -100,34 +102,23 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         itertools.product(*[v for v in _params.values()])
     )
 
-    filters = {
+    # Define number of rows to pick from relevant data sets to veeery roughly
+    # meet the 1 %, 10 % cases.
+    _get_n_rows = {
+        # rows in dataset: 56154689
         "nyctaxi_multi_parquet_s3": {
-            "1pc": ds.field("pickup_longitude") < -74.013451,  # 561384
-            "10pc": ds.field("pickup_longitude") < -74.002055,  # 5615432
-            "100pc": None,  # 56154689
+            "1pc": 561000,
+            "10pc": 5610000,
         },
+        # rows in dataset: 59616487
         "nyctaxi_multi_ipc_s3": {
-            "1pc": ds.field("pickup_longitude") < -74.014053,  # 596165
-            "10pc": ds.field("pickup_longitude") < -74.002708,  # 5962204
-            "100pc": None,  # 59616487
+            "1pc": 596000,
+            "10pc": 5960000,
         },
+        # rows in dataset: 13038291
         "chi_traffic_2020_Q1": {
-            "1pc": ds.field("END_LONGITUDE") < -87.807262,  # 124530
-            "10pc": ds.field("END_LONGITUDE") < -87.7624,  # 1307565
-            "100pc": None,  # 13038291
-        },
-        **dict.fromkeys(
-            ["nyctaxi_multi_parquet_s3_sample", "nyctaxi_multi_ipc_s3_sample"],
-            {
-                "1pc": ds.field("pickup_longitude") < -74.0124,  # 20
-                "10pc": ds.field("pickup_longitude") < -74.00172,  # 200
-                "100pc": None,  # 2000
-            },
-        ),
-        "chi_traffic_sample": {
-            "1pc": ds.field("END_LONGITUDE") < -87.80726,  # 10
-            "10pc": ds.field("END_LONGITUDE") < -87.76148,  # 100
-            "100pc": None,  # 1000
+            "1pc": 130000,
+            "10pc": 1300000,
         },
     }
 
@@ -224,7 +215,26 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         # Option A: read-from-disk -> deserialize -> filter -> into memory
         # before timing serialize -> write-to-tmpfs
         t0 = time.monotonic()
-        data = source_ds.to_table(filter=self.filters[source_name][selectivity])
+
+        n_rows_only = None
+        try:
+            n_rows_only = self._get_n_rows[source_name][selectivity]
+        except KeyError:
+            pass
+
+        if n_rows_only:
+            # Pragmatic method for reading only a subset of the data set. A
+            # different method for sub selection of rows could use a
+            # scanner/filter as in `source_ds.to_table(filter=...)`
+            #
+            # Note that `head()` returns a `Table` object, i.e. loads data
+            # into memory.
+            log.info("read %s rows of dataset %s into memory", n_rows_only, source_name)
+            data = source_ds.head(n_rows_only)
+        else:
+            log.info("read complete dataset %s into memory", source_name)
+            data = source_ds.to_table()
+
         log.info("read source dataset into memory in %.4f s", time.monotonic() - t0)
 
         # Option B (thrown away, but kept for posterity): use a Scanner()
