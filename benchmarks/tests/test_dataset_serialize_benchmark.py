@@ -6,7 +6,7 @@ import pytest
 from .. import _sources, dataset_serialize_benchmark
 from ..tests import _asserts
 
-if not sys.platform.startswith("darwin"):
+if sys.platform.startswith("darwin"):
     pytest.skip("skipping on MacOS: no /dev/shm", allow_module_level=True)
 
 
@@ -20,21 +20,23 @@ Usage: conbench dataset-serialize [OPTIONS] SOURCE
   Valid benchmark combinations:
   --selectivity=1pc --format=parquet
   --selectivity=1pc --format=arrow
-  --selectivity=1pc --format=ipc
   --selectivity=1pc --format=feather
   --selectivity=1pc --format=csv
   --selectivity=10pc --format=parquet
   --selectivity=10pc --format=arrow
-  --selectivity=10pc --format=ipc
   --selectivity=10pc --format=feather
   --selectivity=10pc --format=csv
+  --selectivity=100pc --format=parquet
+  --selectivity=100pc --format=arrow
+  --selectivity=100pc --format=feather
+  --selectivity=100pc --format=csv
 
   To run all combinations:
   $ conbench dataset-serialize --all=true
 
 Options:
-  --selectivity [10pc|1pc]
-  --format [arrow|csv|feather|ipc|parquet]
+  --selectivity [100pc|10pc|1pc]
+  --format [arrow|csv|feather|parquet]
   --all BOOLEAN                   [default: false]
   --cpu-count INTEGER
   --iterations INTEGER            [default: 1]
