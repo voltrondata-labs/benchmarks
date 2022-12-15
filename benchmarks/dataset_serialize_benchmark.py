@@ -160,9 +160,22 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         shutil.rmtree(dirpath)
 
     def run(self, source, case=None, **kwargs):
+        global OUTPUT_DIR_PREFIX
 
         if not os.path.exists("/dev/shm"):
-            sys.exit("/dev/shm not found but required (not available on Darwin). Exit.")
+            OUTPUT_DIR_PREFIX = os.environ.get("BENCHMARK_OUTPUT_DIR")
+            log.info("output dir from env: %s", OUTPUT_DIR_PREFIX)
+            if not OUTPUT_DIR_PREFIX:
+                sys.exit(
+                    "/dev/shm not found (not available on Darwin). Exit. For "
+                    "conclusive results, this benchmark should write to tmpfs. "
+                    "For local development on e.g. MacOS, you can set the "
+                    "environment variable BENCHMARK_OUTPUT_DIR to point to "
+                    "a directory to write output to."
+                )
+            else:
+                if not os.path.isdir(OUTPUT_DIR_PREFIX):
+                    sys.exit("not a directory: %s", OUTPUT_DIR_PREFIX)
 
         cases = self.get_cases(case, kwargs)
 
