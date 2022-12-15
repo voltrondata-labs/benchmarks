@@ -34,7 +34,10 @@ jobs:
         run: |
           flake8
       - name: Lint (isort)
+        # Note(JP): if --check fails then it's not always obvious why.
+        # Show diff beforehand.
         run: |
+          isort --diff .
           isort --check .
       - name: Install libcurl (for R arrow)
         run: |

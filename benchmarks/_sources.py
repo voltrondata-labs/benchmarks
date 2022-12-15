@@ -1,4 +1,5 @@
 import functools
+import logging
 import os
 import pathlib
 from enum import Enum
@@ -13,6 +14,9 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 local_data_dir = os.path.join(this_dir, "data")
 data_dir = os.getenv("BENCHMARKS_DATA_DIR", local_data_dir)
 temp_dir = os.path.join(data_dir, "temp")
+
+
+log = logging.getLogger(__name__)
 
 
 def _local(name):
@@ -437,6 +441,7 @@ class Source:
     def _get_object_url(self, idx=0):
         if self.paths:
             s3_url = pathlib.Path(self.paths[idx])
+            log.info("s3_url: %s", s3_url)
             return (
                 "https://"
                 + s3_url.parts[0]
@@ -452,11 +457,16 @@ class Source:
         for idx, p in enumerate(self.source_paths):
             path = pathlib.Path(p)
             if not path.exists():
+                log.info("path does not exist: %s", path)
                 path.parent.mkdir(parents=True, exist_ok=True)
-                source = self.store.get("source")
-                if not source:
-                    source = self._get_object_url(idx)
-                r = requests.get(source)
+
+                url = self.store.get("source")
+                if not url:
+                    url = self._get_object_url(idx)
+
+                log.info("HTTP GET %s", url)
+                r = requests.get(url)
+                log.info("write response to disk")
                 open(path, "wb").write(r.content)
 
     def _csv_write(self, table, path, compression):
