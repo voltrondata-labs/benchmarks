@@ -68,7 +68,7 @@
     }
   },
   {
-    "command": "dataset-serialize ALL --iterations=6 --all=true",
+    "command": "dataset-serialize ALL --iterations=6 --all=true --drop-caches=true",
     "flags": {
       "language": "Python"
     }
