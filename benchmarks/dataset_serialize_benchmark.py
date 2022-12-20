@@ -71,6 +71,8 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
 
     name = "dataset-serialize"
 
+    iterations = 6
+
     arguments = ["source"]
 
     sources = [
