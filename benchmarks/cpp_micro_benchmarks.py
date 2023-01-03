@@ -95,15 +95,20 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     adapter = None
 
     def __init__(self):
+        # first so `.conbench` attribute exists
+        super().__init__()
         # populates arrow metadata like compiler flags from pyarrow
         tags, info, context = self._get_tags_info_context(case=None, extra_tags={})
 
         self.adapter = ArcheryAdapter(
             # populates commit and repo based on arrow info rather than current status
-            result_fields_override={"github": self.github_info},
+            result_fields_override={
+                "github": self.github_info,
+                # this version grabs hostname from the `.conbench` file
+                "machine_info": self.conbench.machine_info,
+            },
             result_fields_append={"tags": tags, "info": info, "context": context},
         )
-        super().__init__()
 
     def run(self, **kwargs):
         run_reason = kwargs.get("run_reason")
