@@ -182,7 +182,6 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         cases = self.get_cases(case, kwargs)
 
         for source in self.get_sources(source):
-
             log.info("source %s: download, if required", source.name)
             source.download_source_if_not_exists()
             tags = self.get_tags(kwargs, source)
@@ -194,7 +193,6 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
             )
 
             for case in cases:
-
                 log.info("case %s: create directory", case)
                 dirpath = self._create_tmpdir_in_ramdisk(case)
                 log.info("directory created, path: %s", dirpath)
@@ -224,7 +222,6 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
     def _get_benchmark_function(
         self, case, source_name: str, source_ds: ds.Dataset, dirpath: str
     ):
-
         (selectivity, serialization_format) = case
 
         # Option A: read-from-disk -> deserialize -> filter -> into memory

@@ -46,7 +46,7 @@ class DatasetReadBenchmark(_benchmark.Benchmark):
                     break  # no need to run the null legacy case twice
 
     def _get_benchmark_function(self, dataset):
-        return lambda: dataset.to_table(use_async=True)
+        return lambda: dataset.to_table()
 
     def _get_schema(self, source):
         # TODO: FileSystemDataset.from_paths() can't currently discover
