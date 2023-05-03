@@ -18,6 +18,7 @@ class GetFileInfoBenchmark(Benchmark):
         ["s3://ursa-qa/wide-partition"],
         ["s3://ursa-qa/flat-partition"],
     )
+    flags = {"cloud": True}
 
     def run(self, case=None, **kwargs):
         for case in self.get_cases(case, kwargs):
