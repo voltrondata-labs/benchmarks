@@ -16,7 +16,7 @@ class GetFileInfoBenchmark(Benchmark):
     valid_cases = (
         ["dataset_uri"],
         ["s3://ursa-qa/wide-partition"],
-        ["s3://ursa-qa/flat-partition"]
+        ["s3://ursa-qa/flat-partition"],
     )
 
     def run(self, case=None, **kwargs):
