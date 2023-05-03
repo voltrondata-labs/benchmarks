@@ -116,7 +116,7 @@
     }
   },
   {
-    "command": "recursive-get-file-info --iterations=3 --all=true",
+    "command": "recursive-get-file-info --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "Python"
     }
