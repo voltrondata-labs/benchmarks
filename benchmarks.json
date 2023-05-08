@@ -116,6 +116,13 @@
     }
   },
   {
+    "command": "recursive-get-file-info --iterations=3 --all=true --drop-caches=true",
+    "flags": {
+      "cloud": true,
+      "language": "Python"
+    }
+  },
+  {
     "command": "tpch --iterations=3 --all=true --drop-caches=true",
     "flags": {
       "language": "R"
