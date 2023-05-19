@@ -11,178 +11,90 @@ Usage: conbench tpch [OPTIONS]
   For each benchmark option, the first option value is the default.
 
   Valid benchmark combinations:
-  --query-id=1 --scale-factor=0.01 --format=native
-  --query-id=1 --scale-factor=0.01 --format=parquet
-  --query-id=1 --scale-factor=0.1 --format=native
-  --query-id=1 --scale-factor=0.1 --format=parquet
   --query-id=1 --scale-factor=1 --format=native
   --query-id=1 --scale-factor=1 --format=parquet
   --query-id=1 --scale-factor=10 --format=native
   --query-id=1 --scale-factor=10 --format=parquet
-  --query-id=2 --scale-factor=0.01 --format=native
-  --query-id=2 --scale-factor=0.01 --format=parquet
-  --query-id=2 --scale-factor=0.1 --format=native
-  --query-id=2 --scale-factor=0.1 --format=parquet
   --query-id=2 --scale-factor=1 --format=native
   --query-id=2 --scale-factor=1 --format=parquet
   --query-id=2 --scale-factor=10 --format=native
   --query-id=2 --scale-factor=10 --format=parquet
-  --query-id=3 --scale-factor=0.01 --format=native
-  --query-id=3 --scale-factor=0.01 --format=parquet
-  --query-id=3 --scale-factor=0.1 --format=native
-  --query-id=3 --scale-factor=0.1 --format=parquet
   --query-id=3 --scale-factor=1 --format=native
   --query-id=3 --scale-factor=1 --format=parquet
   --query-id=3 --scale-factor=10 --format=native
   --query-id=3 --scale-factor=10 --format=parquet
-  --query-id=4 --scale-factor=0.01 --format=native
-  --query-id=4 --scale-factor=0.01 --format=parquet
-  --query-id=4 --scale-factor=0.1 --format=native
-  --query-id=4 --scale-factor=0.1 --format=parquet
   --query-id=4 --scale-factor=1 --format=native
   --query-id=4 --scale-factor=1 --format=parquet
   --query-id=4 --scale-factor=10 --format=native
   --query-id=4 --scale-factor=10 --format=parquet
-  --query-id=5 --scale-factor=0.01 --format=native
-  --query-id=5 --scale-factor=0.01 --format=parquet
-  --query-id=5 --scale-factor=0.1 --format=native
-  --query-id=5 --scale-factor=0.1 --format=parquet
   --query-id=5 --scale-factor=1 --format=native
   --query-id=5 --scale-factor=1 --format=parquet
   --query-id=5 --scale-factor=10 --format=native
   --query-id=5 --scale-factor=10 --format=parquet
-  --query-id=6 --scale-factor=0.01 --format=native
-  --query-id=6 --scale-factor=0.01 --format=parquet
-  --query-id=6 --scale-factor=0.1 --format=native
-  --query-id=6 --scale-factor=0.1 --format=parquet
   --query-id=6 --scale-factor=1 --format=native
   --query-id=6 --scale-factor=1 --format=parquet
   --query-id=6 --scale-factor=10 --format=native
   --query-id=6 --scale-factor=10 --format=parquet
-  --query-id=7 --scale-factor=0.01 --format=native
-  --query-id=7 --scale-factor=0.01 --format=parquet
-  --query-id=7 --scale-factor=0.1 --format=native
-  --query-id=7 --scale-factor=0.1 --format=parquet
   --query-id=7 --scale-factor=1 --format=native
   --query-id=7 --scale-factor=1 --format=parquet
   --query-id=7 --scale-factor=10 --format=native
   --query-id=7 --scale-factor=10 --format=parquet
-  --query-id=8 --scale-factor=0.01 --format=native
-  --query-id=8 --scale-factor=0.01 --format=parquet
-  --query-id=8 --scale-factor=0.1 --format=native
-  --query-id=8 --scale-factor=0.1 --format=parquet
   --query-id=8 --scale-factor=1 --format=native
   --query-id=8 --scale-factor=1 --format=parquet
   --query-id=8 --scale-factor=10 --format=native
   --query-id=8 --scale-factor=10 --format=parquet
-  --query-id=9 --scale-factor=0.01 --format=native
-  --query-id=9 --scale-factor=0.01 --format=parquet
-  --query-id=9 --scale-factor=0.1 --format=native
-  --query-id=9 --scale-factor=0.1 --format=parquet
   --query-id=9 --scale-factor=1 --format=native
   --query-id=9 --scale-factor=1 --format=parquet
   --query-id=9 --scale-factor=10 --format=native
   --query-id=9 --scale-factor=10 --format=parquet
-  --query-id=10 --scale-factor=0.01 --format=native
-  --query-id=10 --scale-factor=0.01 --format=parquet
-  --query-id=10 --scale-factor=0.1 --format=native
-  --query-id=10 --scale-factor=0.1 --format=parquet
   --query-id=10 --scale-factor=1 --format=native
   --query-id=10 --scale-factor=1 --format=parquet
   --query-id=10 --scale-factor=10 --format=native
   --query-id=10 --scale-factor=10 --format=parquet
-  --query-id=11 --scale-factor=0.01 --format=native
-  --query-id=11 --scale-factor=0.01 --format=parquet
-  --query-id=11 --scale-factor=0.1 --format=native
-  --query-id=11 --scale-factor=0.1 --format=parquet
   --query-id=11 --scale-factor=1 --format=native
   --query-id=11 --scale-factor=1 --format=parquet
   --query-id=11 --scale-factor=10 --format=native
   --query-id=11 --scale-factor=10 --format=parquet
-  --query-id=12 --scale-factor=0.01 --format=native
-  --query-id=12 --scale-factor=0.01 --format=parquet
-  --query-id=12 --scale-factor=0.1 --format=native
-  --query-id=12 --scale-factor=0.1 --format=parquet
   --query-id=12 --scale-factor=1 --format=native
   --query-id=12 --scale-factor=1 --format=parquet
   --query-id=12 --scale-factor=10 --format=native
   --query-id=12 --scale-factor=10 --format=parquet
-  --query-id=13 --scale-factor=0.01 --format=native
-  --query-id=13 --scale-factor=0.01 --format=parquet
-  --query-id=13 --scale-factor=0.1 --format=native
-  --query-id=13 --scale-factor=0.1 --format=parquet
   --query-id=13 --scale-factor=1 --format=native
   --query-id=13 --scale-factor=1 --format=parquet
   --query-id=13 --scale-factor=10 --format=native
   --query-id=13 --scale-factor=10 --format=parquet
-  --query-id=14 --scale-factor=0.01 --format=native
-  --query-id=14 --scale-factor=0.01 --format=parquet
-  --query-id=14 --scale-factor=0.1 --format=native
-  --query-id=14 --scale-factor=0.1 --format=parquet
   --query-id=14 --scale-factor=1 --format=native
   --query-id=14 --scale-factor=1 --format=parquet
   --query-id=14 --scale-factor=10 --format=native
   --query-id=14 --scale-factor=10 --format=parquet
-  --query-id=15 --scale-factor=0.01 --format=native
-  --query-id=15 --scale-factor=0.01 --format=parquet
-  --query-id=15 --scale-factor=0.1 --format=native
-  --query-id=15 --scale-factor=0.1 --format=parquet
   --query-id=15 --scale-factor=1 --format=native
   --query-id=15 --scale-factor=1 --format=parquet
   --query-id=15 --scale-factor=10 --format=native
   --query-id=15 --scale-factor=10 --format=parquet
-  --query-id=16 --scale-factor=0.01 --format=native
-  --query-id=16 --scale-factor=0.01 --format=parquet
-  --query-id=16 --scale-factor=0.1 --format=native
-  --query-id=16 --scale-factor=0.1 --format=parquet
   --query-id=16 --scale-factor=1 --format=native
   --query-id=16 --scale-factor=1 --format=parquet
   --query-id=16 --scale-factor=10 --format=native
   --query-id=16 --scale-factor=10 --format=parquet
-  --query-id=17 --scale-factor=0.01 --format=native
-  --query-id=17 --scale-factor=0.01 --format=parquet
-  --query-id=17 --scale-factor=0.1 --format=native
-  --query-id=17 --scale-factor=0.1 --format=parquet
   --query-id=17 --scale-factor=1 --format=native
   --query-id=17 --scale-factor=1 --format=parquet
   --query-id=17 --scale-factor=10 --format=native
   --query-id=17 --scale-factor=10 --format=parquet
-  --query-id=18 --scale-factor=0.01 --format=native
-  --query-id=18 --scale-factor=0.01 --format=parquet
-  --query-id=18 --scale-factor=0.1 --format=native
-  --query-id=18 --scale-factor=0.1 --format=parquet
   --query-id=18 --scale-factor=1 --format=native
   --query-id=18 --scale-factor=1 --format=parquet
   --query-id=18 --scale-factor=10 --format=native
   --query-id=18 --scale-factor=10 --format=parquet
-  --query-id=19 --scale-factor=0.01 --format=native
-  --query-id=19 --scale-factor=0.01 --format=parquet
-  --query-id=19 --scale-factor=0.1 --format=native
-  --query-id=19 --scale-factor=0.1 --format=parquet
   --query-id=19 --scale-factor=1 --format=native
   --query-id=19 --scale-factor=1 --format=parquet
   --query-id=19 --scale-factor=10 --format=native
   --query-id=19 --scale-factor=10 --format=parquet
-  --query-id=20 --scale-factor=0.01 --format=native
-  --query-id=20 --scale-factor=0.01 --format=parquet
-  --query-id=20 --scale-factor=0.1 --format=native
-  --query-id=20 --scale-factor=0.1 --format=parquet
   --query-id=20 --scale-factor=1 --format=native
   --query-id=20 --scale-factor=1 --format=parquet
   --query-id=20 --scale-factor=10 --format=native
   --query-id=20 --scale-factor=10 --format=parquet
-  --query-id=21 --scale-factor=0.01 --format=native
-  --query-id=21 --scale-factor=0.01 --format=parquet
-  --query-id=21 --scale-factor=0.1 --format=native
-  --query-id=21 --scale-factor=0.1 --format=parquet
   --query-id=21 --scale-factor=1 --format=native
   --query-id=21 --scale-factor=1 --format=parquet
   --query-id=21 --scale-factor=10 --format=native
   --query-id=21 --scale-factor=10 --format=parquet
-  --query-id=22 --scale-factor=0.01 --format=native
-  --query-id=22 --scale-factor=0.01 --format=parquet
-  --query-id=22 --scale-factor=0.1 --format=native
-  --query-id=22 --scale-factor=0.1 --format=parquet
   --query-id=22 --scale-factor=1 --format=native
   --query-id=22 --scale-factor=1 --format=parquet
   --query-id=22 --scale-factor=10 --format=native
@@ -193,7 +105,7 @@ Usage: conbench tpch [OPTIONS]
 
 Options:
   --query-id [1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22]
-  --scale-factor [0.01|0.1|1|10]
+  --scale-factor [1|10]
   --format [native|parquet]
   --all BOOLEAN                   [default: false]
   --iterations INTEGER            [default: 1]
@@ -218,21 +130,21 @@ def assert_benchmark(result, name, language="Python"):
         "engine": "arrow",
         "memory_map": False,
         "query_id": "TPCH-01",
-        "scale_factor": 0.01,
+        "scale_factor": 1,
         "format": "native",
     }
     if language == "R":
         expected["language"] = "R"
     assert munged["tags"] == expected
     assert result["run_id"] == "some-run-id"
-    assert result["batch_id"] == "some-run-id-0.01n"
+    assert result["batch_id"] == "some-run-id-1n"
     _asserts.assert_info_and_context(munged, language=language)
 
 
 def test_benchmark_r():
     benchmark = tpch_benchmark.TpchBenchmark()
     run_id = "some-run-id"
-    [(result, output)] = benchmark.run(iterations=1, run_id=run_id, scale_factor=0.01)
+    [(result, output)] = benchmark.run(iterations=1, run_id=run_id, scale_factor=1)
     assert_benchmark(result, benchmark.name, language="R")
     assert _asserts.R_CLI in str(output)
 
