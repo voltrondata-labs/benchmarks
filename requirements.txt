@@ -1,4 +1,5 @@
 click
 pandas
 pyarrow
-benchadapt@git+https://github.com/conbench/conbench.git@main#subdirectory=benchadapt/python
+benchadapt@git+https://github.com/conbench/conbench.git@81a0272cc2#subdirectory=benchadapt/python
+benchclients@git+https://github.com/conbench/conbench.git@81a0272cc2#subdirectory=benchclients/python
