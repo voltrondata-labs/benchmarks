@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import conbench.runner
 import pyarrow
+from benchclients import ConbenchClient
 
 from benchmarks import _sources
 
@@ -52,12 +53,28 @@ def arrow_info() -> Dict[str, Any]:
     }
 
 
+class ConbenchCommunicator(conbench.runner.Conbench):
+    def __init__(self):
+        super().__init__()
+
+        # Put login information into environment variables so the new client can access it
+        os.environ["CONBENCH_URL"] = self.config.login_url.split("/api/login")[0]
+        os.environ["CONBENCH_EMAIL"] = self.config.credentials["email"]
+        os.environ["CONBENCH_PASSWORD"] = self.config.credentials["password"]
+
+        self._conbench_client = ConbenchClient()
+
+    def publish(self, benchmark: dict) -> None:
+        self._conbench_client.post("/api/benchmarks", benchmark)
+
+
 class Benchmark(conbench.runner.Benchmark):
     arguments = []
     options = {"cpu_count": {"type": int}}
 
     def __init__(self):
         super().__init__()
+        self.conbench = ConbenchCommunicator()
 
     @functools.cached_property
     def arrow_info(self) -> Dict[str, Any]:
