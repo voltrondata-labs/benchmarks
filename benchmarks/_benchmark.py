@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import conbench.runner
 import pyarrow
+from benchclients import ConbenchClient
 
 from benchmarks import _sources
 
@@ -52,12 +53,29 @@ def arrow_info() -> Dict[str, Any]:
     }
 
 
+class ConbenchCommunicator(conbench.runner.Conbench):
+    """Exactly the same as the legacy "Conbench" communication object, with the
+    publish() method overridden to use the new retrying client.
+    """
+
+    def publish(self, benchmark: dict) -> None:
+        # Put login information into environment variables so the new client can access it
+        os.environ["CONBENCH_URL"] = self.config.login_url.split("/api/login")[0]
+        os.environ["CONBENCH_EMAIL"] = self.config.credentials["email"]
+        os.environ["CONBENCH_PASSWORD"] = self.config.credentials["password"]
+
+        ConbenchClient().post("/api/benchmarks", benchmark)
+
+
 class Benchmark(conbench.runner.Benchmark):
     arguments = []
     options = {"cpu_count": {"type": int}}
 
     def __init__(self):
         super().__init__()
+        # Override the "conbench" object that was set during super().__init__()
+        # so that we can use the new retrying client.
+        self.conbench = ConbenchCommunicator()
 
     @functools.cached_property
     def arrow_info(self) -> Dict[str, Any]:
