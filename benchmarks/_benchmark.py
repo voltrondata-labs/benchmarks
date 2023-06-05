@@ -58,13 +58,29 @@ class ConbenchCommunicator(conbench.runner.Conbench):
     publish() method overridden to use the new retrying client.
     """
 
-    def publish(self, benchmark: dict) -> None:
-        # Put login information into environment variables so the new client can access it
+    # Upon first initialization, cache the new retrying client here so we don't have to
+    # login over and over.
+    _conbench_client: Optional[ConbenchClient] = None
+
+    @property
+    def conbench_client(self) -> ConbenchClient:
+        """Set up the new retrying ConbenchClient. And attempt to login.
+
+        (The new client needs login information in environment variables.)
+        """
+        if self._conbench_client:
+            return self._conbench_client
+
         os.environ["CONBENCH_URL"] = self.config.login_url.split("/api/login")[0]
         os.environ["CONBENCH_EMAIL"] = self.config.credentials["email"]
         os.environ["CONBENCH_PASSWORD"] = self.config.credentials["password"]
 
-        ConbenchClient().post("/api/benchmarks", benchmark)
+        # Login happens here.
+        self._conbench_client = ConbenchClient()
+        return self._conbench_client
+
+    def publish(self, benchmark: dict) -> None:
+        self.conbench_client.post("/api/benchmark-results", benchmark)
 
 
 class Benchmark(conbench.runner.Benchmark):
