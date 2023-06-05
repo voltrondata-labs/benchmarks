@@ -54,8 +54,11 @@ def arrow_info() -> Dict[str, Any]:
 
 
 class ConbenchCommunicator(conbench.runner.Conbench):
+    """Exactly the same as the legacy "Conbench" communication object, with the
+    publish() method overridden to use the new retrying client.
+    """
+
     def publish(self, benchmark: dict) -> None:
-        """Publish benchmark results to Conbench using the new retrying client."""
         # Put login information into environment variables so the new client can access it
         os.environ["CONBENCH_URL"] = self.config.login_url.split("/api/login")[0]
         os.environ["CONBENCH_EMAIL"] = self.config.credentials["email"]
@@ -70,6 +73,8 @@ class Benchmark(conbench.runner.Benchmark):
 
     def __init__(self):
         super().__init__()
+        # Override the "conbench" object that was set during super().__init__()
+        # so that we can use the new retrying client.
         self.conbench = ConbenchCommunicator()
 
     @functools.cached_property
