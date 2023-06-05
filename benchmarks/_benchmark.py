@@ -54,18 +54,14 @@ def arrow_info() -> Dict[str, Any]:
 
 
 class ConbenchCommunicator(conbench.runner.Conbench):
-    def __init__(self):
-        super().__init__()
-
+    def publish(self, benchmark: dict) -> None:
+        """Publish benchmark results to Conbench using the new retrying client."""
         # Put login information into environment variables so the new client can access it
         os.environ["CONBENCH_URL"] = self.config.login_url.split("/api/login")[0]
         os.environ["CONBENCH_EMAIL"] = self.config.credentials["email"]
         os.environ["CONBENCH_PASSWORD"] = self.config.credentials["password"]
 
-        self._conbench_client = ConbenchClient()
-
-    def publish(self, benchmark: dict) -> None:
-        self._conbench_client.post("/api/benchmarks", benchmark)
+        ConbenchClient().post("/api/benchmarks", benchmark)
 
 
 class Benchmark(conbench.runner.Benchmark):
