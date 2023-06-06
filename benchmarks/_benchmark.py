@@ -80,7 +80,7 @@ class ConbenchCommunicator(conbench.runner.Conbench):
         return self._conbench_client
 
     def publish(self, benchmark: dict) -> None:
-        self.conbench_client.post("/api/benchmark-results", benchmark)
+        self.conbench_client.post("/benchmark-results", benchmark)
 
 
 class Benchmark(conbench.runner.Benchmark):
