@@ -71,16 +71,12 @@ class ConbenchCommunicator(conbench.runner.Conbench):
         if self._conbench_client:
             return self._conbench_client
 
-        os.environ["CONBENCH_URL"] = self.config.login_url.split("/api/login")[0]
-        os.environ["CONBENCH_EMAIL"] = self.config.credentials["email"]
-        os.environ["CONBENCH_PASSWORD"] = self.config.credentials["password"]
-
         # Login happens here.
         self._conbench_client = ConbenchClient()
         return self._conbench_client
 
     def publish(self, benchmark: dict) -> None:
-        self.conbench_client.post("/benchmark-results", benchmark)
+        self.conbench_client.post("/benchmark-results/", benchmark)
 
 
 class Benchmark(conbench.runner.Benchmark):
