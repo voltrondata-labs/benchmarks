@@ -115,7 +115,7 @@ def assert_simple_benchmark_exception(result):
     munged = copy.deepcopy(result)
     _asserts.assert_info_and_context(munged)
     assert "timestamp" in munged
-    assert munged["error"] == "division by zero"
+    assert munged["error"]["log"] == "division by zero"
     expected_tags = {"name": "example-simple-exception", "cpu_count": None}
     assert munged["tags"] == expected_tags
 
@@ -140,7 +140,7 @@ def assert_r_only_benchmark_exception(result):
     }
     command = "run_one(arrowbench:::foo)"
     assert munged["command"] == f"library(arrowbench); {command}"
-    assert "object 'foo' not found" in munged["error"]
+    assert "object 'foo' not found" in munged["error"]["log"]
 
 
 def assert_r_only_benchmark_exception_no_result(result):
@@ -153,7 +153,7 @@ def assert_r_only_benchmark_exception_no_result(result):
     }
     command = "run_one(arrowbench:::placebo, error_type=1)"
     assert munged["command"] == f"library(arrowbench); {command}"
-    assert "Error in placebo_func" in munged["error"]
+    assert "Error in placebo_func" in munged["error"]["log"]
 
 
 def assert_external_benchmark(result):
@@ -200,7 +200,7 @@ def assert_cases_benchmark_exception(result, case):
     munged = copy.deepcopy(result)
     _asserts.assert_info_and_context(munged)
     assert "timestamp" in munged
-    assert munged["error"] == "division by zero"
+    assert munged["error"]["log"] == "division by zero"
     expected_tags = {
         "name": "example-cases-exception",
         "cpu_count": None,

@@ -134,8 +134,10 @@ class Benchmark(conbench.runner.Benchmark):
         extra_info,
         extra_context,
         options: Dict[str, Any],
+        error: Optional[dict] = None,
         case: Optional[tuple] = None,
         name: Optional[str] = None,
+        optional_benchmark_info: Optional[Dict[str, Any]] = None,
         output=None,
     ):
         if name is None:
@@ -143,18 +145,24 @@ class Benchmark(conbench.runner.Benchmark):
         tags, info, context = self._get_tags_info_context(case, extra_tags)
         info.update(**extra_info)
         context.update(**extra_context)
-        benchmark, output = self.conbench.record(
-            result,
-            name,
+        benchmark_result, output = self.conbench.record(
+            result=result,
+            name=name,
+            error=error,
             tags=tags,
             info=info,
             context=context,
+            optional_benchmark_info=optional_benchmark_info,
             github=self.github_info,
             options=options,
             output=output,
             publish=os.environ.get("DRY_RUN") is None,
         )
-        return benchmark, output
+
+        if error is not None:
+            logging.exception(json.dumps(benchmark_result))
+
+        return benchmark_result, output
 
     def execute_command(self, command, capture_output=True):
         try:
@@ -249,7 +257,7 @@ class Benchmark(conbench.runner.Benchmark):
             "tags": tags,
             "info": info,
             "context": context,
-            "error": str(e),
+            "error": {"log": str(e)},
         }
         if r_command is not None:
             error["command"] = r_command
@@ -277,6 +285,7 @@ class BenchmarkR(Benchmark):
         data = []
         case_version = None
         iterations = options.get("iterations", 1)
+        error = None
 
         for _ in range(iterations):
             if options.get("drop_caches", False):
@@ -284,13 +293,15 @@ class BenchmarkR(Benchmark):
             try:
                 result, output = self._get_benchmark_result(command)
                 if "stats" in result:
-                    # new arrowbench output aligned with conbench
                     data += result["stats"]["data"]
-                else:
-                    # legacy arrowbench output
-                    data.extend([row["real"] for row in result["result"]])
+
                 if not case_version and "case_version" in result["tags"]:
                     case_version = result["tags"]["case_version"]
+
+                # Note: If multiple iterations error, this will only return the error from the last one
+                if "error" in result and result["error"] is not None:
+                    error = result["error"]
+
             except Exception as e:
                 return self._handle_error(e, self.name, tags, info, context, command)
 
@@ -298,13 +309,15 @@ class BenchmarkR(Benchmark):
             tags["case_version"] = case_version
 
         return self.record(
-            {"data": data, "unit": "s"},
-            tags,
-            info,
-            context,
-            options,
+            result={"data": data, "unit": "s"},
+            extra_tags=tags,
+            extra_info=info,
+            extra_context=context,
+            options=options,
+            error=error,
             case=case,
             output=output,
+            optional_benchmark_info=result.get("optional_benchmark_info", None),
         )
 
     def r_cpu_count(self, options: Dict[str, Any]):
