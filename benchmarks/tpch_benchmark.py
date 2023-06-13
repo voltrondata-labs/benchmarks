@@ -8,7 +8,7 @@ def get_valid_cases():
     scale_factors = [1, 10]
 
     machine_info = conbench.runner.machine_info(host_name=None)
-    if int(machine_info["memory_bytes"]) < 64 * 1024 * 1024 * 1024:
+    if int(machine_info["memory_bytes"]) <= 64 * 1024 * 1024 * 1024:
         scale_factors = [1]
 
     for query_id in range(1, 23):
