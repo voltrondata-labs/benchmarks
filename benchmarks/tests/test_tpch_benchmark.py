@@ -1,5 +1,8 @@
 import copy
 
+import conbench.runner
+import pytest
+
 from .. import tpch_benchmark
 from ..tests import _asserts
 
@@ -106,5 +109,11 @@ def test_benchmark_r():
 
 
 def test_cli():
+    if (
+        int(conbench.runner.machine_info(None)["memory_bytes"])
+        > 1.1 * 32 * 1024 * 1024 * 1024
+    ):
+        pytest.skip("CLI options are different on machines with more than 32GB RAM")
+
     command = ["conbench", "tpch", "--help"]
     _asserts.assert_cli(command, HELP)
