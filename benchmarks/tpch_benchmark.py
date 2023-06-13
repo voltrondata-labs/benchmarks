@@ -5,8 +5,14 @@ from benchmarks import _benchmark
 
 def get_valid_cases():
     result = [["query_id", "scale_factor", "format"]]
+    scale_factors = [1, 10]
+
+    machine_info = conbench.runner.machine_info(host_name=None)
+    if int(machine_info["memory_bytes"]) < 64 * 1024 * 1024 * 1024:
+        scale_factors = [1]
+
     for query_id in range(1, 23):
-        for scale_factor in [1, 10]:
+        for scale_factor in scale_factors:
             for _format in ["native", "parquet"]:
                 result.append([query_id, scale_factor, _format])
     return result
