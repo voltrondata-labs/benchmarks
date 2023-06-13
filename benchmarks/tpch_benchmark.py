@@ -8,7 +8,9 @@ def get_valid_cases():
     scale_factors = [1, 10]
 
     machine_info = conbench.runner.machine_info(host_name=None)
-    # scale_factor=10 runs on machines with 64GB of memory, but not 32
+    # scale_factor=10 runs on machines with 64GB of memory, but not 32.
+    # (Specifically, query 21 will fail with 32GB of memory.)
+    # The exact amount of memory needed for all queries to pass is for now unknown.
     if int(machine_info["memory_bytes"]) <= 1.1 * 32 * 1024 * 1024 * 1024:
         scale_factors = [1]
 
