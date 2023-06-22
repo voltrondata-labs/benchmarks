@@ -1,3 +1,5 @@
+import itertools
+
 import conbench.runner
 
 from benchmarks import _benchmark
@@ -115,8 +117,8 @@ class SimpleBenchmarkException(_benchmark.Benchmark):
 
 
 @conbench.runner.register_benchmark
-class BenchmarkExceptionR(_benchmark.BenchmarkR):
-    name, r_name = "example-R-only-exception", "foo"
+class BenchmarkNonexistentR(_benchmark.BenchmarkR):
+    name, r_name = "example-R-only-nonexistent", "foo"
 
     def run(self, **kwargs):
         tags = self.get_tags(kwargs)
@@ -128,16 +130,34 @@ class BenchmarkExceptionR(_benchmark.BenchmarkR):
 
 
 @conbench.runner.register_benchmark
-class BenchmarkExceptionNoResultR(_benchmark.BenchmarkR):
-    name, r_name = "example-R-only-no-result", "placebo"
+class BenchmarkPlaceboR(_benchmark.BenchmarkR):
+    name, r_name = "example-R-only-exception", "placebo"
 
-    def run(self, **kwargs):
-        tags = self.get_tags(kwargs)
-        command = self._get_r_command()
-        yield self.r_benchmark(command, tags, kwargs)
+    valid_r_cases = list()
+    valid_cases = [
+        ("error_type", "output_type"),
+        *itertools.product(
+            ["NULL", "'base'", "'rlang::abort'"],
+            ["NULL", "'message'", "'warning'", "'cat'"],
+        ),
+    ]
 
-    def _get_r_command(self):
-        return f"library(arrowbench); run_one(arrowbench:::{self.r_name}, error_type=1)"
+    def run(self, case, **kwargs):
+        for case in self.get_cases(case, kwargs):
+            tags = self.get_tags(kwargs)
+            command = self._get_r_command(case=case)
+            yield self.r_benchmark(
+                command=command, extra_tags=tags, options=kwargs, case=case
+            )
+
+    def _get_r_command(self, case: tuple) -> str:
+        command = (
+            "library(arrowbench); "
+            f"run_one(arrowbench:::{self.r_name}, "
+            f"error_type={case[0]}, "
+            f"output_type={case[1]})"
+        )
+        return command
 
 
 @conbench.runner.register_benchmark

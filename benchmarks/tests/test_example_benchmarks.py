@@ -102,61 +102,41 @@ cases_benchmark = _example_benchmarks.CasesBenchmark()
 cases_exception = _example_benchmarks.CasesBenchmarkException()
 
 
-def assert_simple_benchmark(result):
+def test_simple():
+    benchmark = _example_benchmarks.SimpleBenchmark()
+    [(result, output)] = benchmark.run(iterations=1)
+
     munged = copy.deepcopy(result)
     assert munged["tags"] == {
         "name": "example-simple",
         "cpu_count": None,
     }
     _asserts.assert_info_and_context(munged)
+    assert output == 2
 
 
-def assert_simple_benchmark_exception(result):
+def test_simple_exception():
+    benchmark = _example_benchmarks.SimpleBenchmarkException()
+    [(result, output)] = benchmark.run(iterations=1)
+
     munged = copy.deepcopy(result)
     _asserts.assert_info_and_context(munged)
     assert "timestamp" in munged
-    assert munged["error"]["log"] == "division by zero"
+    assert munged["error"]["error"] == "division by zero"
     expected_tags = {"name": "example-simple-exception", "cpu_count": None}
     assert munged["tags"] == expected_tags
+    assert output is None
 
 
-def assert_r_only_benchmark(result):
-    munged = copy.deepcopy(result)
-    assert munged["tags"] == {
-        "name": "example-R-only",
-        "language": "R",
-        "cpu_count": None,
-    }
-    _asserts.assert_info_and_context(munged, language="R")
+def test_simple_cli():
+    command = ["conbench", "example-simple", "--help"]
+    _asserts.assert_cli(command, SIMPLE_HELP)
 
 
-def assert_r_only_benchmark_exception(result):
-    munged = copy.deepcopy(result)
-    _asserts.assert_info_and_context(munged, language="R")
-    assert munged["tags"] == {
-        "name": "example-R-only-exception",
-        "cpu_count": None,
-        "language": "R",
-    }
-    command = "run_one(arrowbench:::foo)"
-    assert munged["command"] == f"library(arrowbench); {command}"
-    assert "object 'foo' not found" in munged["error"]["log"]
+def test_external():
+    benchmark = _example_benchmarks.ExternalBenchmark()
+    [(result, output)] = benchmark.run()
 
-
-def assert_r_only_benchmark_exception_no_result(result):
-    munged = copy.deepcopy(result)
-    _asserts.assert_info_and_context(munged, language="R")
-    assert munged["tags"] == {
-        "name": "example-R-only-no-result",
-        "cpu_count": None,
-        "language": "R",
-    }
-    command = "run_one(arrowbench:::placebo, error_type=1)"
-    assert munged["command"] == f"library(arrowbench); {command}"
-    assert "Error in placebo_func" in munged["error"]["log"]
-
-
-def assert_external_benchmark(result):
     munged = copy.deepcopy(result)
     _asserts.assert_info_and_context(munged, language="C++")
 
@@ -182,58 +162,6 @@ def assert_external_benchmark(result):
         "q3": "250.000000",
         "iqr": "100.000000",
     }
-
-
-def assert_cases_benchmark(result, case):
-    munged = copy.deepcopy(result)
-    assert munged["tags"] == {
-        "name": "example-cases",
-        "cpu_count": None,
-        "rows": case[0],
-        "columns": case[1],
-        "case_version": 2 if case[0] == "2" else 1,
-    }
-    _asserts.assert_info_and_context(munged)
-
-
-def assert_cases_benchmark_exception(result, case):
-    munged = copy.deepcopy(result)
-    _asserts.assert_info_and_context(munged)
-    assert "timestamp" in munged
-    assert munged["error"]["log"] == "division by zero"
-    expected_tags = {
-        "name": "example-cases-exception",
-        "cpu_count": None,
-        "rows": case[0],
-        "columns": case[1],
-        "case_version": 2 if case[0] == "2" else 1,
-    }
-    assert munged["tags"] == expected_tags
-
-
-def test_simple():
-    benchmark = _example_benchmarks.SimpleBenchmark()
-    [(result, output)] = benchmark.run(iterations=1)
-    assert_simple_benchmark(result)
-    assert output == 2
-
-
-def test_simple_exception():
-    benchmark = _example_benchmarks.SimpleBenchmarkException()
-    [(result, output)] = benchmark.run(iterations=1)
-    assert_simple_benchmark_exception(result)
-    assert output is None
-
-
-def test_simple_cli():
-    command = ["conbench", "example-simple", "--help"]
-    _asserts.assert_cli(command, SIMPLE_HELP)
-
-
-def test_external():
-    benchmark = _example_benchmarks.ExternalBenchmark()
-    [(result, output)] = benchmark.run()
-    assert_external_benchmark(result)
     assert output == [100, 200, 300]
 
 
@@ -245,22 +173,97 @@ def test_external_cli():
 def test_r_only():
     benchmark = _example_benchmarks.WithoutPythonBenchmark()
     [(result, output)] = benchmark.run()
-    assert_r_only_benchmark(result)
+
+    munged = copy.deepcopy(result)
+    assert munged["tags"] == {
+        "name": "example-R-only",
+        "language": "R",
+        "cpu_count": None,
+    }
+    _asserts.assert_info_and_context(munged, language="R")
     assert _asserts.R_CLI in str(output)
 
 
-def test_r_only_exception():
-    benchmark = _example_benchmarks.BenchmarkExceptionR()
+def test_r_only_nonexistent():
+    benchmark = _example_benchmarks.BenchmarkNonexistentR()
     [(result, output)] = benchmark.run()
-    assert_r_only_benchmark_exception(result)
+
+    munged = copy.deepcopy(result)
+    _asserts.assert_info_and_context(munged, language="R")
+    assert munged["tags"] == {
+        "name": "example-R-only-nonexistent",
+        "cpu_count": None,
+        "language": "R",
+    }
+    command = "run_one(arrowbench:::foo)"
+    assert benchmark._get_r_command() == f"library(arrowbench); {command}"
+    assert "object 'foo' not found" in munged["error"]["error"]
     assert output is None
 
 
-def test_r_only_exception_no_result():
-    benchmark = _example_benchmarks.BenchmarkExceptionNoResultR()
-    [(result, output)] = benchmark.run()
-    assert_r_only_benchmark_exception_no_result(result)
-    assert output is None
+@pytest.mark.parametrize("error_type", ["NULL"])
+@pytest.mark.parametrize("output_type", ["NULL", "'warning'"])
+def test_r_only_placebo(error_type, output_type):
+    benchmark = _example_benchmarks.BenchmarkPlaceboR()
+    [(result, output)] = benchmark.run(case=(error_type, output_type))
+
+    munged = copy.deepcopy(result)
+    _asserts.assert_info_and_context(munged, language="R")
+    assert munged["tags"] == {
+        "name": "example-R-only-exception",
+        "error_type": error_type,
+        "output_type": output_type,
+        "cpu_count": None,
+        "language": "R",
+    }
+    command = (
+        "run_one(arrowbench:::placebo, "
+        f"error_type={error_type}, "
+        f"output_type={output_type})"
+    )
+    assert (
+        benchmark._get_r_command((error_type, output_type))
+        == f"library(arrowbench); {command}"
+    )
+    assert "error" not in munged
+    assert float(munged["stats"]["data"][0]) > 0.0
+    if output_type == "'warning'":
+        assert "A warning" in munged["optional_benchmark_info"]["output"]
+    else:
+        assert "A warning" not in munged["optional_benchmark_info"]["output"]
+    assert command in output
+
+
+@pytest.mark.parametrize("error_type", ["'base'"])
+@pytest.mark.parametrize("output_type", ["NULL", "'warning'"])
+def test_r_only_exception(error_type: str, output_type: str):
+    benchmark = _example_benchmarks.BenchmarkPlaceboR()
+    [(result, output)] = benchmark.run(case=(error_type, output_type))
+
+    munged = copy.deepcopy(result)
+    _asserts.assert_info_and_context(munged, language="R")
+    assert munged["tags"] == {
+        "name": "example-R-only-exception",
+        "error_type": error_type,
+        "output_type": output_type,
+        "cpu_count": None,
+        "language": "R",
+    }
+    command = (
+        "run_one(arrowbench:::placebo, "
+        f"error_type={error_type}, "
+        f"output_type={output_type})"
+    )
+    assert (
+        benchmark._get_r_command((error_type, output_type))
+        == f"library(arrowbench); {command}"
+    )
+    assert "something went wrong (but I knew that)" in munged["error"]["error"]
+    if output_type == "'warning'":
+        assert "warnings" in munged["error"]
+    else:
+        assert "warnings" not in munged["error"]
+    assert command in output
 
 
 def test_r_only_cli():
@@ -271,7 +274,16 @@ def test_r_only_cli():
 @pytest.mark.parametrize("case", cases_benchmark.cases, ids=cases_benchmark.case_ids)
 def test_cases(case):
     [(result, output)] = cases_benchmark.run(case, iterations=1)
-    assert_cases_benchmark(result, case)
+
+    munged = copy.deepcopy(result)
+    assert munged["tags"] == {
+        "name": "example-cases",
+        "cpu_count": None,
+        "rows": case[0],
+        "columns": case[1],
+        "case_version": 2 if case[0] == "2" else 1,
+    }
+    _asserts.assert_info_and_context(munged)
     assert isinstance(output, list)
     assert len(output) == int(case[0])  # rows
 
@@ -279,7 +291,19 @@ def test_cases(case):
 @pytest.mark.parametrize("case", cases_exception.cases, ids=cases_exception.case_ids)
 def test_cases_exception(case):
     [(result, output)] = cases_exception.run(case)
-    assert_cases_benchmark_exception(result, case)
+
+    munged = copy.deepcopy(result)
+    _asserts.assert_info_and_context(munged)
+    assert "timestamp" in munged
+    assert munged["error"]["error"] == "division by zero"
+    expected_tags = {
+        "name": "example-cases-exception",
+        "cpu_count": None,
+        "rows": case[0],
+        "columns": case[1],
+        "case_version": 2 if case[0] == "2" else 1,
+    }
+    assert munged["tags"] == expected_tags
     assert output is None
 
 

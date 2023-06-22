@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 import subprocess
+import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -124,7 +125,14 @@ class Benchmark(conbench.runner.Benchmark):
                 publish=os.environ.get("DRY_RUN") is None,
             )
         except Exception as e:
-            benchmark, output = self._handle_error(e, self.name, tags, info, context)
+            benchmark, output = self._handle_error(
+                e=e,
+                name=self.name,
+                options=options,
+                tags=tags,
+                info=info,
+                context=context,
+            )
         return benchmark, output
 
     def record(
@@ -245,6 +253,7 @@ class Benchmark(conbench.runner.Benchmark):
         self,
         e: Exception,
         name: str,
+        options: Dict[str, Any],
         tags: Dict[str, Any],
         info: Dict[str, Any],
         context: Dict[str, Any],
@@ -252,17 +261,25 @@ class Benchmark(conbench.runner.Benchmark):
     ) -> Tuple[Dict[str, Any], None]:
         output = None
         tags["name"] = name
-        error = {
+        result = {
+            "run_name": options.get("run_name")
+            or f"{options.get('run_reason')}: {self.github_info['commit']}",
+            "run_id": self.conbench.get_run_id(options=options),
+            "run_reason": options.get("run_reason"),
+            "batch_id": options.get("batch_id") or self.conbench._batch_id,
             "timestamp": _now_formatted(),
             "tags": tags,
             "info": info,
             "context": context,
-            "error": {"log": str(e)},
+            "error": {"error": str(e), "stack_trace": traceback.format_exc()},
+            "optional_benchmark_info": {},
+            "machine_info": self.conbench.machine_info,
+            "github": self.github_info,
         }
         if r_command is not None:
-            error["command"] = r_command
-        logging.exception(json.dumps(error))
-        return error, output
+            result["error"]["command"] = r_command
+        logging.exception(f"Errored result (not posted): {json.dumps(result)}")
+        return result, output
 
 
 class BenchmarkR(Benchmark):
@@ -303,7 +320,15 @@ class BenchmarkR(Benchmark):
                     error = result["error"]
 
             except Exception as e:
-                return self._handle_error(e, self.name, tags, info, context, command)
+                return self._handle_error(
+                    e=e,
+                    name=self.name,
+                    options=options,
+                    tags=tags,
+                    info=info,
+                    context=context,
+                    r_command=command,
+                )
 
         if case_version:
             tags["case_version"] = case_version
