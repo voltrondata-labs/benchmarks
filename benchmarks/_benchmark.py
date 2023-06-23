@@ -160,7 +160,7 @@ class Benchmark(conbench.runner.Benchmark):
             tags=tags,
             info=info,
             context=context,
-            optional_benchmark_info=optional_benchmark_info,
+            optional_benchmark_info=optional_benchmark_info or {},
             github=self.github_info,
             options=options,
             output=output,
@@ -342,7 +342,7 @@ class BenchmarkR(Benchmark):
             error=error,
             case=case,
             output=output,
-            optional_benchmark_info=result.get("optional_benchmark_info", None),
+            optional_benchmark_info=result.get("optional_benchmark_info") or {},
         )
 
     def r_cpu_count(self, options: Dict[str, Any]):
