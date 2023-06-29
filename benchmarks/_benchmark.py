@@ -278,7 +278,12 @@ class Benchmark(conbench.runner.Benchmark):
         }
         if r_command is not None:
             result["error"]["command"] = r_command
-        logging.exception(f"Errored result (not posted): {json.dumps(result)}")
+
+        logging.exception(f"Errored result: {json.dumps(result)}")
+
+        if os.environ.get("DRY_RUN") is None:
+            self.conbench.publish(result)
+
         return result, output
 
 
