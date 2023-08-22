@@ -2,7 +2,7 @@ import json
 import os
 import pathlib
 
-import conbench.runner
+import conbenchlegacy.runner
 
 from benchmarks import _benchmark
 
@@ -28,7 +28,7 @@ def _parse_benchmark_tags(name):
     return dict(zip(keys, values))
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class RecordJavaScriptMicroBenchmarks(_benchmark.Benchmark):
     """Run the Arrow JavaScript micro benchmarks."""
 

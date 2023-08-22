@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-import conbench.runner
+import conbenchlegacy.runner
 import numpy
 import pandas
 import pyarrow
@@ -10,7 +10,7 @@ import pyarrow.parquet as parquet
 from benchmarks import _benchmark, _sources
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class WideDataframeBenchmark(_benchmark.Benchmark):
     """
     Read wide dataframe from parquet with pandas.

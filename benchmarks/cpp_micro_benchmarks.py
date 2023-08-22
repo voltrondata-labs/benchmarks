@@ -3,7 +3,7 @@ import logging
 import os
 from typing import List
 
-import conbench.runner
+import conbenchlegacy.runner
 from benchadapt.adapters import ArcheryAdapter
 from benchadapt.log import log
 
@@ -81,7 +81,7 @@ def _add_command_options(command: List[str], options: dict):
             command.extend([f"--{option}", value])
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     """Run the Arrow C++ micro benchmarks."""
 

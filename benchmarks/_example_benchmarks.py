@@ -1,11 +1,11 @@
 import itertools
 
-import conbench.runner
+import conbenchlegacy.runner
 
 from benchmarks import _benchmark
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class SimpleBenchmark(_benchmark.Benchmark):
     """Example benchmark without cases."""
 
@@ -20,7 +20,7 @@ class SimpleBenchmark(_benchmark.Benchmark):
         return lambda: 1 + 1
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class ExternalBenchmark(_benchmark.Benchmark):
     """Example benchmark that just records external results."""
 
@@ -49,7 +49,7 @@ class ExternalBenchmark(_benchmark.Benchmark):
         )
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class WithoutPythonBenchmark(_benchmark.BenchmarkR):
     """Example R benchmark that doesn't have a Python equivalent."""
 
@@ -69,7 +69,7 @@ class WithoutPythonBenchmark(_benchmark.BenchmarkR):
         )
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class CasesBenchmark(_benchmark.Benchmark):
     """Example benchmark with cases."""
 
@@ -103,7 +103,7 @@ class CasesBenchmark(_benchmark.Benchmark):
         return lambda: int(rows) * [int(columns) * [0]]
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class SimpleBenchmarkException(_benchmark.Benchmark):
     name = "example-simple-exception"
 
@@ -116,7 +116,7 @@ class SimpleBenchmarkException(_benchmark.Benchmark):
         return lambda: 100 / 0
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class BenchmarkNonexistentR(_benchmark.BenchmarkR):
     name, r_name = "example-R-only-nonexistent", "foo"
 
@@ -129,7 +129,7 @@ class BenchmarkNonexistentR(_benchmark.BenchmarkR):
         return f"library(arrowbench); run_one(arrowbench:::{self.r_name})"
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class BenchmarkPlaceboR(_benchmark.BenchmarkR):
     name, r_name = "example-R-only-exception", "placebo"
 
@@ -160,7 +160,7 @@ class BenchmarkPlaceboR(_benchmark.BenchmarkR):
         return command
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class CasesBenchmarkException(_benchmark.Benchmark):
     name = "example-cases-exception"
     valid_cases = (

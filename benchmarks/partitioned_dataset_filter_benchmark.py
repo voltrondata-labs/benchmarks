@@ -1,9 +1,9 @@
-import conbench.runner
+import conbenchlegacy.runner
 
 from benchmarks import _benchmark
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class PartitionedDatasetFilterBenchmark(_benchmark.BenchmarkR):
     """Read and filter a partitioned dataset."""
 

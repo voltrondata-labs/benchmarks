@@ -1,4 +1,4 @@
-import conbench.runner
+import conbenchlegacy.runner
 
 from benchmarks import _benchmark
 
@@ -7,7 +7,7 @@ def get_valid_cases():
     result = [["query_id", "scale_factor", "format"]]
     scale_factors = [1, 10]
 
-    machine_info = conbench.runner.machine_info(host_name=None)
+    machine_info = conbenchlegacy.runner.machine_info(host_name=None)
     # scale_factor=10 runs on machines with 64GB of memory, but not 32.
     # (Specifically, query 21 will fail with 32GB of memory.)
     # The exact amount of memory needed for all queries to pass is for now unknown.
@@ -21,7 +21,7 @@ def get_valid_cases():
     return result
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class TpchBenchmark(_benchmark.BenchmarkR):
     external, r_only = True, True
     name, r_name = "tpch", "tpc_h"

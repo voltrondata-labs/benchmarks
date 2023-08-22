@@ -7,7 +7,7 @@ import sys
 import time
 import uuid
 
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow
 import pyarrow.dataset as ds
 
@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 OUTPUT_DIR_PREFIX = os.path.join("/dev/shm/", "bench-" + str(uuid.uuid4())[:8])
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class DatasetSerializeBenchmark(_benchmark.Benchmark):
     """
     This benchmark is supposed to measure the time it takes to write data from
