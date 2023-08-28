@@ -2,7 +2,7 @@ import copy
 import json
 import tempfile
 
-import conbench.runner
+import conbenchlegacy.runner
 
 from benchmarks import _benchmark
 
@@ -78,7 +78,7 @@ def _parse_benchmark_name(full_name):
     return suite, name
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
     """Run the Arrow Java micro benchmarks."""
 

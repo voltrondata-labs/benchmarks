@@ -1,10 +1,10 @@
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow.dataset
 
 from benchmarks import _benchmark
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class DatasetFilterBenchmark(_benchmark.Benchmark):
     """Read and filter a dataset."""
 

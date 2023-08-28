@@ -1,7 +1,7 @@
 import itertools
 from typing import Callable
 
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow.csv
 
 from benchmarks import _benchmark, _sources
@@ -67,7 +67,7 @@ class CsvBenchmark(_benchmark.BenchmarkPythonR):
         return params
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class CsvReadBenchmark(CsvBenchmark):
     """Read CSV file."""
 
@@ -114,7 +114,7 @@ class CsvReadBenchmark(CsvBenchmark):
         return read_streaming if streaming == "streaming" else read_file
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class CsvWriteBenchmark(CsvBenchmark):
     """Write CSV file."""
 

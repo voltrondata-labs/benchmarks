@@ -1,6 +1,6 @@
 import time
 
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow
 import pyarrow.feather as feather
 import pyarrow.parquet as parquet
@@ -66,7 +66,7 @@ class FileBenchmark(_benchmark.BenchmarkPythonR):
         )
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class FileReadBenchmark(FileBenchmark):
     """Read parquet & feather files to arrow tables & pandas data frames."""
 
@@ -94,7 +94,7 @@ class FileReadBenchmark(FileBenchmark):
         return f
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class FileWriteBenchmark(FileBenchmark):
     """Write parquet & feather files from arrow tables & pandas data frames."""
 

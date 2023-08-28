@@ -1,11 +1,11 @@
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow
 import pyarrow.parquet as parquet
 
 from benchmarks import _benchmark
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class DataframeToTableBenchmark(_benchmark.BenchmarkPythonR):
     """Convert a pandas dataframe to an arrow table."""
 

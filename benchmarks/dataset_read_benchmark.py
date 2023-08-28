@@ -1,4 +1,4 @@
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow
 import pyarrow.dataset
 import pyarrow.fs
@@ -6,7 +6,7 @@ import pyarrow.fs
 from benchmarks import _benchmark
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class DatasetReadBenchmark(_benchmark.Benchmark):
     """Read many S3 parquet files into an arrow table."""
 

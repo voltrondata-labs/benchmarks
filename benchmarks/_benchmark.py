@@ -9,7 +9,7 @@ import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow
 from benchclients import ConbenchClient
 
@@ -54,7 +54,7 @@ def arrow_info() -> Dict[str, Any]:
     }
 
 
-class ConbenchCommunicator(conbench.runner.Conbench):
+class ConbenchCommunicator(conbenchlegacy.runner.Conbench):
     """Exactly the same as the legacy "Conbench" communication object, with the
     publish() method overridden to use the new retrying client.
     """
@@ -80,7 +80,7 @@ class ConbenchCommunicator(conbench.runner.Conbench):
         self.conbench_client.post("/benchmark-results/", benchmark)
 
 
-class Benchmark(conbench.runner.Benchmark):
+class Benchmark(conbenchlegacy.runner.Benchmark):
     arguments = []
     options = {"cpu_count": {"type": int}}
 
@@ -396,8 +396,8 @@ class BenchmarkPythonR(BenchmarkR):
     }
 
 
-@conbench.runner.register_list
-class BenchmarkList(conbench.runner.BenchmarkList):
+@conbenchlegacy.runner.register_list
+class BenchmarkList(conbenchlegacy.runner.BenchmarkList):
     def list(self, classes: Dict[str, Benchmark]) -> List[Benchmark]:
         """List of benchmarks to run for all cases & all sources."""
 

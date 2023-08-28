@@ -17,7 +17,7 @@ Arrow C++, Java, and JavaScript micro benchmarks (which are found in the
 [arrow](https://github.com/apache/arrow) repository), and the Arrow R macro
 benchmarks (which are found in the
 [arrowbench](https://github.com/voltrondata-labs/arrowbench) repository). These
-benchmarks use the [Conbench runner](https://github.com/ursacomputing/conbench)
+benchmarks use the [Conbench legacy runner](https://github.com/conbench/conbench/tree/main/legacy)
 for benchmark execution, and the results are published to Arrow's public
 [Conbench server](https://conbench.ursa.dev/).
 
@@ -87,15 +87,13 @@ defaults or to disable a particular benchmark.
 ### Clone repos
     (qa) $ cd ~/workspace/
     (qa) $ git clone https://github.com/voltrondata-labs/benchmarks.git
-    (qa) $ git clone https://github.com/ursacomputing/conbench.git
     (qa) $ git clone https://github.com/apache/arrow.git
     (qa) $ export ARROW_SRC=$(pwd)/arrow
 
 
-### Install benchmarks dependencies
+### Install voltrondata-labs/benchmarks
     (qa) $ cd ~/workspace/benchmarks/
-    (qa) $ pip install -r requirements-dev.txt
-    (qa) $ pip install -e .
+    (qa) $ pip install -e '.[dev]'
 
 
 ### Install arrowbench (to run R benchmarks)
@@ -107,14 +105,6 @@ defaults or to disable a particular benchmark.
 ### Install archery (to run C++ & Java micro benchmarks)
     (qa) $ cd ~/workspace/
     (qa) $ pip install -e arrow/dev/archery
-
-
-### Install conbench dependencies
-    (qa) $ cd ~/workspace/conbench/
-    (qa) $ pip install -r requirements-test.txt
-    (qa) $ pip install -r requirements-build.txt
-    (qa) $ pip install -r requirements-cli.txt
-    (qa) $ pip install .
 
 
 ### Conbench credentials default to this following (edit .conbench to configure)
@@ -362,11 +352,11 @@ A "simple benchmark" runs and records the execution time of a unit of work.
 
 Implementation details: Note that this benchmark extends
 `benchmarks._benchmark.Benchmark`, implements the minimum required `run()`
-method, and registers itself with the `@conbench.runner.register_benchmark`
+method, and registers itself with the `@conbenchlegacy.runner.register_benchmark`
 decorator.
 
 ```python
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class SimpleBenchmark(_benchmark.Benchmark):
     """Example benchmark without cases."""
 
@@ -420,7 +410,7 @@ Implementation details: Note that the following benchmark sets
 example above does.
 
 ```python
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class ExternalBenchmark(_benchmark.Benchmark):
     """Example benchmark that just records external results."""
 
@@ -473,7 +463,7 @@ sets both `external` and `r_only` to `True`, defines `r_name`, implements
 `record()`.
 
 ```python
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class WithoutPythonBenchmark(_benchmark.BenchmarkR):
     """Example R benchmark that doesn't have a Python equivalent."""
 
@@ -531,7 +521,7 @@ the cases names).
 
 
 ```python
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class CasesBenchmark(_benchmark.Benchmark):
     """Example benchmark with cases."""
 

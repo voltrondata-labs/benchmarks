@@ -1,4 +1,4 @@
-import conbench.runner
+import conbenchlegacy.runner
 import pyarrow.dataset as ds
 
 from benchmarks._benchmark import Benchmark
@@ -8,7 +8,7 @@ def run_get_file_info(dataset_uri):
     ds.dataset(dataset_uri, format="parquet")
 
 
-@conbench.runner.register_benchmark
+@conbenchlegacy.runner.register_benchmark
 class GetFileInfoBenchmark(Benchmark):
     """Recursively list all files"""
 
