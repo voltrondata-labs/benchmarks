@@ -100,10 +100,14 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         # populates arrow metadata like compiler flags from pyarrow
         tags, info, context = self._get_tags_info_context(case=None, extra_tags={})
 
+        # benchalerts recommends supplying commit information through environment variables
+        os.environ["CONBENCH_PROJECT_REPOSITORY"] = self.github_info["repository"]
+        os.environ["CONBENCH_PROJECT_COMMIT"] = self.github_info["commit"]
+        if self.github_info["pr_number"]:
+            os.environ["CONBENCH_PROJECT_PR_NUMBER"] = self.github_info["pr_number"]
+
         self.adapter = ArcheryAdapter(
-            # populates commit and repo based on arrow info rather than current status
             result_fields_override={
-                "github": self.github_info,
                 # this version grabs hostname from the `.conbench` file
                 "machine_info": self.conbench.machine_info,
             },
