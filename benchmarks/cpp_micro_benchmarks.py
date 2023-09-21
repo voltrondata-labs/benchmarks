@@ -104,7 +104,9 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
         os.environ["CONBENCH_PROJECT_REPOSITORY"] = self.github_info["repository"]
         os.environ["CONBENCH_PROJECT_COMMIT"] = self.github_info["commit"]
         if self.github_info["pr_number"]:
-            os.environ["CONBENCH_PROJECT_PR_NUMBER"] = self.github_info["pr_number"]
+            os.environ["CONBENCH_PROJECT_PR_NUMBER"] = str(
+                self.github_info["pr_number"]
+            )
 
         self.adapter = ArcheryAdapter(
             result_fields_override={
