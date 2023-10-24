@@ -242,10 +242,15 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
             # Note that `head()` returns a `Table` object, i.e. loads data
             # into memory.
             log.info("read %s rows of dataset %s into memory", n_rows_only, source_name)
-            data = source_ds.head(n_rows_only)
+            data = source_ds.head(
+                n_rows_only,
+                fragment_scan_options=ds.ParquetFragmentScanOptions(pre_buffer=False),
+            )
         else:
             log.info("read complete dataset %s into memory", source_name)
-            data = source_ds.to_table()
+            data = source_ds.to_table(
+                fragment_scan_options=ds.ParquetFragmentScanOptions(pre_buffer=False)
+            )
 
         log.info("read source dataset into memory in %.4f s", time.monotonic() - t0)
 
