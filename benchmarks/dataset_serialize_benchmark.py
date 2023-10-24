@@ -199,7 +199,7 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
 
                 yield self.benchmark(
                     f=self._get_benchmark_function(
-                        case, source.name, source_ds, dirpath
+                        case, source.name, source_ds, source.format_str, dirpath
                     ),
                     extra_tags=tags,
                     options=kwargs,
@@ -220,7 +220,12 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         self._report_dirsize_and_wipe(OUTPUT_DIR_PREFIX)
 
     def _get_benchmark_function(
-        self, case, source_name: str, source_ds: ds.Dataset, dirpath: str
+        self,
+        case,
+        source_name: str,
+        source_ds: ds.Dataset,
+        source_fmt: str,
+        dirpath: str,
     ):
         (selectivity, serialization_format) = case
 
@@ -234,6 +239,13 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
         except KeyError:
             pass
 
+        # Need this or arrow#38438 will cause a segfault. TODO: remove once fixed.
+        data_read_kwargs = {}
+        if source_fmt == "parquet":
+            data_read_kwargs["fragment_scan_options"] = ds.ParquetFragmentScanOptions(
+                pre_buffer=False
+            )
+
         if n_rows_only:
             # Pragmatic method for reading only a subset of the data set. A
             # different method for sub selection of rows could use a
@@ -242,17 +254,10 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
             # Note that `head()` returns a `Table` object, i.e. loads data
             # into memory.
             log.info("read %s rows of dataset %s into memory", n_rows_only, source_name)
-            data = source_ds.head(
-                n_rows_only,
-                # Need this or arrow#38438 will cause a segfault.
-                fragment_scan_options=ds.ParquetFragmentScanOptions(pre_buffer=False),
-            )
+            data = source_ds.head(n_rows_only, **data_read_kwargs)
         else:
             log.info("read complete dataset %s into memory", source_name)
-            data = source_ds.to_table(
-                # Need this or arrow#38438 will cause a segfault.
-                fragment_scan_options=ds.ParquetFragmentScanOptions(pre_buffer=False)
-            )
+            data = source_ds.to_table(**data_read_kwargs)
 
         log.info("read source dataset into memory in %.4f s", time.monotonic() - t0)
 
