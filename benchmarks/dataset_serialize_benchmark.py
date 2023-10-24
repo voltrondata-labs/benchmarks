@@ -244,11 +244,13 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
             log.info("read %s rows of dataset %s into memory", n_rows_only, source_name)
             data = source_ds.head(
                 n_rows_only,
+                # Need this or arrow#38438 will cause a segfault.
                 fragment_scan_options=ds.ParquetFragmentScanOptions(pre_buffer=False),
             )
         else:
             log.info("read complete dataset %s into memory", source_name)
             data = source_ds.to_table(
+                # Need this or arrow#38438 will cause a segfault.
                 fragment_scan_options=ds.ParquetFragmentScanOptions(pre_buffer=False)
             )
 
