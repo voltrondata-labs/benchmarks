@@ -241,10 +241,10 @@ class DatasetSerializeBenchmark(_benchmark.Benchmark):
 
         # Need this or arrow#38438 will cause a segfault. TODO: remove once fixed.
         data_read_kwargs = {}
-        # if source_fmt == "parquet":
-        #     data_read_kwargs["fragment_scan_options"] = ds.ParquetFragmentScanOptions(
-        #         pre_buffer=False
-        #     )
+        if source_fmt == "parquet":
+            data_read_kwargs["fragment_scan_options"] = ds.ParquetFragmentScanOptions(
+                pre_buffer=False
+            )
 
         if n_rows_only:
             # Pragmatic method for reading only a subset of the data set. A
