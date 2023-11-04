@@ -394,7 +394,7 @@ Options:
 
 More simple benchmark examples that have minimal scaffolding:
 
-* [csv_read_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/csv_read_benchmark.py)
+* [csv_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/csv_benchmark.py)
 * [dataset_filter_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/dataset_filter_benchmark.py)
 * [dataset_select_benchmark.py](https://github.com/voltrondata-labs/benchmarks/blob/main/benchmarks/dataset_select_benchmark.py)
 
