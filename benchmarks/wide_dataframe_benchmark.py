@@ -18,11 +18,7 @@ class WideDataframeBenchmark(_benchmark.Benchmark):
     """
 
     name = "wide-dataframe"
-    valid_cases = (
-        ["use_legacy_dataset"],
-        ["true"],
-        ["false"],
-    )
+    valid_cases = (["use_legacy_dataset"], ["false"])
 
     def run(self, case=None, **kwargs):
         path = os.path.join(_sources.temp_dir, "wide.parquet")
