@@ -13,28 +13,27 @@ Usage: conbench wide-dataframe [OPTIONS]
   For each benchmark option, the first option value is the default.
 
   Valid benchmark combinations:
-  --use-legacy-dataset=true
   --use-legacy-dataset=false
 
   To run all combinations:
   $ conbench wide-dataframe --all=true
 
 Options:
-  --use-legacy-dataset [false|true]
-  --all BOOLEAN                   [default: false]
+  --use-legacy-dataset [false]
+  --all BOOLEAN                 [default: false]
   --cpu-count INTEGER
-  --iterations INTEGER            [default: 1]
-  --drop-caches BOOLEAN           [default: false]
-  --gc-collect BOOLEAN            [default: true]
-  --gc-disable BOOLEAN            [default: true]
-  --show-result BOOLEAN           [default: true]
-  --show-output BOOLEAN           [default: false]
-  --run-id TEXT                   Group executions together with a run id.
-  --run-name TEXT                 Free-text name of run (commit ABC, pull
-                                  request 123, etc).
-  --run-reason TEXT               Low-cardinality reason for run (commit, pull
-                                  request, manual, etc).
-  --help                          Show this message and exit.
+  --iterations INTEGER          [default: 1]
+  --drop-caches BOOLEAN         [default: false]
+  --gc-collect BOOLEAN          [default: true]
+  --gc-disable BOOLEAN          [default: true]
+  --show-result BOOLEAN         [default: true]
+  --show-output BOOLEAN         [default: false]
+  --run-id TEXT                 Group executions together with a run id.
+  --run-name TEXT               Free-text name of run (commit ABC, pull
+                                request 123, etc).
+  --run-reason TEXT             Low-cardinality reason for run (commit, pull
+                                request, manual, etc).
+  --help                        Show this message and exit.
 """
 
 
