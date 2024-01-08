@@ -18,26 +18,21 @@ class WideDataframeBenchmark(_benchmark.Benchmark):
     """
 
     name = "wide-dataframe"
-    valid_cases = (
-        ["use_legacy_dataset"],
-        ["true"],
-        ["false"],
-    )
+    # 'use_legacy_dataset' used to be a meaningful benchmark parameter, but since that
+    # behavior is deprecated we only keep it around to preserve benchmark history.
+    valid_cases = (["use_legacy_dataset"], ["false"])
 
     def run(self, case=None, **kwargs):
         path = os.path.join(_sources.temp_dir, "wide.parquet")
         self._create_if_not_exists(path)
 
         for case in self.get_cases(case, kwargs):
-            (legacy,) = case
-            # not using actual booleans... see hacks.py in conbench
-            legacy = True if legacy == "true" else False
             tags = self.get_tags(kwargs)
-            f = self._get_benchmark_function(path, legacy)
+            f = self._get_benchmark_function(path)
             yield self.benchmark(f, tags, kwargs, case)
 
-    def _get_benchmark_function(self, path, legacy):
-        return lambda: pandas.read_parquet(path, use_legacy_dataset=legacy)
+    def _get_benchmark_function(self, path):
+        return lambda: pandas.read_parquet(path)
 
     def _create_if_not_exists(self, path):
         if not pathlib.Path(path).exists():
