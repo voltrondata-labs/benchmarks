@@ -17,7 +17,7 @@ RUN_OPTIONS = {
         "type": int,
         "help": "Number of repetitions of each benchmark.",
     },
-    "repetition_min_time": {
+    "repetition-min-time": {
         "default": 0.05,
         "type": float,
         "help": "Minimum time to run iterations for one repetition of the benchmark.",
@@ -71,24 +71,13 @@ COMMON_OPTIONS = {
 
 def _get_cli_options(options: dict) -> List[str]:
     command_params = []
-    if options.get("iterations"):
-        command_params += ["--repetitions", str(options.get("iterations"))]
-    if options.get("repetition_min_time"):
-        command_params += [
-            "--repetition-min-time",
-            str(options.get("repetition_min_time")),
-        ]
-
-    _add_command_options(command_params, options)
-
-    return command_params
-
-
-def _add_command_options(command: List[str], options: dict):
-    for option in COMMON_OPTIONS.keys():
+    for option in list(COMMON_OPTIONS) + list(RUN_OPTIONS):
         value = options.get(option.replace("-", "_"), None)
         if value:
-            command.extend([f"--{option}", value])
+            command_params.extend([f"--{option}", value])
+
+    print(command_params)
+    return command_params
 
 
 @conbenchlegacy.runner.register_benchmark
