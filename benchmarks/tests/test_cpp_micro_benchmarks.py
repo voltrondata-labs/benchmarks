@@ -38,18 +38,18 @@ Options:
 
 def test_get_run_command():
     options = {
-        "iterations": 100,
+        "repetitions": 100,
         "suite_filter": "arrow-compute-vector-selection-benchmark",
         "benchmark_filter": "TakeStringRandomIndicesWithNulls/262144/2",
     }
     actual = cpp_micro_benchmarks._get_cli_options(options)
     assert actual == [
-        "--repetitions",
-        "100",
         "--suite-filter",
         "arrow-compute-vector-selection-benchmark",
         "--benchmark-filter",
         "TakeStringRandomIndicesWithNulls/262144/2",
+        "--repetitions",
+        "100",
     ]
 
 
