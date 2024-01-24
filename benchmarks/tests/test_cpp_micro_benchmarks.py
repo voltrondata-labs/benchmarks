@@ -11,6 +11,10 @@ Usage: conbench cpp-micro [OPTIONS]
   Run the Arrow C++ micro benchmarks.
 
 Options:
+  --repetitions INTEGER        Number of repetitions to tell the executable to
+                               run.  [default: 20]
+  --repetition-min-time FLOAT  Minimum time to run iterations for one
+                               repetition of the benchmark.  [default: 0.05]
   --src TEXT                   Specify Arrow source directory.
   --suite-filter TEXT          Regex filtering benchmark suites.
   --benchmark-filter TEXT      Regex filtering benchmarks.
@@ -21,10 +25,6 @@ Options:
   --cxx-flags TEXT             C++ compiler flags.
   --cpp-package-prefix TEXT    Value to pass for ARROW_PACKAGE_PREFIX and use
                                ARROW_DEPENDENCY_SOURCE=SYSTEM.
-  --repetitions INTEGER        Number of repetitions to tell the executable to
-                               run.  [default: 20]
-  --repetition-min-time FLOAT  Minimum time to run iterations for one
-                               repetition of the benchmark.  [default: 0.05]
   --show-result BOOLEAN        [default: true]
   --show-output BOOLEAN        [default: false]
   --run-id TEXT                Group executions together with a run id.
@@ -44,12 +44,12 @@ def test_get_run_command():
     }
     actual = cpp_micro_benchmarks._get_cli_options(options)
     assert actual == [
+        "--repetitions",
+        "100",
         "--suite-filter",
         "arrow-compute-vector-selection-benchmark",
         "--benchmark-filter",
         "TakeStringRandomIndicesWithNulls/262144/2",
-        "--repetitions",
-        "100",
     ]
 
 

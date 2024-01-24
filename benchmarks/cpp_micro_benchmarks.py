@@ -11,7 +11,7 @@ from benchmarks import _benchmark
 
 log.setLevel(logging.DEBUG)
 
-RUN_OPTIONS = {
+OPTIONS = {
     "repetitions": {
         "default": 20,
         "type": int,
@@ -22,10 +22,6 @@ RUN_OPTIONS = {
         "type": float,
         "help": "Minimum time to run iterations for one repetition of the benchmark.",
     },
-}
-
-
-COMMON_OPTIONS = {
     "src": {
         "default": None,
         "type": str,
@@ -71,7 +67,7 @@ COMMON_OPTIONS = {
 
 def _get_cli_options(options: dict) -> List[str]:
     command_params = []
-    for option in list(COMMON_OPTIONS) + list(RUN_OPTIONS):
+    for option in OPTIONS:
         value = options.get(option.replace("-", "_"), None)
         if value:
             command_params.extend([f"--{option}", str(value)])
@@ -84,8 +80,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
 
     external = True
     name = "cpp-micro"
-    options = copy.deepcopy(COMMON_OPTIONS)
-    options.update(**RUN_OPTIONS)
+    options = copy.deepcopy(OPTIONS)
     description = "Run the Arrow C++ micro benchmarks."
     iterations = None  # the executable handles repetitions internally
     flags = {"language": "C++"}
