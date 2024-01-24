@@ -1,6 +1,6 @@
 [
   {
-    "command": "cpp-micro --iterations=1",
+    "command": "cpp-micro --iterations=20 --repetition_min_time=0.05",
     "flags": {
       "language": "C++"
     }
