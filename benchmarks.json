@@ -1,6 +1,6 @@
 [
   {
-    "command": "cpp-micro --iterations=1",
+    "command": "cpp-micro",
     "flags": {
       "language": "C++"
     }

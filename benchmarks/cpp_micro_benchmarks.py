@@ -15,7 +15,7 @@ RUN_OPTIONS = {
     "repetitions": {
         "default": 20,
         "type": int,
-        "help": "Number of repetitions of each benchmark.",
+        "help": "Number of repetitions to tell the executable to run.",
     },
     "repetition-min-time": {
         "default": 0.05,
@@ -74,9 +74,7 @@ def _get_cli_options(options: dict) -> List[str]:
     for option in list(COMMON_OPTIONS) + list(RUN_OPTIONS):
         value = options.get(option.replace("-", "_"), None)
         if value:
-            command_params.extend([f"--{option}", value])
-
-    print(command_params)
+            command_params.extend([f"--{option}", str(value)])
     return command_params
 
 
@@ -89,7 +87,7 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
     options = copy.deepcopy(COMMON_OPTIONS)
     options.update(**RUN_OPTIONS)
     description = "Run the Arrow C++ micro benchmarks."
-    iterations = 1  # only call the executable once; it handles repetitions internally
+    iterations = None  # the executable handles repetitions internally
     flags = {"language": "C++"}
     adapter = None
 

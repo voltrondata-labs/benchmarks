@@ -21,8 +21,8 @@ Options:
   --cxx-flags TEXT             C++ compiler flags.
   --cpp-package-prefix TEXT    Value to pass for ARROW_PACKAGE_PREFIX and use
                                ARROW_DEPENDENCY_SOURCE=SYSTEM.
-  --repetitions INTEGER        Number of repetitions of each benchmark.
-                               [default: 20]
+  --repetitions INTEGER        Number of repetitions to tell the executable to
+                               run.  [default: 20]
   --repetition-min-time FLOAT  Minimum time to run iterations for one
                                repetition of the benchmark.  [default: 0.05]
   --show-result BOOLEAN        [default: true]
