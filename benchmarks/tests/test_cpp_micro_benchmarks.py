@@ -11,24 +11,28 @@ Usage: conbench cpp-micro [OPTIONS]
   Run the Arrow C++ micro benchmarks.
 
 Options:
-  --src TEXT                 Specify Arrow source directory.
-  --suite-filter TEXT        Regex filtering benchmark suites.
-  --benchmark-filter TEXT    Regex filtering benchmarks.
-  --cmake-extras TEXT        Extra flags/options to pass to cmake invocation.
-  --cc TEXT                  C compiler.
-  --cxx TEXT                 C++ compiler.
-  --cxx-flags TEXT           C++ compiler flags.
-  --cpp-package-prefix TEXT  Value to pass for ARROW_PACKAGE_PREFIX and use
-                             ARROW_DEPENDENCY_SOURCE=SYSTEM.
-  --iterations INTEGER       Number of iterations of each benchmark.
-  --show-result BOOLEAN      [default: true]
-  --show-output BOOLEAN      [default: false]
-  --run-id TEXT              Group executions together with a run id.
-  --run-name TEXT            Free-text name of run (commit ABC, pull request
-                             123, etc).
-  --run-reason TEXT          Low-cardinality reason for run (commit, pull
-                             request, manual, etc).
-  --help                     Show this message and exit.
+  --src TEXT                   Specify Arrow source directory.
+  --suite-filter TEXT          Regex filtering benchmark suites.
+  --benchmark-filter TEXT      Regex filtering benchmarks.
+  --cmake-extras TEXT          Extra flags/options to pass to cmake
+                               invocation.
+  --cc TEXT                    C compiler.
+  --cxx TEXT                   C++ compiler.
+  --cxx-flags TEXT             C++ compiler flags.
+  --cpp-package-prefix TEXT    Value to pass for ARROW_PACKAGE_PREFIX and use
+                               ARROW_DEPENDENCY_SOURCE=SYSTEM.
+  --repetitions INTEGER        Number of repetitions of each benchmark.
+                               [default: 20]
+  --repetition-min-time FLOAT  Minimum time to run iterations for one
+                               repetition of the benchmark.  [default: 0.05]
+  --show-result BOOLEAN        [default: true]
+  --show-output BOOLEAN        [default: false]
+  --run-id TEXT                Group executions together with a run id.
+  --run-name TEXT              Free-text name of run (commit ABC, pull request
+                               123, etc).
+  --run-reason TEXT            Low-cardinality reason for run (commit, pull
+                               request, manual, etc).
+  --help                       Show this message and exit.
 """
 
 

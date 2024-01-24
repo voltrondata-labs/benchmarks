@@ -12,13 +12,13 @@ from benchmarks import _benchmark
 log.setLevel(logging.DEBUG)
 
 RUN_OPTIONS = {
-    "iterations": {
-        "default": None,
+    "repetitions": {
+        "default": 20,
         "type": int,
         "help": "Number of repetitions of each benchmark.",
     },
     "repetition_min_time": {
-        "default": None,
+        "default": 0.05,
         "type": float,
         "help": "Minimum time to run iterations for one repetition of the benchmark.",
     },
