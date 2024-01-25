@@ -12,7 +12,7 @@ Usage: conbench cpp-micro [OPTIONS]
 
 Options:
   --repetitions INTEGER        Number of repetitions to tell the executable to
-                               run.  [default: 20]
+                               run.  [default: 10]
   --repetition-min-time FLOAT  Minimum time to run iterations for one
                                repetition of the benchmark.  [default: 0.05]
   --src TEXT                   Specify Arrow source directory.
