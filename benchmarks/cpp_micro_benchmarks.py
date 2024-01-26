@@ -11,16 +11,17 @@ from benchmarks import _benchmark
 
 log.setLevel(logging.DEBUG)
 
-RUN_OPTIONS = {
-    "iterations": {
-        "default": None,
+OPTIONS = {
+    "repetitions": {
+        "default": 6,
         "type": int,
-        "help": "Number of iterations of each benchmark.",
+        "help": "Number of repetitions to tell the executable to run.",
     },
-}
-
-
-COMMON_OPTIONS = {
+    "repetition-min-time": {
+        "default": 0.05,
+        "type": float,
+        "help": "Minimum time to run iterations for one repetition of the benchmark.",
+    },
     "src": {
         "default": None,
         "type": str,
@@ -66,19 +67,11 @@ COMMON_OPTIONS = {
 
 def _get_cli_options(options: dict) -> List[str]:
     command_params = []
-    if options.get("iterations"):
-        command_params += ["--repetitions", str(options.get("iterations"))]
-
-    _add_command_options(command_params, options)
-
-    return command_params
-
-
-def _add_command_options(command: List[str], options: dict):
-    for option in COMMON_OPTIONS.keys():
+    for option in OPTIONS:
         value = options.get(option.replace("-", "_"), None)
         if value:
-            command.extend([f"--{option}", value])
+            command_params.extend([f"--{option}", str(value)])
+    return command_params
 
 
 @conbenchlegacy.runner.register_benchmark
@@ -87,10 +80,9 @@ class RecordCppMicroBenchmarks(_benchmark.Benchmark):
 
     external = True
     name = "cpp-micro"
-    options = copy.deepcopy(COMMON_OPTIONS)
-    options.update(**RUN_OPTIONS)
+    options = copy.deepcopy(OPTIONS)
     description = "Run the Arrow C++ micro benchmarks."
-    iterations = 1
+    iterations = None  # the executable handles repetitions internally
     flags = {"language": "C++"}
     adapter = None
 
