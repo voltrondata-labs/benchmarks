@@ -25,6 +25,8 @@ Options:
   --cxx-flags TEXT             C++ compiler flags.
   --cpp-package-prefix TEXT    Value to pass for ARROW_PACKAGE_PREFIX and use
                                ARROW_DEPENDENCY_SOURCE=SYSTEM.
+  --rev-or-path TEXT           Git rev or path to already-built arrow. Set to
+                               '' to build yourself.  [default: cpp]
   --show-result BOOLEAN        [default: true]
   --show-output BOOLEAN        [default: false]
   --run-id TEXT                Group executions together with a run id.
