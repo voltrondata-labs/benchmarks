@@ -62,6 +62,11 @@ OPTIONS = {
         "type": str,
         "help": "Value to pass for ARROW_PACKAGE_PREFIX and use ARROW_DEPENDENCY_SOURCE=SYSTEM.",
     },
+    "rev-or-path": {
+        "default": "cpp",
+        "type": str,
+        "help": "Git rev or path to already-built arrow. Set to '' to build yourself.",
+    },
 }
 
 
@@ -70,7 +75,10 @@ def _get_cli_options(options: dict) -> List[str]:
     for option in OPTIONS:
         value = options.get(option.replace("-", "_"), None)
         if value:
-            command_params.extend([f"--{option}", str(value)])
+            if option in {"rev-or-path"}:
+                command_params.append(str(value))
+            else:
+                command_params.extend([f"--{option}", str(value)])
     return command_params
 
 
