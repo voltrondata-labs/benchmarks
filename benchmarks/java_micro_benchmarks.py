@@ -6,6 +6,13 @@ import conbenchlegacy.runner
 
 from benchmarks import _benchmark
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
+log = logging.getLogger(__name__)
+
 RUN_OPTIONS = {
     "iterations": {
         "default": None,
@@ -91,10 +98,15 @@ class RecordJavaMicroBenchmarks(_benchmark.Benchmark):
     iterations = 1
 
     def run(self, **kwargs):
+        log.info("enter run")
         with tempfile.NamedTemporaryFile(delete=False) as result_file:
             run_command = get_run_command(result_file.name, kwargs)
-            self.execute_command(run_command, capture_output=False)
+            log.info(f"{run_command=}")
+            stdout, stderr = self.execute_command(run_command, capture_output=True)
+            log.info(f"{stdout=}")
+            log.info(f"{stderr=}")
             results = json.load(result_file)
+            log.info(f"{results=}")
 
             # bucket by suite
             suites = {}
