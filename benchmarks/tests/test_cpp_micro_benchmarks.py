@@ -26,8 +26,8 @@ Options:
   --cpp-package-prefix TEXT    Value to pass for ARROW_PACKAGE_PREFIX and use
                                ARROW_DEPENDENCY_SOURCE=SYSTEM.
   --rev-or-path TEXT           Git rev or path to already-built arrow. Default
-                               is ${ARROW_SRC}/cpp unless that env var is
-                               undefined (then build from scratch instead).
+                               is ${ARROW_SRC}/build/cpp unless that env var
+                               is undefined (then build from scratch instead).
   --show-result BOOLEAN        [default: true]
   --show-output BOOLEAN        [default: false]
   --run-id TEXT                Group executions together with a run id.
