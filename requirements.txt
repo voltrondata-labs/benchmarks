@@ -1,6 +1,6 @@
 click
 pandas
 pyarrow
-benchadapt@git+https://github.com/conbench/conbench.git@5a31507#subdirectory=benchadapt/python
-benchclients@git+https://github.com/conbench/conbench.git@5a31507#subdirectory=benchclients/python
-conbenchlegacy@git+https://github.com/conbench/conbench.git@5a31507#subdirectory=legacy
+benchadapt@git+https://github.com/conbench/conbench.git@8326988#subdirectory=benchadapt/python
+benchclients@git+https://github.com/conbench/conbench.git@8326988#subdirectory=benchclients/python
+conbenchlegacy@git+https://github.com/conbench/conbench.git@8326988#subdirectory=legacy
