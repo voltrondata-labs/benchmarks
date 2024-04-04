@@ -13,7 +13,7 @@ log.setLevel(logging.DEBUG)
 
 OPTIONS = {
     "repetitions": {
-        "default": 6,
+        "default": 1,
         "type": int,
         "help": "Number of repetitions to tell the executable to run.",
     },
