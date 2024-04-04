@@ -12,7 +12,7 @@ Usage: conbench cpp-micro [OPTIONS]
 
 Options:
   --repetitions INTEGER        Number of repetitions to tell the executable to
-                               run.  [default: 6]
+                               run.  [default: 1]
   --repetition-min-time FLOAT  Minimum time to run iterations for one
                                repetition of the benchmark.  [default: 0.05]
   --src TEXT                   Specify Arrow source directory.
@@ -26,7 +26,7 @@ Options:
   --cpp-package-prefix TEXT    Value to pass for ARROW_PACKAGE_PREFIX and use
                                ARROW_DEPENDENCY_SOURCE=SYSTEM.
   --rev-or-path TEXT           Git rev or path to already-built arrow. Default
-                               is ${ARROW_SRC}/build/cpp unless that env var
+                               is ${ARROW_BUILD_DIR}/cpp unless that env var
                                is undefined (then build from scratch instead).
   --show-result BOOLEAN        [default: true]
   --show-output BOOLEAN        [default: false]

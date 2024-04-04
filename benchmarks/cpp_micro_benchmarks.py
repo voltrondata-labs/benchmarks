@@ -65,7 +65,7 @@ OPTIONS = {
     "rev-or-path": {
         "default": None,
         "type": str,
-        "help": "Git rev or path to already-built arrow. Default is ${ARROW_SRC}/build/cpp "
+        "help": "Git rev or path to already-built arrow. Default is ${ARROW_BUILD_DIR}/cpp "
         "unless that env var is undefined (then build from scratch instead).",
     },
 }
@@ -76,8 +76,8 @@ def _get_cli_options(options: dict) -> List[str]:
     for option in OPTIONS:
         if option == "rev-or-path":
             value = options.get("rev_or_path", None)
-            if not value and os.getenv("ARROW_SRC"):
-                value = f"{os.getenv('ARROW_SRC')}/build/cpp"
+            if not value and os.getenv("ARROW_BUILD_DIR"):
+                value = f"{os.getenv('ARROW_BUILD_DIR')}/cpp"
             if value:
                 command_params.append(value)
         else:
