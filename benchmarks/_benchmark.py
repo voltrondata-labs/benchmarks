@@ -172,20 +172,24 @@ class Benchmark(conbenchlegacy.runner.Benchmark):
 
         return benchmark_result, output
 
-    def execute_command(self, command, capture_output=True):
+    def execute_command(self, command):
         try:
-            print(command)
-            result = subprocess.run(command, capture_output=capture_output, check=True)
+            print("voltrondata/labs-benchmarks child process:", command)
+            result = subprocess.run(command, capture_output=True, check=True)
         except subprocess.CalledProcessError as e:
-            stdout = e.stdout.decode("utf-8") if e.stdout else ""
-            stderr = e.stderr.decode("utf-8") if e.stderr else ""
+            print("voltrondata/labs-benchmarks child process was unsuccessful.")
+            stdout = e.stdout.decode() if e.stdout else ""
+            stderr = e.stderr.decode() if e.stderr else ""
             print("stdout:\n", stdout)
             print("stderr:\n", stderr)
             raise e
-        # Some benchmarks (e.g., java-micro) produce 12GB+ of stdout that can't be loaded into memory
-        # on benchmark machines with 16GB of RAM and without Swap
-        if capture_output:
-            return result.stdout.decode("utf-8"), result.stderr.decode("utf-8")
+
+        print("voltrondata/labs-benchmarks child process was successful.")
+        stdout = result.stdout.decode() if result.stdout else ""
+        stderr = result.stderr.decode() if result.stderr else ""
+        print("stdout:\n", stdout)
+        print("stderr:\n", stderr)
+        return stdout, stderr
 
     def get_sources(self, source: Union[list, _sources.Source, str]) -> list:
         if isinstance(source, list):
