@@ -12,11 +12,13 @@ Usage: conbench cpp-micro [OPTIONS]
 
 Options:
   --repetitions INTEGER        Number of repetitions to tell the executable to
-                               run.  [default: 6]
+                               run.  [default: 3]
   --repetition-min-time FLOAT  Minimum time to run iterations for one
                                repetition of the benchmark.  [default: 0.05]
   --src TEXT                   Specify Arrow source directory.
-  --suite-filter TEXT          Regex filtering benchmark suites.
+  --suite-filter TEXT          Regex filtering benchmark suites.  [default:
+                               ^(?!arrow-acero-aggregate-benchmark)(?!arrow-
+                               filesystem-s3fs-benchmark).*$]
   --benchmark-filter TEXT      Regex filtering benchmarks.
   --cmake-extras TEXT          Extra flags/options to pass to cmake
                                invocation.
@@ -25,6 +27,9 @@ Options:
   --cxx-flags TEXT             C++ compiler flags.
   --cpp-package-prefix TEXT    Value to pass for ARROW_PACKAGE_PREFIX and use
                                ARROW_DEPENDENCY_SOURCE=SYSTEM.
+  --rev-or-path TEXT           Git rev or path to already-built arrow. Default
+                               is ${ARROW_BUILD_DIR}/cpp unless that env var
+                               is undefined (then build from scratch instead).
   --show-result BOOLEAN        [default: true]
   --show-output BOOLEAN        [default: false]
   --run-id TEXT                Group executions together with a run id.

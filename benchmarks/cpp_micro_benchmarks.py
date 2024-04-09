@@ -13,7 +13,7 @@ log.setLevel(logging.DEBUG)
 
 OPTIONS = {
     "repetitions": {
-        "default": 6,
+        "default": 3,
         "type": int,
         "help": "Number of repetitions to tell the executable to run.",
     },
@@ -28,7 +28,7 @@ OPTIONS = {
         "help": "Specify Arrow source directory.",
     },
     "suite-filter": {
-        "default": None,
+        "default": "^(?!arrow-acero-aggregate-benchmark)(?!arrow-filesystem-s3fs-benchmark).*$",
         "type": str,
         "help": "Regex filtering benchmark suites.",
     },
@@ -62,15 +62,28 @@ OPTIONS = {
         "type": str,
         "help": "Value to pass for ARROW_PACKAGE_PREFIX and use ARROW_DEPENDENCY_SOURCE=SYSTEM.",
     },
+    "rev-or-path": {
+        "default": None,
+        "type": str,
+        "help": "Git rev or path to already-built arrow. Default is ${ARROW_BUILD_DIR}/cpp "
+        "unless that env var is undefined (then build from scratch instead).",
+    },
 }
 
 
 def _get_cli_options(options: dict) -> List[str]:
     command_params = []
     for option in OPTIONS:
-        value = options.get(option.replace("-", "_"), None)
-        if value:
-            command_params.extend([f"--{option}", str(value)])
+        if option == "rev-or-path":
+            value = options.get("rev_or_path", None)
+            if not value and os.getenv("ARROW_BUILD_DIR"):
+                value = f"{os.getenv('ARROW_BUILD_DIR')}/cpp"
+            if value:
+                command_params.append(value)
+        else:
+            value = options.get(option.replace("-", "_"), None)
+            if value:
+                command_params.extend([f"--{option}", str(value)])
     return command_params
 
 
