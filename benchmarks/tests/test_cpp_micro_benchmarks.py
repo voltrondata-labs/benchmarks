@@ -17,7 +17,8 @@ Options:
                                repetition of the benchmark.  [default: 0.05]
   --src TEXT                   Specify Arrow source directory.
   --suite-filter TEXT          Regex filtering benchmark suites.  [default:
-                               ^(?!arrow-acero-aggregate-benchmark).*$]
+                               ^(?!arrow-acero-aggregate-benchmark)(?!arrow-
+                               filesystem-s3fs-benchmark).*$]
   --benchmark-filter TEXT      Regex filtering benchmarks.
   --cmake-extras TEXT          Extra flags/options to pass to cmake
                                invocation.

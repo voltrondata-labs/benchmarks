@@ -28,7 +28,7 @@ OPTIONS = {
         "help": "Specify Arrow source directory.",
     },
     "suite-filter": {
-        "default": "^(?!arrow-acero-aggregate-benchmark).*$",
+        "default": "^(?!arrow-acero-aggregate-benchmark)(?!arrow-filesystem-s3fs-benchmark).*$",
         "type": str,
         "help": "Regex filtering benchmark suites.",
     },
