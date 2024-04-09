@@ -16,7 +16,8 @@ Options:
   --repetition-min-time FLOAT  Minimum time to run iterations for one
                                repetition of the benchmark.  [default: 0.05]
   --src TEXT                   Specify Arrow source directory.
-  --suite-filter TEXT          Regex filtering benchmark suites.
+  --suite-filter TEXT          Regex filtering benchmark suites.  [default:
+                               ^(?!arrow-acero-aggregate-benchmark).*$]
   --benchmark-filter TEXT      Regex filtering benchmarks.
   --cmake-extras TEXT          Extra flags/options to pass to cmake
                                invocation.

@@ -28,7 +28,7 @@ OPTIONS = {
         "help": "Specify Arrow source directory.",
     },
     "suite-filter": {
-        "default": None,
+        "default": "^(?!arrow-acero-aggregate-benchmark).*$",
         "type": str,
         "help": "Regex filtering benchmark suites.",
     },
