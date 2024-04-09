@@ -177,7 +177,10 @@ class Benchmark(conbenchlegacy.runner.Benchmark):
             print(command)
             result = subprocess.run(command, capture_output=capture_output, check=True)
         except subprocess.CalledProcessError as e:
-            print(e.stderr.decode("utf-8"))
+            stdout = e.stdout.decode("utf-8") if e.stdout else ""
+            stderr = e.stderr.decode("utf-8") if e.stderr else ""
+            print("stdout:\n", stdout)
+            print("stderr:\n", stderr)
             raise e
         # Some benchmarks (e.g., java-micro) produce 12GB+ of stdout that can't be loaded into memory
         # on benchmark machines with 16GB of RAM and without Swap
