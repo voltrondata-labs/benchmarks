@@ -53,6 +53,8 @@ def get_run_command(filename, options):
         commit,
         "--language",
         "java",
+        "--java-options",
+        "--add-opens=java.base/java.nio=org.apache.arrow.memory.core,ALL-UNNAMED",
         "--output",
         filename,
     ]
