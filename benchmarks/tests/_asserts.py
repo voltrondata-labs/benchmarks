@@ -147,6 +147,7 @@ def assert_info_and_context(munged, language="Python"):
             "arrow_version",
             "arrow_compiler_id",
             "arrow_compiler_version",
+            "arrow_compiler_flags",
             "benchmark_language_version",
             "arrow_version_r",
         ]
@@ -155,6 +156,7 @@ def assert_info_and_context(munged, language="Python"):
             "arrow_version",
             "arrow_compiler_id",
             "arrow_compiler_version",
+            "arrow_compiler_flags",
         ]
     del munged["info"]["arrow_compiler_flags"]
     if language == "Python":
