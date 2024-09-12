@@ -156,7 +156,7 @@ def assert_info_and_context(munged, language="Python"):
             "arrow_compiler_id",
             "arrow_compiler_version",
         ]
-    del munged["context"]["arrow_compiler_flags"]
+    # del munged["context"]["arrow_compiler_flags"]
     if language == "Python":
         version = munged["info"].pop("benchmark_language_version")
         assert version.startswith("Python")
