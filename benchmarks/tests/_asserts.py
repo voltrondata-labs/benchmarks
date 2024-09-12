@@ -132,7 +132,6 @@ def assert_info_and_context(munged, language="Python"):
     assert "name" in munged["tags"]
     assert "cpu_count" in munged["tags"]
     assert list(munged["context"].keys()) == [
-        "arrow_compiler_flags",
         "benchmark_language",
     ]
     if language == "Python":
@@ -140,6 +139,7 @@ def assert_info_and_context(munged, language="Python"):
             "arrow_version",
             "arrow_compiler_id",
             "arrow_compiler_version",
+            "arrow_compiler_flags",
             "benchmark_language_version",
         ]
     elif language == "R":
@@ -156,7 +156,7 @@ def assert_info_and_context(munged, language="Python"):
             "arrow_compiler_id",
             "arrow_compiler_version",
         ]
-    # del munged["context"]["arrow_compiler_flags"]
+    del munged["info"]["arrow_compiler_flags"]
     if language == "Python":
         version = munged["info"].pop("benchmark_language_version")
         assert version.startswith("Python")
