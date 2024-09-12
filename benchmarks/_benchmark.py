@@ -240,6 +240,8 @@ class Benchmark(conbenchlegacy.runner.Benchmark):
         info = {**self.arrow_info}
         info.pop("arrow_git_revision")
 
+        context = {}
+
         tags = {**extra_tags}
 
         if case:
