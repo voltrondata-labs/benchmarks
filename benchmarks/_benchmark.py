@@ -240,7 +240,7 @@ class Benchmark(conbenchlegacy.runner.Benchmark):
         info = {**self.arrow_info}
         info.pop("arrow_git_revision")
 
-        context = {"arrow_compiler_flags": info.pop("arrow_compiler_flags")}
+        context = {}
 
         tags = {**extra_tags}
 
